@@ -8,7 +8,7 @@
     Artifacts = [First | Rest];
     !reach_destination(First);
     !writeLog(["Waiting for reached_destination for ", First]);
-    .wait("+reached_destination(Dest)");
+    .wait( { + reached(place, Dest) });
     !writeLog(["Received reached_destination for ", Dest]);
     .wait(1000);
     !start_walking;
@@ -23,27 +23,28 @@
     !buy_coffee.
 
 @buy_coffee
-+!buy_coffee : seen_artifact(ArtifactName, bar) & not talking_to(_) <-
-    -+actual_intention(buy_coffee);
-    +busy;
-    !update_balloon_message("Agents knows how to buy coffee");
-    .wait(2000);
-    !writeLog(["Agent wants to buy a coffee"]);
-    !reach_destination(ArtifactName);
-    !writeLog(["Waiting for reached_destination for ", ArtifactName]);
-    .wait("+reached_destination(Dest)");
-    !writeLog(["Received reached_destination for ", Dest]);
-    lookupArtifact(ArtifactName, ArtifactId);
-    focus(ArtifactId);
-    .wait(1000);
-    !joinQueue(ArtifactName, ArtifactId);
-    .wait("+can_proceed"); // wait for my turn
-    !check_item_and_buy(ArtifactName, espresso, 1); // buy item
-    .wait(1000);
-    -+actual_intention(start_walking);
-    -busy;
-    !start_walking;
-    -movement_in_progress(_).
++!buy_coffee
+    : seen_artifact(ArtifactName, bar) & not talking_to(_) 
+    <-  -+actual_intention(buy_coffee);
+        +busy;
+        !update_balloon_message("Agents knows how to buy coffee");
+        .wait(2000);
+        !writeLog(["Agent wants to buy a coffee"]);
+        !reach_destination(ArtifactName);
+        !writeLog(["Waiting for reached_destination for ", ArtifactName]);
+        .wait( { +reached( place, Dest) } );
+        !writeLog(["Received reached_destination for ", Dest]);
+        lookupArtifact(ArtifactName, ArtifactId);
+        focus(ArtifactId);
+        .wait(1000);
+        !joinQueue(ArtifactName, ArtifactId);
+        .wait("+can_proceed"); // wait for my turn
+        !check_item_and_buy(ArtifactName, espresso, 1); // buy item
+        .wait(1000);
+        -+actual_intention(start_walking);
+        -busy;
+        !start_walking;
+        -movement_in_progress(_).
 
 @buy_coffee_wait_conversation_finish
 +!buy_coffee : seen_artifact(ArtifactName, bar) & talking_to(_) <-

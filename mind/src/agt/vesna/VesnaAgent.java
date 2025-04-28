@@ -11,6 +11,7 @@ import java.net.URI;
 
 import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
+import org.json.JSONArray;
 
 // VesnaAgent class extends the Agent class making the agent embodied;
 // It connects to the body using a WebSocket connection;
@@ -75,6 +76,7 @@ public class VesnaAgent extends Agent{
 
     // perform sends an action to the body
     public void perform( String action ) {
+        System.out.println( "[LOG] " + action );
         client.send( action );
     }
 
@@ -99,11 +101,51 @@ public class VesnaAgent extends Agent{
 
     // handle_sight takes all the data from a sight and adds a belief
     private void handle_sight( JSONObject sight ) {
-        String object = sight.getString( "sight" );
-        long id = sight.getLong( "id" );
-        Literal sight_belief = createLiteral( "sight", createLiteral( object ), createNumber( id ) );
-        try{
-            addBel( sight_belief );
+        String type = sight.getString( "type" );
+        String model = "";
+        if ( ! sight.isNull( "model" ) )
+            model = sight.getString( "model" );
+        String name = sight.getString( "name" );
+        System.out.println( "Got type: " + type + ", model: " + model + ", name: " + name );
+        try {
+            Literal percept;
+            if ( model != "" )
+                percept = parseLiteral( "seen(" + type + "," + model + "," + name + ")" );
+            else
+                percept = parseLiteral( "seen(" + type + ", _, " + name + ")" );
+            sense( percept );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handle_movement( JSONObject data ) {
+        String type = data.getString( "type" );
+        String target = data.getString( "name" ); 
+        try {
+            Literal percept = parseLiteral( "reached(" + type + ", " + target + ")" );
+            sense( percept );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handle_door( JSONObject data ) {
+        try {
+            if ( data.getBoolean( "status" ) )
+                addBel( parseLiteral( "door_open" ) );
+            else
+                delBel( parseLiteral( "door_open" ) );
+        } catch ( Exception e ) {
+            e.printStackTrace();
+        }
+    }
+
+    private void handle_arts( JSONObject data ) {
+        JSONArray art_names = data.getJSONArray( "names" );
+        try {
+            Literal percept = parseLiteral( "art_names(" + art_names.toString() + ")");
+            sense( percept );
         } catch ( Exception e ) {
             e.printStackTrace();
         }
@@ -124,6 +166,15 @@ public class VesnaAgent extends Agent{
                 break;
             case "sight":
                 handle_sight( data );
+                break;
+            case "movement":
+                handle_movement( data );
+                break;
+            case "door":
+                handle_door( data );
+                break;
+            case "artifactStrategy":
+                handle_arts( data );
                 break;
             default:
                 System.out.println( "Unknown message type: " + type );

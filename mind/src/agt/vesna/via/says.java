@@ -20,9 +20,9 @@ public class says extends DefaultInternalAction {
         if ( args.length == 0 || args.length > 3 )
             return false;
 
-        String performative = args[0].toString();
-        String recipient = args[1].toString();
-        String msg = args[2].toString();
+        // // String performative = args[0].toString();
+        // // String recipient = args[1].toString();
+        // // String msg = args[2].toString();
 
         JSONObject action = new JSONObject();
         action.put( "sender", "mind" );

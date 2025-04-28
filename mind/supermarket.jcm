@@ -10,17 +10,6 @@ mas supermarket {
 			
 	}
 
-	agent minnie:shopper.asl {
-		ag-class: vesna.VesnaAgent
-		beliefs: address( localhost )
-			port( 3348 )
-			budget(100), friends([])
-		goals:	buy_coffee
-		join: w
-		focus: w.envManager
-			
-	}
-
 	agent pluto:shopper.asl {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )

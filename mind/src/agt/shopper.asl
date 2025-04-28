@@ -12,6 +12,8 @@ inside_supermarket(false).
 // Agent at startup has not chosen the shop
 actual_shop(none).
 
+is_friend( Name ) :- friends( Friends ) & .member( Name, Friends ).
+
 /* ----------------- LOGIC PLANS ---------------------*/
 
 // Agent reached supermarket door - Inside supermarket
@@ -109,7 +111,7 @@ actual_shop(none).
 
 // NEW PLANS
 
-+friend_reached(Friend) <-
++reached(friend, Friend) <-
     Content = "Hi! How are you?";
     !writeLog(["Sending to ", Friend, ": ", Content]);
     !update_balloon_message(Content);
@@ -117,9 +119,10 @@ actual_shop(none).
     .send(Friend, achieve, friend_message(Content)).
 
 +new_agent_seen(AgentElement) <-
-    ?friends(FriendList);
-    checkIfAgentIsAFriend(AgentElement, FriendList, IsFriend);
-    !evaluateIfFriend(AgentElement, IsFriend);
+    // ?friends(FriendList);
+    // checkIfAgentIsAFriend(AgentElement, FriendList, IsFriend);
+    // .eval( IsFriend, is_friend( AgentElement ) );
+    !evaluateIfFriend(AgentElement);
     -new_agent_seen(AgentElement).
 
 +met_new_friend(AgentElement) <-

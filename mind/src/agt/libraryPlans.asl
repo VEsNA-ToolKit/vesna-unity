@@ -37,14 +37,15 @@
     .wait("-movement_in_progress(Shop)");
     !reach_dest(DestToReach).
 
-+!reach_dest(DestToReach) : not movement_in_progress(_) <-
-    +movement_in_progress(DestToReach);
-    !writeLog(["Go to the ", DestToReach]);
-    // // !define_payload("reachDestination", DestToReach, ReturnMsg);
-    // // !sendMessageToUnity(ReturnMsg);
-    vesna.walk( DestToReach );
-    .wait("+reached_destination(DestToReach)");
-    !writeLog(["Destination reached ", DestToReach]).
++!reach_dest(DestToReach)
+    : not movement_in_progress(_)
+    <-  +movement_in_progress(DestToReach);
+        !writeLog(["Go to the ", DestToReach]);
+        // // !define_payload("reachDestination", DestToReach, ReturnMsg);
+        // // !sendMessageToUnity(ReturnMsg);
+        vesna.walk( DestToReach );
+        .wait( { +reached( place, DestToReach) } );
+        !writeLog(["Destination reached ", DestToReach]).
 
 /* STRATEGIES TO RETRIEVE ARTIFACTS BY CALLING ENVIRONMENT MANAGER */
 @retrieve_artifacts_by_type[atomic]
@@ -101,17 +102,22 @@ seen_agent([]).
 
 // Save the seen artifact e.g. seen_artifact(barParadise, bar)
 @artifact_seen_append
-+artifactSeen(ArtifactElement) : ArtifactElement = artifactinfo(ArtifactName,ArtifactType) <-
-    !writeLog(["The avatar has seen the artifact ", ArtifactElement]);
-    +seen_artifact(ArtifactName, ArtifactType).
++seen( artifact, ArtModel, ArtName )
+    <-  !writeLog(["The avatar has seen the artifact ", ArtName ]);
+        +seen_artifact(ArtName, ArtModel).
 
 @agent_seen_append
-+agentSeen(AgentElement) : seen_agent(SeenElements) <-
-    !writeLog(["The avatar has seen another agent ", AgentElement]);
-    updateSeenElements(SeenElements, AgentElement, UpdatedSeenElements);
-    UpdatedSeenElements = updated_seen_elements(UpdatedElements);
-    -+seen_agent(UpdatedElements);
-    +new_agent_seen(AgentElement).
++seen(agent, _, AgentElement)
+    : seen_agent(SeenElements)
+    <-  .print(["The avatar has seen another agent ", AgentElement]);
+        // updateSeenElements(SeenElements, AgentElement, UpdatedSeenElements);
+        if ( not .member( AgentElement, SeenElements ) ) {
+            .concat( SeenElements, [ AgentElement ], UpdatedElements );
+            -+seen_agent( UpdatedElements );
+        }
+        // UpdatedSeenElements = updated_seen_elements(UpdatedElements);
+        // -+seen_agent(UpdatedElements);
+        +new_agent_seen(AgentElement).
 
 /* START WALKING PLANS */
 @start_walking

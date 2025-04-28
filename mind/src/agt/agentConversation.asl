@@ -7,7 +7,7 @@
 
 // My friend is already talking with another agent
 +!evaluateIfCanStartConversation(Friend, Reply) : Reply \== false <-
-    !writeLog([Friend, " is already talking with an agent"]);
+    .print([Friend, " is already talking with an agent"]);
     !start_walking.
 
 // My friend is talking with nobody
@@ -16,9 +16,9 @@
     .send(Friend, tell, talking_to(Me));
     +talking_to(Friend);
     -+actual_intention(talk);
-    !writeLog(["Starting conversation with: ", Friend]);
+    .print(["Starting conversation with: ", Friend]);
     Content = "Heiiii!";
-    !writeLog(["Sending to ", Friend, ": ", Content]);
+    .print(["Sending to ", Friend, ": ", Content]);
     // // !define_payload("conversation", Content, ReturnMsg);
     // // !sendMessageToUnity(ReturnMsg);
     vesna.says( Friend, Content );
@@ -30,8 +30,9 @@
 +!stop_and_talk[source(Friend)] : not busy <-
     !writeLog(["My friend ", Friend, " asked me to talk."]);
     -+actual_intention(talk);
-    !define_payload("reachFriend", Friend, ReturnMsg);
-    !sendMessageToUnity(ReturnMsg).
+    // //  !define_payload("reachFriend", Friend, ReturnMsg);
+    // //  !sendMessageToUnity(ReturnMsg).
+    vesna.walk( Friend ).
 
 @agent_busy_into_another_conversation
 +!stop_and_talk(Friend) : busy <-
