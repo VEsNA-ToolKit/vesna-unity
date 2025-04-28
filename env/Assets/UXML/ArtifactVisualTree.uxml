@@ -1,0 +1,16 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/UXML/ArtifactStyle.uss?fileID=7433441132597879392&amp;guid=0fae4ab7189a5bc4f8fc066aac5066b8&amp;type=3#ArtifactStyle" />
+    <ui:VisualElement name="Pane1" style="flex-grow: 1;">
+        <ui:VisualElement name="InitArtifactVariables" style="flex-grow: 1;">
+            <ui:Label tabindex="-1" text="Initialization" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Header" class="header" style="-unity-font-style: bold; font-size: 18px; letter-spacing: 10px; -unity-text-align: upper-center;" />
+            <uie:PropertyField binding-path="port" name="port" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+    <ui:VisualElement name="Pane2" style="flex-grow: 1;">
+        <ui:Label tabindex="-1" text="Artifact Properties" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PropertyHeader" class="header" />
+        <uie:PropertyField name="dressShopProperties" binding-path="dressShopProperties" />
+        <uie:PropertyField name="fruitShopProperties" binding-path="fruitShopProperties" />
+        <uie:PropertyField name="barProperties" binding-path="barProperties" />
+        <uie:PropertyField name="doorProperties" binding-path="doorProperties" label="isDoorOpen" />
+    </ui:VisualElement>
+</ui:UXML>

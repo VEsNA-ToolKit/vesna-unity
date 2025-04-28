@@ -1,0 +1,6 @@
+.header {
+    font-size: 18px;
+    -unity-font-style: bold;
+    -unity-text-align: upper-center;
+    letter-spacing: 10px;
+}
