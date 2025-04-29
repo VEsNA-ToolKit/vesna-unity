@@ -1,13 +1,13 @@
-[2025-04-28 20:11:53] - barParadise - Properties: [ItemInfoModel(itemName=espresso, price=1.2, quantity=50), ItemInfoModel(itemName=americano, price=2.3, quantity=50)]
-[2025-04-28 20:12:03] - barParadise - Attempting to lock for agent: pluto
-[2025-04-28 20:12:03] - barParadise - Lock acquired for agent: pluto
-[2025-04-28 20:12:03] - barParadise - Agent pluto joined the queue. Queue size: 1
-[2025-04-28 20:12:03] - barParadise - Agent pluto is the first client. Set as currentAgent
-[2025-04-28 20:12:03] - barParadise - Signal sent successfully to next agent to be served pluto
-[2025-04-28 20:12:03] - barParadise - Lock released for agent: pluto
-[2025-04-28 20:12:03] - barParadise - Agent pluto asked for: espresso
-[2025-04-28 20:12:03] - barParadise - Item espresso available. ItemInfoModel(itemName=espresso, price=1.2, quantity=50)
-[2025-04-28 20:12:03] - barParadise - Agent pluto is going to buy espresso of quantity: 1
-[2025-04-28 20:12:05] - barParadise - Agent pluto has bought 1 of espresso. Remaining items: 49
-[2025-04-28 20:12:05] - barParadise - Agent pluto leaving the queue. Queue size: 0
-[2025-04-28 20:12:05] - barParadise - Finished to serve all agents for now
+[2025-04-29 10:11:00] - barParadise - Properties: [ItemInfoModel(itemName=espresso, price=1.2, quantity=50), ItemInfoModel(itemName=americano, price=2.3, quantity=50)]
+[2025-04-29 10:11:10] - barParadise - Attempting to lock for agent: pluto
+[2025-04-29 10:11:10] - barParadise - Lock acquired for agent: pluto
+[2025-04-29 10:11:10] - barParadise - Agent pluto joined the queue. Queue size: 1
+[2025-04-29 10:11:10] - barParadise - Agent pluto is the first client. Set as currentAgent
+[2025-04-29 10:11:10] - barParadise - Signal sent successfully to next agent to be served pluto
+[2025-04-29 10:11:10] - barParadise - Lock released for agent: pluto
+[2025-04-29 10:11:10] - barParadise - Agent pluto asked for: espresso
+[2025-04-29 10:11:10] - barParadise - Item espresso available. ItemInfoModel(itemName=espresso, price=1.2, quantity=50)
+[2025-04-29 10:11:10] - barParadise - Agent pluto is going to buy espresso of quantity: 1
+[2025-04-29 10:11:12] - barParadise - Agent pluto has bought 1 of espresso. Remaining items: 49
+[2025-04-29 10:11:12] - barParadise - Agent pluto leaving the queue. Queue size: 0
+[2025-04-29 10:11:12] - barParadise - Finished to serve all agents for now

@@ -1,33 +1,33 @@
 m_ProjectFiles:
   m_ManifestFileStatus:
-    m_FilePath: /home/andrea/GitHub/vesna-unity/env/Packages/manifest.json
+    m_FilePath: /Users/andrea/GitHub/vesna-unity/env/Packages/manifest.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638814407860000000
+      ticks: 638815088110000000
     m_Hash: 2047784575
   m_LockFileStatus:
-    m_FilePath: /home/andrea/GitHub/vesna-unity/env/Packages/packages-lock.json
+    m_FilePath: /Users/andrea/GitHub/vesna-unity/env/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638814407890000000
-    m_Hash: 3595562444
+      ticks: 638815105980000000
+    m_Hash: 2306056892
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
   m_LocalFileStatus: []
-m_ProjectPath: /home/andrea/GitHub/vesna-unity/env/Packages
-m_EditorVersion: 6000.1.0f1 (9ea152932a88)
+m_ProjectPath: /Users/andrea/GitHub/vesna-unity/env/Packages
+m_EditorVersion: 6000.0.47f1 (2ad1ed33fd3b)
 m_ResolvedPackages:
 - packageId: com.unity.ai.navigation@2.0.7
   testable: 0
   isDirectDependency: 1
   version: 2.0.7
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ai.navigation@39ae74efb85f
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ai.navigation@39ae74efb85f
   assetPath: Packages/com.unity.ai.navigation
   name: com.unity.ai.navigation
   displayName: AI Navigation
@@ -139,7 +139,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.7.1
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.collab-proxy@50ac96531b63
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.collab-proxy@50ac96531b63
   assetPath: Packages/com.unity.collab-proxy
   name: com.unity.collab-proxy
   displayName: Version Control
@@ -322,7 +322,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.2
   source: 2
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.feature.development@767aadbc6eb7
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.feature.development@767aadbc6eb7
   assetPath: Packages/com.unity.feature.development
   name: com.unity.feature.development
   displayName: Engineering
@@ -369,7 +369,7 @@ m_ResolvedPackages:
   - name: com.unity.modules.jsonserialize
     version: 1.0.0
   - name: com.unity.ide.rider
-    version: 3.0.36
+    version: 3.0.35
   - name: com.unity.editorcoroutines
     version: 1.0.0
   - name: com.unity.performance.profile-analyzer
@@ -423,7 +423,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.multiplayer.center@f5e57a8bed06
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.multiplayer.center@f3fb577b3546
   assetPath: Packages/com.unity.multiplayer.center
   name: com.unity.multiplayer.center
   displayName: Multiplayer Center
@@ -503,7 +503,7 @@ m_ResolvedPackages:
   upmReserved: 
   assetStore:
     productId: 
-  fingerprint: f5e57a8bed0637672c58142b1bfd7e6fea03746c
+  fingerprint: f3fb577b3546594b97b8cc34307cd621f60f1c73
   editorCompatibility:
     compatibilityLevel: 0
     minimumPackageVersion: 1.0.0
@@ -513,7 +513,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 3.2.1
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.nuget.newtonsoft-json@74deb55db2a0
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.nuget.newtonsoft-json@74deb55db2a0
   assetPath: Packages/com.unity.nuget.newtonsoft-json
   name: com.unity.nuget.newtonsoft-json
   displayName: Newtonsoft Json
@@ -604,7 +604,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.8.7
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.timeline@c58b4ee65782
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.timeline@c58b4ee65782
   assetPath: Packages/com.unity.timeline
   name: com.unity.timeline
   displayName: Timeline
@@ -790,7 +790,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 2.0.0
   source: 2
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ugui@107a4460a6ba
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ugui@f3fac7af1578
   assetPath: Packages/com.unity.ugui
   name: com.unity.ugui
   displayName: Unity UI
@@ -872,7 +872,7 @@ m_ResolvedPackages:
   upmReserved: 
   assetStore:
     productId: 
-  fingerprint: 107a4460a6ba8f20caf1f99b671bf626ae2aceda
+  fingerprint: f3fac7af157843ea3b769ef7c6aa56de52618aeb
   editorCompatibility:
     compatibilityLevel: 0
     minimumPackageVersion: 2.0.0
@@ -882,7 +882,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.9.6
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.visualscripting@7dcdc439b230
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.visualscripting@7dcdc439b230
   assetPath: Packages/com.unity.visualscripting
   name: com.unity.visualscripting
   displayName: Visual Scripting
@@ -1010,7 +1010,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.accessibility
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.accessibility
   assetPath: Packages/com.unity.modules.accessibility
   name: com.unity.modules.accessibility
   displayName: Accessibility
@@ -1077,7 +1077,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.ai
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.ai
   assetPath: Packages/com.unity.modules.ai
   name: com.unity.modules.ai
   displayName: AI
@@ -1144,7 +1144,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.androidjni
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.androidjni
   assetPath: Packages/com.unity.modules.androidjni
   name: com.unity.modules.androidjni
   displayName: Android JNI
@@ -1210,7 +1210,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.animation
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.animation
   assetPath: Packages/com.unity.modules.animation
   name: com.unity.modules.animation
   displayName: Animation
@@ -1277,7 +1277,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.assetbundle
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.assetbundle
   assetPath: Packages/com.unity.modules.assetbundle
   name: com.unity.modules.assetbundle
   displayName: Asset Bundle
@@ -1344,7 +1344,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.audio
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.audio
   assetPath: Packages/com.unity.modules.audio
   name: com.unity.modules.audio
   displayName: Audio
@@ -1411,7 +1411,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.cloth
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.cloth
   assetPath: Packages/com.unity.modules.cloth
   name: com.unity.modules.cloth
   displayName: Cloth
@@ -1482,7 +1482,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.director
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.director
   assetPath: Packages/com.unity.modules.director
   name: com.unity.modules.director
   displayName: Director
@@ -1557,7 +1557,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.imageconversion
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.imageconversion
   assetPath: Packages/com.unity.modules.imageconversion
   name: com.unity.modules.imageconversion
   displayName: Image Conversion
@@ -1624,7 +1624,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.imgui
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.imgui
   assetPath: Packages/com.unity.modules.imgui
   name: com.unity.modules.imgui
   displayName: IMGUI
@@ -1691,7 +1691,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.jsonserialize
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.jsonserialize
   assetPath: Packages/com.unity.modules.jsonserialize
   name: com.unity.modules.jsonserialize
   displayName: JSONSerialize
@@ -1758,7 +1758,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.particlesystem
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.particlesystem
   assetPath: Packages/com.unity.modules.particlesystem
   name: com.unity.modules.particlesystem
   displayName: Particle System
@@ -1825,7 +1825,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.physics
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.physics
   assetPath: Packages/com.unity.modules.physics
   name: com.unity.modules.physics
   displayName: Physics
@@ -1892,7 +1892,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.physics2d
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.physics2d
   assetPath: Packages/com.unity.modules.physics2d
   name: com.unity.modules.physics2d
   displayName: Physics 2D
@@ -1959,7 +1959,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.screencapture
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.screencapture
   assetPath: Packages/com.unity.modules.screencapture
   name: com.unity.modules.screencapture
   displayName: Screen Capture
@@ -2030,7 +2030,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.terrain
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.terrain
   assetPath: Packages/com.unity.modules.terrain
   name: com.unity.modules.terrain
   displayName: Terrain
@@ -2097,7 +2097,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.terrainphysics
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.terrainphysics
   assetPath: Packages/com.unity.modules.terrainphysics
   name: com.unity.modules.terrainphysics
   displayName: Terrain Physics
@@ -2172,7 +2172,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.tilemap
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.tilemap
   assetPath: Packages/com.unity.modules.tilemap
   name: com.unity.modules.tilemap
   displayName: Tilemap
@@ -2242,7 +2242,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.ui
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.ui
   assetPath: Packages/com.unity.modules.ui
   name: com.unity.modules.ui
   displayName: UI
@@ -2309,7 +2309,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.uielements
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.uielements
   assetPath: Packages/com.unity.modules.uielements
   name: com.unity.modules.uielements
   displayName: UIElements
@@ -2392,7 +2392,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.umbra
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.umbra
   assetPath: Packages/com.unity.modules.umbra
   name: com.unity.modules.umbra
   displayName: Umbra
@@ -2459,7 +2459,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unityanalytics
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unityanalytics
   assetPath: Packages/com.unity.modules.unityanalytics
   name: com.unity.modules.unityanalytics
   displayName: Unity Analytics
@@ -2533,7 +2533,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequest
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequest
   assetPath: Packages/com.unity.modules.unitywebrequest
   name: com.unity.modules.unitywebrequest
   displayName: Unity Web Request
@@ -2600,7 +2600,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestassetbundle
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestassetbundle
   assetPath: Packages/com.unity.modules.unitywebrequestassetbundle
   name: com.unity.modules.unitywebrequestassetbundle
   displayName: Unity Web Request Asset Bundle
@@ -2675,7 +2675,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestaudio
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestaudio
   assetPath: Packages/com.unity.modules.unitywebrequestaudio
   name: com.unity.modules.unitywebrequestaudio
   displayName: Unity Web Request Audio
@@ -2750,7 +2750,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequesttexture
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequesttexture
   assetPath: Packages/com.unity.modules.unitywebrequesttexture
   name: com.unity.modules.unitywebrequesttexture
   displayName: Unity Web Request Texture
@@ -2825,7 +2825,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestwww
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.unitywebrequestwww
   assetPath: Packages/com.unity.modules.unitywebrequestwww
   name: com.unity.modules.unitywebrequestwww
   displayName: Unity Web Request WWW
@@ -2916,7 +2916,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.vehicles
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.vehicles
   assetPath: Packages/com.unity.modules.vehicles
   name: com.unity.modules.vehicles
   displayName: Vehicles
@@ -2987,7 +2987,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.video
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.video
   assetPath: Packages/com.unity.modules.video
   name: com.unity.modules.video
   displayName: Video
@@ -3066,7 +3066,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.vr
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.vr
   assetPath: Packages/com.unity.modules.vr
   name: com.unity.modules.vr
   displayName: VR
@@ -3147,7 +3147,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.wind
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.wind
   assetPath: Packages/com.unity.modules.wind
   name: com.unity.modules.wind
   displayName: Wind
@@ -3214,7 +3214,7 @@ m_ResolvedPackages:
   isDirectDependency: 1
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.xr
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.xr
   assetPath: Packages/com.unity.modules.xr
   name: com.unity.modules.xr
   displayName: XR
@@ -3293,7 +3293,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.subsystems
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.subsystems
   assetPath: Packages/com.unity.modules.subsystems
   name: com.unity.modules.subsystems
   displayName: Subsystems
@@ -3364,7 +3364,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.0.0
   source: 2
-  resolvedPath: /home/andrea/Unity/Hub/Editor/6000.1.0f1/Editor/Data/Resources/PackageManager/BuiltInPackages/com.unity.modules.hierarchycore
+  resolvedPath: /Applications/Unity/Hub/Editor/6000.0.47f1/Unity.app/Contents/Resources/PackageManager/BuiltInPackages/com.unity.modules.hierarchycore
   assetPath: Packages/com.unity.modules.hierarchycore
   name: com.unity.modules.hierarchycore
   displayName: Hierarchy Core
@@ -3431,7 +3431,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.0.23
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ide.visualstudio@198cdf337d13
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ide.visualstudio@198cdf337d13
   assetPath: Packages/com.unity.ide.visualstudio
   name: com.unity.ide.visualstudio
   displayName: Visual Studio Editor
@@ -3532,12 +3532,12 @@ m_ResolvedPackages:
     compatibilityLevel: 0
     minimumPackageVersion: 2.0.23
     minimumUnityVersion: 2019.4.25f1
-- packageId: com.unity.ide.rider@3.0.36
+- packageId: com.unity.ide.rider@3.0.35
   testable: 0
   isDirectDependency: 0
-  version: 3.0.36
+  version: 3.0.35
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ide.rider@4d374c7eb6db
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ide.rider@7d01a2258732
   assetPath: Packages/com.unity.ide.rider
   name: com.unity.ide.rider
   displayName: JetBrains Rider Editor
@@ -3600,6 +3600,7 @@ m_ResolvedPackages:
     - 3.0.35
     - 3.0.36
     compatible:
+    - 3.0.35
     - 3.0.36
     recommended: 3.0.36
     deprecated: []
@@ -3622,16 +3623,16 @@ m_ResolvedPackages:
   entitlements:
     licensingModel: 0
   isAssetStorePackage: 0
-  datePublishedTicks: 638799562419060000
+  datePublishedTicks: 638779086412770000
   documentationUrl: https://docs.unity3d.com/Packages/com.unity.ide.rider@3.0/manual/index.html
   hasRepository: 1
   repository:
     type: git
     url: https://github.cds.internal.unity3d.com/unity/com.unity.ide.rider.git
-    revision: b5315083ab3861d21f6ab2ed0d9514daf04bf208
+    revision: 52cd6800886cb6c849f5c908665829f1f8cca705
     path: 
   unityLifecycle:
-    version: 3.0.36
+    version: 3.0.35
     nextVersion: 
     recommendedVersion: 
     isDeprecated: 0
@@ -3641,21 +3642,24 @@ m_ResolvedPackages:
   git:
     hash: 
     revision: 
-  upmReserved: '{"changelog":"- fix RIDER-124592 Avoid affecting \"Strip Engine Code\"
-    while IL2CPP debug enabled"}'
+  upmReserved: '{"changelog":"- fix RIDER-120306 RootNamespace is not generated for
+    a csproj without cs files\n- fix RIDER-121881 GetAllRiderPaths failed\n- fix
+    RIDER-122372 RiderPathLocator issue (found Rider installations duplicates on
+    Linux)\n- fix RIDER-122527 Open log in the Rider tab in Unity Editor doesn''t
+    work"}'
   assetStore:
     productId: 
-  fingerprint: 4d374c7eb6db6907c7e6925e3086c3c73f926e13
+  fingerprint: 7d01a2258732f17d1f569657792eaba45b9633d4
   editorCompatibility:
     compatibilityLevel: 0
-    minimumPackageVersion: 3.0.36
+    minimumPackageVersion: 3.0.35
     minimumUnityVersion: 2019.4.6f1
 - packageId: com.unity.editorcoroutines@1.0.0
   testable: 0
   isDirectDependency: 0
   version: 1.0.0
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.editorcoroutines@7d48783e7b8c
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.editorcoroutines@7d48783e7b8c
   assetPath: Packages/com.unity.editorcoroutines
   name: com.unity.editorcoroutines
   displayName: Editor Coroutines
@@ -3732,7 +3736,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.2.3
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.performance.profile-analyzer@a68e7bc84997
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.performance.profile-analyzer@a68e7bc84997
   assetPath: Packages/com.unity.performance.profile-analyzer
   name: com.unity.performance.profile-analyzer
   displayName: Profile Analyzer
@@ -3817,7 +3821,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.5.1
   source: 2
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.test-framework@2044756c6174
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.test-framework@388540dd9ce6
   assetPath: Packages/com.unity.test-framework
   name: com.unity.test-framework
   displayName: Test Framework
@@ -3945,7 +3949,7 @@ m_ResolvedPackages:
   upmReserved: 
   assetStore:
     productId: 
-  fingerprint: 2044756c61746838ad040394e87cf7287a1731ad
+  fingerprint: 388540dd9ce60b7f4463a23bfdf0d2dafa9a6f3e
   editorCompatibility:
     compatibilityLevel: 0
     minimumPackageVersion: 1.5.1
@@ -3955,7 +3959,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 1.2.6
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.testtools.codecoverage@205a02cbcb39
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.testtools.codecoverage@205a02cbcb39
   assetPath: Packages/com.unity.testtools.codecoverage
   name: com.unity.testtools.codecoverage
   displayName: Code Coverage
@@ -4078,7 +4082,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.1.0
   source: 1
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.settings-manager@41738c275190
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.settings-manager@41738c275190
   assetPath: Packages/com.unity.settings-manager
   name: com.unity.settings-manager
   displayName: Settings Manager
@@ -4155,7 +4159,7 @@ m_ResolvedPackages:
   isDirectDependency: 0
   version: 2.0.5
   source: 2
-  resolvedPath: /home/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93
+  resolvedPath: /Users/andrea/GitHub/vesna-unity/env/Library/PackageCache/com.unity.ext.nunit@031a54704bff
   assetPath: Packages/com.unity.ext.nunit
   name: com.unity.ext.nunit
   displayName: Custom NUnit
@@ -4224,9 +4228,9 @@ m_ResolvedPackages:
   upmReserved: 
   assetStore:
     productId: 
-  fingerprint: b16e6d09cd93f527249a1f05a86ef45695dc934b
+  fingerprint: 031a54704bffe39e6a0324909f8eaa4565bdebf2
   editorCompatibility:
     compatibilityLevel: 0
     minimumPackageVersion: 2.0.5
     minimumUnityVersion: 2019.4.0a1
-m_BuiltInPackagesHash: 1275161b5696b39833b0cf1bae5816c6bc8487a2
+m_BuiltInPackagesHash: b637629ba608baeaf4fba970e736d93bb6d940b3
