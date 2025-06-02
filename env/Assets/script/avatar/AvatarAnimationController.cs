@@ -23,23 +23,23 @@ public class AvatarAnimationController : MonoBehaviour
                 animator.SetFloat("walkSpeed", walkingSpeed);
                 if (walkingSpeed < 3)
                 {
-                    animator.SetTrigger("Walk");
+                    animator.SetTrigger("walk");
 
 
                 }
                 else
                 {
-                    animator.SetTrigger("Run");
+                    animator.SetTrigger("run");
                     animator.SetBool("isRunning", true);
                 }
 
                 break;
             case "stop":
-                animator.SetTrigger("Idle");
+                animator.SetTrigger("stop");
                 animator.SetFloat("walkSpeed", 0f);
                 break;
             case "say":
-                animator.SetTrigger("Talk");
+                animator.SetTrigger("say");
                 break;
         }
     }

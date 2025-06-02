@@ -10,12 +10,15 @@ using WebSocketSharp;
 public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 {
     protected MovementModel movementModel;
+    protected AvatarAnimationController animationController; //aggiunta
 
     protected override void Awake()
     {
-        base.Awake();        
+        base.Awake();
         // Set waypoints to follow
         movementModel = GetComponent<MovementModel>();
+        animationController = GetComponentInChildren<AvatarAnimationController>();//aggiunta
+
     }
 
     protected void resetStoppingDistance()
@@ -37,6 +40,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
                         .createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
                 "reached_friend", null, friend));
+
                     yield break; // Exit the coroutine
                 }
             }
@@ -59,7 +63,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         try
         {
             message = JsonConvert.DeserializeObject<WsMessage>(data);
-            print( "Received Message Type: " + message.Type );
+            print("Received Message Type: " + message.Type);
             switch (message.Type)
             {
                 // [17.04.25] startWalking is now part of walk with random target
@@ -85,8 +89,9 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     print("Agent needs to reach destination.");
                     // Avatar receives the type of artifact to reach
                     WalkData walkData = message.Data.ToObject<WalkData>();
-                    if ( walkData.Target == "random" ) {
-                        print( "ANDREA CIAO" );
+                    if (walkData.Target == "random")
+                    {
+                        print("ANDREA CIAO");
                         UnityMainThreadDispatcher.Instance().Enqueue(() =>
                         {
                             resetStoppingDistance();
@@ -95,16 +100,40 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                             SetBaloonText("Walking");
                             movementModel.StartWalking();
                             StartCoroutine(ActivateVisionCone());
+                            //aggiunta
+                            if (animationController != null)
+                            {
+                                animationController.SetAnimationState("walk"); // o "stop"
+                            }
+                            //fino a qui
                         });
                         break;
                     }
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
-                        SetBaloonText("New destination: " + walkData.Target );
+                        SetBaloonText("New destination: " + walkData.Target);
                         movementModel.IsStopped = true;
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
-                        reachDestination( walkData.Target );
+                        reachDestination(walkData.Target);
+
+                        // Se il target è un friend, aggiorna stoppingDistance e avvia il controllo specifico
+                        if (AgentBeliefs != null && AgentBeliefs.Friends.Contains(walkData.Target))
+                        {
+                            agent.stoppingDistance = 8.0f;
+                            //animationController.SetAnimationState("say");
+                            reachDestination(walkData.Target);
+                            StartCoroutine(CheckIfReachedFriend(walkData.Target));
+                            if (agent.stoppingDistance == 8.0f) //da perfezionare
+                            {
+                                animationController.SetAnimationState("stop");
+                            }
+                        }
+                        else
+                        {
+                            resetStoppingDistance(); // stoppingDistance = 1.0f
+                            reachDestination(walkData.Target);
+                        }
                     });
                     break;
                 case "stop":
@@ -114,6 +143,12 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         SetBaloonText("I'm stopped");
                         movementModel.IsStopped = true;
                         agent.isStopped = true;
+                        //aggiunta
+                        if (animationController != null)
+                        {
+                            animationController.SetAnimationState("stop");
+                        }
+                        //fino a qui
                         // [17.04.25] This goes in the rotate msg
                         // transform.LookAt(GameObject.Find(message.MessagePayload).transform);
                         // EnableDisableVisionCone(false);
@@ -122,34 +157,39 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
                 case "rotate":
                     RotateData rotateData = message.Data.ToObject<RotateData>();
-                    if ( rotateData.Type == "lookat" ) {
-                        transform.LookAt( GameObject.Find( rotateData.Target ).transform );
-                        EnableDisableVisionCone( false );
+                    if (rotateData.Type == "lookat")
+                    {
+                        transform.LookAt(GameObject.Find(rotateData.Target).transform);
+                        EnableDisableVisionCone(false);
                         break;
                     }
-                    print( "This rotate is not implemented");
+                    print("This rotate is not implemented");
                     break;
                 // [17.04.25] This case I think is useless, it is just a special case of walking with a target
                 // TODO: Add an if in the walk to manage this case
-                // case "reachFriend":
-                //     // Avatar receives the type of artifact to reach
-                //     UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                //     {
-                //         movementModel.IsStopped = true;
-                //         // Delete previous path and reach friend
-                //         agent.ResetPath();
-                //         agent.stoppingDistance = 8.0f;
-                //         EnableDisableVisionCone(false);
-                //         reachDestination(message.MessagePayload);
-                // *        StartCoroutine(CheckIfReachedFriend(message.MessagePayload));
-                //     });
-                //     break;
+                /*case "reachFriend":
+                    // Avatar receives the type of artifact to reach
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                       movementModel.IsStopped = true;
+                       // Delete previous path and reach friend
+                       agent.ResetPath();
+                       agent.stoppingDistance = 8.0f;
+                       EnableDisableVisionCone(false);
+                       reachDestination(message.MessagePayload);
+                       StartCoroutine(CheckIfReachedFriend(message.MessagePayload));
+                    });
+                    break;*/
                 case "say":
                     // Avatar receives the type of artifact to reach
                     SaysData saysData = message.Data.ToObject<SaysData>();
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         SetBaloonText(saysData.Msg);
+                        if (animationController != null)
+                        {
+                            animationController.SetAnimationState("say");
+                        }
                     });
                     break;
                 default:
