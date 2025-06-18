@@ -1,20 +1,31 @@
 mas supermarket {
-	agent pippo:shopper.asl {
+	agent kate:shopper.asl {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
-			port( 3344 )
-			budget(100), friends([pluto])
+			port( 3346 )
+			budget(100), friends([pippo])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
 			
 	}
 
-	agent pluto:shopper.asl {
+	agent anna:shopper.asl {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
-			port( 3345 )
+			port( 3343 )
 			budget(100), friends([pippo])
+		goals:	buy_coffee, call_parents
+		join: w
+		focus: w.envManager
+			
+	}
+
+	agent pippo:shopper.asl {
+		ag-class: vesna.VesnaAgent
+		beliefs: address( localhost )
+			port( 3344 )
+			budget(100), friends([anna, kate])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
