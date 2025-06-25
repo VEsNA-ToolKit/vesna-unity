@@ -117,17 +117,13 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         EnableDisableVisionCone(false);
                         reachDestination(walkData.Target);
 
-                        // Se il target è un friend, aggiorna stoppingDistance e avvia il controllo specifico
-                        if (AgentBeliefs != null && AgentBeliefs.Friends.Contains(walkData.Target))
+                        // Se il target ï¿½ un friend o un neutral, aggiorna stoppingDistance e avvia il controllo specifico
+                        if (AgentBeliefs != null & (AgentBeliefs.Friends.Contains(walkData.Target) || (AgentBeliefs.Neutrals.Contains(walkData.Target))))
                         {
-                            agent.stoppingDistance = 8.0f;
-                            //animationController.SetAnimationState("say");
+                            agent.stoppingDistance = SocialDistance.GetStoppingDistance(walkData.Target, AgentBeliefs);
+                            animationController.SetAnimationState("stop");
                             reachDestination(walkData.Target);
                             StartCoroutine(CheckIfReachedFriend(walkData.Target));
-                            if (agent.stoppingDistance == 8.0f) //da perfezionare
-                            {
-                                animationController.SetAnimationState("stop");
-                            }
                         }
                         else
                         {

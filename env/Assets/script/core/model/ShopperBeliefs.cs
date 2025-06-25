@@ -45,6 +45,7 @@ public class ShopperBeliefs : AgentBeliefs
     public override string GetBeliefsAsLiterals()
     {
         StringBuilder beliefs = new StringBuilder();
+        personalityProfile.Validate(); // Check personality
         // Add the budget belief
         beliefs.Append($"budget({Budget})");
 
@@ -62,7 +63,27 @@ public class ShopperBeliefs : AgentBeliefs
         else
         {
             beliefs.Append($", friends([])");
-        }        
+        }
+        // Acquaintances
+        if (neutrals != null && neutrals.Count != 0)
+        {
+            string temp = "[" + string.Join(", ", neutrals.Select(item => item.ToString())) + "]";
+            beliefs.Append($", neutrals({temp})");
+        }
+        else
+        {
+            beliefs.Append($", neutrals([])");
+        }  
+
+        // Personality
+        beliefs.Append($", personality([" +
+            $"estroversione({(int)(personalityProfile.Estroversione * 100)}), " +
+            $"introversione({(int)(personalityProfile.Introversione * 100)}), " +
+            $"gradevolezza({(int)(personalityProfile.Gradevolezza * 100)}), " +
+            $"nevroticismo({(int)(personalityProfile.Nevroticismo * 100)}), " +
+            $"coscienziosita({(int)(personalityProfile.Coscienziosità * 100)}), " +
+            $"apertura({(int)(personalityProfile.AperturaAlleEsperienze * 100)})" +
+            "])");      
 
         return beliefs.ToString();
     }

@@ -487,10 +487,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1066419699}
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 21.869999, y: -15.59}
+  m_SizeDelta: {x: 23.739998, y: 11.18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &125654525
 MonoBehaviour:
@@ -1305,18 +1305,42 @@ PrefabInstance:
       objectReference: {fileID: 733045131}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: shopperBeliefs.friends.Array.size
-      value: 2
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.neutrals.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: 'shopperBeliefs.friends.Array.data[0]'
-      value: anna
+      value: kate
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: 'shopperBeliefs.friends.Array.data[1]'
       value: kate
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: 'shopperBeliefs.neutrals.Array.data[0]'
+      value: anna
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.friends.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Gradevolezza
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Nevroticismo
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Estroversione
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Introversione
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
@@ -1325,6 +1349,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.itemsToBuy.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: "shopperBeliefs.personalityProfile.Coscienziosit\xE0"
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.AperturaAlleEsperienze
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2341087531120083934, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
@@ -1873,19 +1905,35 @@ PrefabInstance:
       objectReference: {fileID: 733045131}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: shopperBeliefs.friends.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.neutrals.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: 'shopperBeliefs.friends.Array.data[0]'
-      value: pippo
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: 'shopperBeliefs.friends.Array.data[1]'
       value: kate
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: 'shopperBeliefs.neutrals.Array.data[0]'
+      value: pippo
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.friends.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Gradevolezza
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Estroversione
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: 'initialShopperAgentBeliefs.friends.Array.data[0]'
@@ -1894,6 +1942,14 @@ PrefabInstance:
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.itemsToBuy.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: "shopperBeliefs.personalityProfile.Coscienziosit\xE0"
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.AperturaAlleEsperienze
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2341087531120083934, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: m_LocalScale.x
@@ -2787,7 +2843,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &747162213
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2820,6 +2876,14 @@ MonoBehaviour:
   shopperBeliefs:
     friends:
     - pippo
+    neutrals: []
+    personalityProfile:
+      Estroversione: 0
+      Introversione: 0
+      Gradevolezza: 0
+      Nevroticismo: 0
+      "Coscienziosit\xE0": 0
+      AperturaAlleEsperienze: 0
     itemsToBuy: []
     budget: 100
   waypoints:
@@ -4205,7 +4269,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0.343, y: 0.065}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 43.739998, y: 31.18}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1066419700
 MonoBehaviour:

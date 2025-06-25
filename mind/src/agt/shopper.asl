@@ -13,6 +13,7 @@ inside_supermarket(false).
 actual_shop(none).
 
 is_friend( Name ) :- friends( Friends ) & .member( Name, Friends ).
+is_neutral( Name ) :- neutrals( Neutrals ) & .member( Name, Neutrals ). // Added acquaintances list 
 
 /* ----------------- LOGIC PLANS ---------------------*/
 

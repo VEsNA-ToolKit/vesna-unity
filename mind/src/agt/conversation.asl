@@ -32,6 +32,14 @@
     :   is_friend( Ag ) & talking_to( Ag )
     <-  .print( "I'm already talking to ", Ag ).
 
+// Added acquaintances plan
++!evaluateIfFriend( Ag )
+    :   is_neutral( Ag ) & not talking_to( _ )
+    <-  .print( "It is a neutral " );
+        vesna.stop;
+        vesna.rotate( Ag );
+        +met_new_friend( Ag ).
+
 +!evaluateIfFriend( Ag1 )
     :   is_friend( Ag1 ) & talking_to( Ag2 )
     <-  .print( "I'm already talking to ", Ag2, ", sorry ", Ag1 ).
