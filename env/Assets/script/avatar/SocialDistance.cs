@@ -6,6 +6,8 @@ using UnityEngine;
 
 public static class SocialDistance
 {
+    private static int conversationCount = 1;
+
     public static float GetStoppingDistance(string targetName, AgentBeliefs beliefs)
     {
         string relationship = GetRelationshipCategory(targetName, beliefs);
@@ -16,10 +18,10 @@ public static class SocialDistance
         switch(relationship){
             case "friend":
               UnityEngine.Debug.Log("Personal space");
-              return 2.0f; // personal space
+              return 2.0f; 
             case "neutral":
               UnityEngine.Debug.Log("Social space");
-              return 8.0f; // social space
+              return 15.0f; 
 
             default:
               return 15.0f;
@@ -38,5 +40,22 @@ public static class SocialDistance
             return "neutral";
 
         return "unknown";
+    }
+
+    public static GameObject StartConversation(string targetName, AgentBeliefs beliefs, AgentBeliefs targetBeliefs /*, GameObject objInUse*/)
+    {
+        GameObject conversationObj = new GameObject($"conversation {conversationCount}");
+        conversationCount++;
+
+        beliefs.Conversations.Add(conversationObj.name);
+        targetBeliefs.Conversations.Add(conversationObj.name);
+
+        float distanza = GetStoppingDistance(targetName, beliefs);
+        GameObject targetObj = GameObject.Find(targetName);
+        Vector3 direzione = targetObj.transform.forward;
+        conversationObj.transform.position = targetObj.transform.position + direzione * distanza;
+        UnityEngine.Debug.Log("posizione top");
+
+        return conversationObj;
     }
 }

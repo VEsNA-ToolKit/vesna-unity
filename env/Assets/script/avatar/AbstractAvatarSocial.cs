@@ -36,6 +36,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
                     Debug.Log("Agent has reached his friend.");
+                    animationController.SetAnimationState("stop");
                     transform.LookAt(GameObject.Find(friend).transform);
                     SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
                         .createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
@@ -116,20 +117,14 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
                         reachDestination(walkData.Target);
+                            
+                        GameObject targetObj = GameObject.Find(walkData.Target); //A
+                        ShopperAvatarScript targetAvatar = targetObj.GetComponent<ShopperAvatarScript>(); //A
+                        AgentBeliefs targetBeliefs = targetAvatar.AgentBeliefs; //A
 
-                        // Se il target � un friend o un neutral, aggiorna stoppingDistance e avvia il controllo specifico
-                        if (AgentBeliefs != null & (AgentBeliefs.Friends.Contains(walkData.Target) || (AgentBeliefs.Neutrals.Contains(walkData.Target))))
-                        {
-                            agent.stoppingDistance = SocialDistance.GetStoppingDistance(walkData.Target, AgentBeliefs);
-                            animationController.SetAnimationState("stop");
-                            reachDestination(walkData.Target);
-                            StartCoroutine(CheckIfReachedFriend(walkData.Target));
-                        }
-                        else
-                        {
-                            resetStoppingDistance(); // stoppingDistance = 1.0f
-                            reachDestination(walkData.Target);
-                        }
+                        GameObject conv = SocialDistance.StartConversation(walkData.Target, AgentBeliefs, targetBeliefs); //AA
+                        reachDestination(conv.name); //AA
+                        StartCoroutine(CheckIfReachedFriend(walkData.Target)); //AA
                     });
                     break;
                 case "stop":
