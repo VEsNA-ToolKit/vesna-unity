@@ -12,13 +12,22 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
     protected MovementModel movementModel;
     protected AvatarAnimationController animationController; //aggiunta
 
+    [System.NonSerialized]
+    public AgentConversations agentConversations;
+    [System.NonSerialized]
+    public AgentConversations targetConversations;
+
     protected override void Awake()
     {
         base.Awake();
         // Set waypoints to follow
         movementModel = GetComponent<MovementModel>();
         animationController = GetComponentInChildren<AvatarAnimationController>();//aggiunta
+    }
 
+    public void SendMessageToJaCaMoBrain( string message )
+    {
+        wsChannel.sendMessage(message);
     }
 
     protected void resetStoppingDistance()
@@ -26,7 +35,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         agent.stoppingDistance = 1.0f;
     }
 
-    protected IEnumerator CheckIfReachedFriend(string friend)
+    public IEnumerator CheckIfReachedFriend(string friend) //qua era protected
     {
         while (true)
         {
@@ -36,7 +45,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
                     Debug.Log("Agent has reached his friend.");
-                    animationController.SetAnimationState("stop");
+                    animationController.SetAnimationState("stop"); //AAA
+
                     transform.LookAt(GameObject.Find(friend).transform);
                     SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
                         .createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
@@ -118,13 +128,17 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         EnableDisableVisionCone(false);
                         reachDestination(walkData.Target);
                             
-                        GameObject targetObj = GameObject.Find(walkData.Target); //A
-                        ShopperAvatarScript targetAvatar = targetObj.GetComponent<ShopperAvatarScript>(); //A
-                        AgentBeliefs targetBeliefs = targetAvatar.AgentBeliefs; //A
+                        GameObject targetObj = GameObject.Find(walkData.Target); 
+                        targetConversations = targetObj.GetComponent<AgentConversations>(); 
+                        agentConversations = objInUse.GetComponent<AgentConversations>();
 
-                        GameObject conv = SocialDistance.StartConversation(walkData.Target, AgentBeliefs, targetBeliefs); //AA
-                        reachDestination(conv.name); //AA
-                        StartCoroutine(CheckIfReachedFriend(walkData.Target)); //AA
+                        GameObject conv = ConversationRules.CheckConversation(walkData.Target, agentConversations, targetConversations, objInUse.name, AgentBeliefs); ///B
+                        
+                        if(conv != null){
+                            reachDestination(conv.name); 
+                            StartCoroutine(CheckIfReachedFriend(walkData.Target)); 
+                        }
+                        
                     });
                     break;
                 case "stop":
@@ -137,7 +151,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         //aggiunta
                         if (animationController != null)
                         {
-                            animationController.SetAnimationState("stop");
+                            animationController.SetAnimationState("stop"); 
                         }
                         //fino a qui
                         // [17.04.25] This goes in the rotate msg
@@ -158,19 +172,19 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     break;
                 // [17.04.25] This case I think is useless, it is just a special case of walking with a target
                 // TODO: Add an if in the walk to manage this case
-                /*case "reachFriend":
-                    // Avatar receives the type of artifact to reach
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                       movementModel.IsStopped = true;
-                       // Delete previous path and reach friend
-                       agent.ResetPath();
-                       agent.stoppingDistance = 8.0f;
-                       EnableDisableVisionCone(false);
-                       reachDestination(message.MessagePayload);
-                       StartCoroutine(CheckIfReachedFriend(message.MessagePayload));
-                    });
-                    break;*/
+                 /*case "reachFriend":
+                     // Avatar receives the type of artifact to reach
+                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                     {
+                        movementModel.IsStopped = true;
+                        // Delete previous path and reach friend
+                        agent.ResetPath();
+                        agent.stoppingDistance = 8.0f;
+                        EnableDisableVisionCone(false);
+                        reachDestination(message.MessagePayload);
+                        StartCoroutine(CheckIfReachedFriend(message.MessagePayload));
+                     });
+                     break;*/
                 case "say":
                     // Avatar receives the type of artifact to reach
                     SaysData saysData = message.Data.ToObject<SaysData>();
@@ -179,7 +193,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         SetBaloonText(saysData.Msg);
                         if (animationController != null)
                         {
-                            animationController.SetAnimationState("say");
+                            animationController.SetAnimationState("say"); 
                         }
                     });
                     break;

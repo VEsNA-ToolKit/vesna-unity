@@ -3,12 +3,8 @@ using UnityEngine;
 
 public abstract class AgentBeliefs
 {
-
     public List<string> friends = new List<string>();
-    // List of acquaintances
-    public List<string> neutrals = new List<string>(); 
-    // List of conversations
-    public List<string> conversations = new List<string>(); 
+    public List<string> neutrals = new List<string>();
 
     public List<string> Friends
     {
@@ -26,18 +22,10 @@ public abstract class AgentBeliefs
         }
     }
 
-    public List<string> Conversations
-    {
-        get
-        {
-            return conversations;
-        }
-    }
-
-    [Header("Personality")] // Personality List
+    [Header("Personality")]
     public PersonalityProfile personalityProfile = new PersonalityProfile();
 
-    // Method to generate beliefs as string to fill .jcm file
+    
     public abstract string GetBeliefsAsLiterals();
 
 }

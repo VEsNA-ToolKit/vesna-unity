@@ -1,9 +1,20 @@
 mas supermarket {
+	agent kate:shopper.asl {
+		ag-class: vesna.VesnaAgent
+		beliefs: address( localhost )
+			port( 3341 )
+			budget(100), friends([]), neutrals([pippo]), personality([estroversione(50), gradevolezza(20), coscienziosita(20)])
+		goals:	buy_coffee, call_parents
+		join: w
+		focus: w.envManager
+			
+	}
+
 	agent pippo:shopper.asl {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
 			port( 3344 )
-			budget(100), friends([kate]), neutrals([anna]), personality([estroversione(0), introversione(0), gradevolezza(0), nevroticismo(0), coscienziosita(0), apertura(0)])
+			budget(100), friends([kate]), neutrals([anna]), personality([estroversione(0), gradevolezza(0), coscienziosita(0)])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
@@ -14,7 +25,7 @@ mas supermarket {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
 			port( 3343 )
-			budget(100), friends([]), neutrals([pippo]), personality([estroversione(50), introversione(0), gradevolezza(20), nevroticismo(0), coscienziosita(20), apertura(10)])
+			budget(100), friends([]), neutrals([pippo]), personality([estroversione(50), gradevolezza(20), coscienziosita(20)])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager

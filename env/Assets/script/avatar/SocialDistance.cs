@@ -6,25 +6,37 @@ using UnityEngine;
 
 public static class SocialDistance
 {
-    private static int conversationCount = 1;
+    public static PersonalityProfile personalityProfile = new PersonalityProfile();
 
     public static float GetStoppingDistance(string targetName, AgentBeliefs beliefs)
     {
         string relationship = GetRelationshipCategory(targetName, beliefs);
-
-       /* if (beliefs == null || string.IsNullOrEmpty(targetName))
-            return 1.0f; // default fallback*/
+        float personality = GetPersonalityDistance(beliefs);
 
         switch(relationship){
             case "friend":
-              UnityEngine.Debug.Log("Personal space");
-              return 2.0f; 
+              UnityEngine.Debug.Log("Personal zone");
+              UnityEngine.Debug.Log("check personality: " + personality);
+              return 2.0f + personality; // zona personale
             case "neutral":
-              UnityEngine.Debug.Log("Social space");
-              return 15.0f; 
+              UnityEngine.Debug.Log("Social zone");
+              UnityEngine.Debug.Log("check personality: " + personality);
+              return 10.0f + personality; // zona sociale
 
             default:
               return 15.0f;
+        }
+    }
+
+    public static float GetPersonalityDistance(AgentBeliefs agentBeliefs){
+        float estroversione = agentBeliefs.personalityProfile.Estroversione;
+
+        if(estroversione < 0.5){
+            return -0.5f;
+        } 
+        else 
+        {
+            return 0.5f;
         }
     }
 
@@ -42,18 +54,17 @@ public static class SocialDistance
         return "unknown";
     }
 
-    public static GameObject StartConversation(string targetName, AgentBeliefs beliefs, AgentBeliefs targetBeliefs /*, GameObject objInUse*/)
+    public static GameObject StartConversation(string targetName, AgentConversations agentConversations, AgentConversations targetConversations, string agentName, AgentBeliefs beliefs)
     {
-        GameObject conversationObj = new GameObject($"conversation {conversationCount}");
-        conversationCount++;
+        GameObject conversationObj = ConversationObject.CreateConversation(agentName, targetName, agentConversations, targetConversations);
 
-        beliefs.Conversations.Add(conversationObj.name);
-        targetBeliefs.Conversations.Add(conversationObj.name);
+        agentConversations.Conversations.Add(conversationObj.name);
+        targetConversations.Conversations.Add(conversationObj.name);
 
-        float distanza = GetStoppingDistance(targetName, beliefs);
+        float distance = GetStoppingDistance(targetName, beliefs);
         GameObject targetObj = GameObject.Find(targetName);
-        Vector3 direzione = targetObj.transform.forward;
-        conversationObj.transform.position = targetObj.transform.position + direzione * distanza;
+        Vector3 direction = targetObj.transform.forward;
+        conversationObj.transform.position = targetObj.transform.position + direction * distance;
         UnityEngine.Debug.Log("posizione top");
 
         return conversationObj;

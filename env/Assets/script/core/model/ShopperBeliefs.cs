@@ -76,14 +76,20 @@ public class ShopperBeliefs : AgentBeliefs
         }  
 
         // Personality
-        beliefs.Append($", personality([" +
+        //beliefs.Append($", personality({personalityTraits.ToString().ToLower()})");
+        /*beliefs.Append($", personality([" +
             $"estroversione({(int)(personalityProfile.Estroversione * 100)}), " +
             $"introversione({(int)(personalityProfile.Introversione * 100)}), " +
             $"gradevolezza({(int)(personalityProfile.Gradevolezza * 100)}), " +
             $"nevroticismo({(int)(personalityProfile.Nevroticismo * 100)}), " +
             $"coscienziosita({(int)(personalityProfile.Coscienziosità * 100)}), " +
             $"apertura({(int)(personalityProfile.AperturaAlleEsperienze * 100)})" +
-            "])");      
+            "])");*/
+        beliefs.Append($", personality([" +
+            $"estroversione({(int)(personalityProfile.Estroversione * 100)}), " +
+            $"gradevolezza({(int)(personalityProfile.Gradevolezza * 100)}), " +
+            $"coscienziosita({(int)(personalityProfile.Coscienziosità * 100)})" +
+            "])");    
 
         return beliefs.ToString();
     }

@@ -72,7 +72,7 @@ public abstract class AbstractAvatar : AbstractMasElement
         set { jaCaMoAgentClassPath = value; }
     }
 
-    protected void reachDestination(string dest)
+    public void reachDestination(string dest) //MODIFICATA -> public al posto di protected
     {
         agent.isStopped = false;
         agent.SetDestination(GameObject.Find(dest).transform.position);
