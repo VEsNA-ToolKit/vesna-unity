@@ -3,7 +3,7 @@ using UnityEngine;
 public class RunJacamo : MonoBehaviour
 {
     private GameObject[] avatars;
-    private  GameObject[] environmentArtifacts;
+    private GameObject[] environmentArtifacts;
 
     async void Start()
     {

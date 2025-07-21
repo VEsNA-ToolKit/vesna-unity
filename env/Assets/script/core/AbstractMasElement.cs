@@ -9,14 +9,7 @@ public abstract class AbstractMasElement : MonoBehaviour
     public GameObject objInUse;
     public string port;
     protected WebSocketChannel wsChannel;
-
-    public string Port
-    {
-        get
-        {
-            return port;
-        }
-    }
+    public string Port => port;
 
     protected void initializeWebSocketConnection(System.EventHandler<WebSocketSharp.MessageEventArgs> OnMessage)
     {

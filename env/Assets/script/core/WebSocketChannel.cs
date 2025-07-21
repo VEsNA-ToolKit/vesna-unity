@@ -79,13 +79,10 @@ using System;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using System.Threading.Tasks;
-using Unity.VisualScripting.FullSerializer;
 
 public class WebSocketChannel
 {
     private WebSocketServer wss;
-    private bool isServerRunning = false;
     private WSConnectionInfoModel connectionInfo;
     public WSConnectionInfoModel ConnectionInfoModel => connectionInfo;
 
@@ -107,11 +104,7 @@ public class WebSocketChannel
         wss = new WebSocketServer(uri.Port);
     }
 
-    public bool IsServerRunning
-    {
-        get { return isServerRunning; }
-        private set { isServerRunning = value; }
-    }
+    private bool IsServerRunning { get; set; } = false;
 
     public void StartServer()
     {

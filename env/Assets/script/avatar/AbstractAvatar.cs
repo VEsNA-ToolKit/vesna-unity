@@ -8,10 +8,9 @@ using WebSocketSharp;
 
 public abstract class AbstractAvatar : AbstractMasElement
 {
-
+    public string agentFile; // TODO: find a better way to handle this, like a list of types that is mapped to the agent file
     public AgentBeliefs agentBeliefs;
     public GameObject[] focusedArtifacts;
-    protected string agentFile;
     public List<GoalEnum> goals;
     protected TextMeshPro nameTextMeshPro;
     protected string jaCaMoAgentClassPath;

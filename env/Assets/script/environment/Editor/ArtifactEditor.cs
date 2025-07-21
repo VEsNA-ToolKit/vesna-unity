@@ -50,13 +50,18 @@ public class ArtifactEditor : Editor
             Debug.Log("Showing " + propertyName);
             property.style.display = DisplayStyle.Flex;
         }
+    
         // Hide others        
-        foreach(string propName in propertyNames)
+        foreach(var propName in propertyNames)
         {
             if (propName != propertyName)
             {
-                Debug.Log("Hiding " + propName);
-                root.Q<PropertyField>(propName).style.display = DisplayStyle.None;
+                var propField = root.Q<PropertyField>(propName);
+                if (propField != null)
+                {
+                    Debug.Log("Hiding " + propName);
+                    propField.style.display = DisplayStyle.None;
+                }
             }
         }
     }

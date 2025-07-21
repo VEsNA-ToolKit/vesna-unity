@@ -4,6 +4,7 @@
         <ui:VisualElement name="InitArtifactVariables" style="flex-grow: 1;">
             <ui:Label tabindex="-1" text="Initialization" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Header" class="header" style="-unity-font-style: bold; font-size: 18px; letter-spacing: 10px; -unity-text-align: upper-center;" />
             <uie:PropertyField binding-path="port" name="port" />
+            <uie:PropertyField binding-path="jcmPath" name="JcmPath" />
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="Pane2" style="flex-grow: 1;">

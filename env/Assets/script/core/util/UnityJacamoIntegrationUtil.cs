@@ -8,91 +8,151 @@ using System.Linq;
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
+using WebSocketSharp;
+using Debug = UnityEngine.Debug;
 
 
 class UnityJacamoIntegrationUtil : MonoBehaviour
 {
 
-	private static string jcmFilePath = "../mind/supermarket.jcm";
-	private static string[] fileLines = {
-		"mas supermarket {\n",
-		"\tworkspace w {\n",
-	"}"
-	};
+	private static string _jcmFilePath;
+	private static string[] _fileLines;
 
 	//Utility used to configure .jcm file by adding agents
 	public static void ConfigureJcmFile(GameObject[] avatars, GameObject[] envArtifacts)
 	{
-		if (File.Exists(jcmFilePath))
+		var envManagerObject = envArtifacts.FirstOrDefault(envArtifact => envArtifact.GetComponent<EnvManager>() != null);
+
+		if (envManagerObject != null)
+			_jcmFilePath = envManagerObject.GetComponent<EnvManager>().jcmFilePath;
+		else
+			Debug.LogError("No GameObject with EnvManager component found in envArtifacts");
+
+		var jcmContent = File.ReadAllText(_jcmFilePath);
+
+		// get the mas name
+		var masName = ExtractMasName(jcmContent);
+		var workspaceContent = ConfigureEnvironmentArtifacts(envArtifacts, jcmContent, out var workspaceName);
+		var agentsContent = GenerateAgentsContent(avatars, workspaceName);
+
+		if (File.Exists(_jcmFilePath))
+			File.Delete(_jcmFilePath);
+
+		// Create the new JCM file content
+		var newJcmContent = $"mas {masName} {{\n{agentsContent}\t{workspaceContent}}}\n";
+		// Write the new content to the JCM file
+		File.WriteAllText(_jcmFilePath, newJcmContent);
+
+	}
+
+	private static object GenerateAgentsContent(GameObject[] avatars, string workspaceName)
+	{
+		if (avatars == null || avatars.Length == 0)
+			return "";
+
+		var agentsContent = "";
+		foreach (var avatar in avatars)
 		{
-			File.Delete(jcmFilePath);
+			var avatarScript = avatar.GetComponent<AbstractAvatar>();
+			agentsContent += BuildAgentDefinition(avatar, avatarScript, workspaceName);
 		}
 
-		// Append HEADERS
-		File.AppendAllText(jcmFilePath, fileLines[0]);
+		return agentsContent;
+	}
 
-		// Configure artifacts
-		foreach (GameObject envArtifact in envArtifacts)
+	private static string BuildAgentDefinition(GameObject avatar, AbstractAvatar avatarScript, string workspaceName)
+	{
+		const string agentClass = "vesna.VesnaAgent";
+		const string localhost = "localhost";
+		const string tabIndent = "\t\t";
+		const string doubleTabIndent = "\t\t\t";
+    
+		var agentDef = $"\tagent {avatar.name}:{avatarScript.AgentFile} {{\n";
+    
+		// CLASS
+		agentDef += $"{tabIndent}ag-class: {agentClass}\n";
+    
+		// BELIEFS
+		agentDef += $"{tabIndent}beliefs: address( {localhost} )\n";
+		agentDef += $"{doubleTabIndent}port( {avatarScript.port} )\n";
+		agentDef += $"{doubleTabIndent}{avatarScript.AgentBeliefs.GetBeliefsAsLiterals()}\n";
+    
+		// GOALS
+		if (avatarScript.Goals != null)
+			agentDef += $"{tabIndent}goals:\t{string.Join(", ", avatarScript.Goals.Select(goal => goal.ToString().ToLower()))}\n";
+    
+		// WORKSPACE
+		agentDef += $"{tabIndent}join: {workspaceName}\n";
+    
+		// FOCUS
+		agentDef += BuildFocusSection(avatarScript.FocusedArtifacts, workspaceName, tabIndent, doubleTabIndent);
+    
+		agentDef += "\n\t}\n\n";
+		return agentDef;
+	}
+	
+	private static string BuildFocusSection(GameObject[] focusedArtifacts, string workspaceName, string tabIndent, string doubleTabIndent)
+	{
+		if (focusedArtifacts == null || focusedArtifacts.Length == 0)
+			return "";
+        
+		var focusSection = $"{tabIndent}focus: ";
+		foreach (GameObject artifact in focusedArtifacts)
 		{
-			Artifact script = envArtifact.GetComponent<Artifact>();
-			print("Analize " + envArtifact.name);
+			focusSection += $"{workspaceName}.{artifact.name.FirstCharacterToLower()}\n";
+			focusSection += doubleTabIndent;
+		}
+		return focusSection;
+	}
+
+	private static string ExtractMasName(string jcmContent)
+	{
+		var masName = Path.GetFileNameWithoutExtension(_jcmFilePath);
+		var regex = new Regex(@"mas\s+(\w+)\s*\{([\s\S]*?)\}", RegexOptions.Multiline);
+		var match = regex.Match(jcmContent);
+		
+		// If the mas name is found in the JCM content, use it; otherwise, use the file name
+		if (match.Success)
+			masName = match.Groups[1].Value;
+		
+		return masName;
+	}
+
+	private static string ConfigureEnvironmentArtifacts(GameObject[] envArtifacts, string jcmContent, out string workspaceName)
+	{
+		var regex = new Regex(@"workspace\s+(\w+)\s*\{([\s\S]*?)\}", RegexOptions.Multiline);
+		var match = regex.Match(jcmContent);
+
+		workspaceName = "ws"; // default workspace name
+		if (match.Success)
+			workspaceName = match.Groups[1].Value;
+		var updatedContent = "";
+		
+		foreach (var envArtifact in envArtifacts)
+		{
+			var script = envArtifact.GetComponent<Artifact>();
+			
+			print("Analyze " + envArtifact.name);
 			print(" of type: " + script.ArtifactType);
-			string artifact = "\t\t" + $@"artifact {envArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType.ToString()}Artifact({"\"" + envArtifact.name + "\""}, {script.Port}";
-			if (script.ArtifactProperties != null)
+			
+			var artifact = "\t\t" + $@"artifact {envArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(" + "\"" + envArtifact.name + "\", " + script.Port;
+			
+			if (string.IsNullOrEmpty(script.Port)) // If the port is not set, there are no arguments
+				artifact = "\t\t" + $@"artifact {envArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(";
+			
+			// If the artifact has properties, add them
+			if (!script.ArtifactProperties.IsNullOrEmpty())
 			{
 				artifact += $@", ""{script.ArtifactProperties}"")";
 			}
 			else
-			{
 				artifact += ")";
-			}
+			
 			artifact += "\n";
-			fileLines[1] += artifact;
+			updatedContent += artifact;
 		}
-
-		fileLines[1] += "\t}\n";
-
-		// Configure all agents
-		if (avatars != null && avatars.Length != 0)
-		{
-			addAgents(avatars);
-		}
-
-		// FOOT
-		File.AppendAllText(jcmFilePath, fileLines[1] + Environment.NewLine);
-		File.AppendAllText(jcmFilePath, fileLines[2]);
-
-	}
-
-	private static void addAgents(GameObject[] avatars)
-	{
-		foreach (GameObject avatar in avatars)
-		{
-			AbstractAvatar avatarScript = avatar.GetComponent<AbstractAvatar>();
-			string ag_def = $"\tagent {avatar.name}:{avatarScript.AgentFile} {{\n";
-			// CLASS
-			ag_def += "\t\tag-class: vesna.VesnaAgent\n";
-			// BELIEFS
-			ag_def += $"\t\tbeliefs: address( localhost )\n";
-			ag_def += $"\t\t\tport( {avatarScript.port} )\n";
-			ag_def += $"\t\t\t{avatarScript.AgentBeliefs.GetBeliefsAsLiterals()}\n";
-			// GOALS
-			if ( avatarScript.Goals != null )
-				ag_def += $"\t\tgoals:\t{string.Join( ", ", avatarScript.Goals.Select( goal => goal.ToString().ToLower() ) ) }\n";
-			// WORKSPACE
-			ag_def += "\t\tjoin: w\n";
-			// FOCUS
-			if ( avatarScript.FocusedArtifacts != null && avatarScript.FocusedArtifacts.Length != 0 ) {
-				ag_def += "\t\tfocus: ";
-				foreach( GameObject art in avatarScript.FocusedArtifacts ) {
-					ag_def += $"w.{art.name.FirstCharacterToLower()}\n";
-					ag_def += "\t\t\t";
-				}
-			}
-			ag_def += "\n\t}\n\n";
-
-			File.AppendAllText(jcmFilePath, ag_def);
-		}
+		return $"workspace {workspaceName} {{\n" + updatedContent + "\t}\n";
 	}
 
 	// Open JaCaMo application

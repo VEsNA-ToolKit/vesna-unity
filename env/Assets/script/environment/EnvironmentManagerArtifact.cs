@@ -9,7 +9,14 @@ using UnityEditor.Experimental;
 
 public class EnvManager : Artifact
 {
-
+    public string jcmFilePath = "../mind/supermarket.jcm";
+    
+    public string JcmFilePath
+    {
+        get => jcmFilePath;
+        set => jcmFilePath = value;
+    }
+    
     protected override void OnMessage(object sender, MessageEventArgs e)
     {
         string data = e.Data;
@@ -37,7 +44,7 @@ public class EnvManager : Artifact
                     retrieveAllArtifacts(message.AgentName);
                     break;
                 case "nearest":
-                    retrieveNearestShopsOfType(message.Param.ToString(), message.AgentName);
+                    RetrieveNearestArtifactsByType(message.Param.ToString(), message.AgentName);
                     break;
 
             }
@@ -89,7 +96,7 @@ public class EnvManager : Artifact
             null, "artifact_names", agentName, artifactNames));
     }
 
-    private async void retrieveNearestShopsOfType(string resourceType, string agentName)
+    private async void RetrieveNearestArtifactsByType(string resourceType, string agentName)
     {
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
         UnityMainThreadDispatcher.Instance()
@@ -98,7 +105,7 @@ public class EnvManager : Artifact
             GameObject avatar = GameObject.Find(agentName);
             if (avatar == null)
             {
-                print("No avatar found");
+                print($"No avatar named {agentName} found");
                 return;
             }
             // Find all objects with the 'Shop' tag
