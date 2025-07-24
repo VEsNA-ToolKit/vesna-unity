@@ -1,0 +1,31 @@
+mas supermarket {
+	agent pippo:shopper.asl {
+		ag-class: vesna.VesnaAgent
+		beliefs: address( localhost )
+			port( 3344 )
+			budget(100), friends([pluto])
+		goals:	buy_coffee, call_parents
+		join: w
+		focus: w.envManager
+			
+	}
+
+	agent pluto:shopper.asl {
+		ag-class: vesna.VesnaAgent
+		beliefs: address( localhost )
+			port( 3345 )
+			budget(100), friends([pippo])
+		goals:	buy_coffee, call_parents
+		join: w
+		focus: w.envManager
+			
+	}
+
+	workspace w {
+		artifact dressShop: artifact.DressShopArtifact("dressShop", 6767, "[{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10},{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10}]")
+		artifact fruitShop: artifact.FruitShopArtifact("fruitShop", 7070, "[{\"itemName\":\"Apple\",\"price\":10.0,\"quantity\":10}]")
+		artifact barParadise: artifact.BarArtifact("barParadise", 3445, "[{\"itemName\":\"Espresso\",\"price\":1.2,\"quantity\":50},{\"itemName\":\"Americano\",\"price\":2.3,\"quantity\":50}]")
+		artifact envManager: artifact.EnvManagerArtifact("envManager", 34)
+	}
+
+}
