@@ -11,59 +11,12 @@ public static class FFormation
 {
 
     public static void JoinConversation(string agentName, string conversationName, AgentConversations agentConversations)
-    //public static void JoinConversation(GameObject agentObj, string conversationName, AgentConversations agentConversations)
     {
-        //ConversationObject.AddAgent(agentName, conversationName, agentConversations);
         GameObject agentObj = GameObject.Find(agentName);
         ConversationObject.AddAgent(agentName, conversationName, agentConversations);
         ChangeFormation(conversationName);
 
     }
-
-    /*public static void ChangeFormation(string conversationName)
-    {
-        var conv = ConversationObject.ActiveConversations
-            .Find(c => c.Conversation.name == conversationName);
-
-        Vector3 center = ConversationObject.GetObjectPosition(conversationName);
-        List<string> participants = conv.Participants;
-        int count = participants.Count;
-
-        if (count < 3 || count > 5)
-        {
-            UnityEngine.Debug.LogWarning("FFormation: il numero di partecipanti deve essere tra 3 e 5.");
-            return;
-        }
-
-        float radius = 5f;
-
-        for (int i = 0; i < count; i++)
-        {
-            string agentName = participants[i];
-            GameObject agentObj = GameObject.Find(agentName);
-            if (agentObj == null) continue;
-
-            Vector3 offset;
-
-            if (count == 3)
-            {
-                float angle = i * 120f * Mathf.Deg2Rad;
-                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            }
-            else
-            {
-                float angleStep = 360f / count;
-                float angle = i * angleStep * Mathf.Deg2Rad;
-                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            }
-
-            agentObj.transform.position = center + offset;
-
-            // DEBUG: stampa posizione e distanza
-            float actualDistance = Vector3.Distance(agentObj.transform.position, center);
-            UnityEngine.Debug.Log($"Agente '{agentName}' posizionato a distanza {actualDistance:F2} da '{conversationName}', in posizione {agentObj.transform.position}");
-        }
-    }*/
 
     public static void ChangeFormation(string conversationName)
     {
@@ -136,7 +89,6 @@ public static class FFormation
                 Debug.LogWarning($"GameObject {agentName} non ha componente ShopperAvatarScript.");
             }
 
-            // Debug
             float actualDistance = Vector3.Distance(targetPosition, center);
             Debug.Log($"Agente '{agentName}' deve muoversi a distanza {actualDistance:F2} da '{conversationName}', verso {targetPosition}");
 

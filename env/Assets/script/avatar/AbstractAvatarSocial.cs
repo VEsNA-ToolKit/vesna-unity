@@ -35,7 +35,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         agent.stoppingDistance = 1.0f;
     }
 
-    public IEnumerator CheckIfReachedFriend(string friend)
+    /*public IEnumerator CheckIfReachedFriend(string friend)
     {
         GameObject target = GameObject.Find(friend);
 
@@ -80,8 +80,45 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
             yield return new WaitForSeconds(0.1f); 
         }
-    }
+    }*/
+    public IEnumerator CheckIfReachedFriend(string friend)
+    {
+        GameObject target = GameObject.Find(friend);
+        if (target == null)
+        {
+            Debug.LogWarning($"[CheckIfReachedFriend] Oggetto '{friend}' non trovato.");
+            yield break;
+        }
 
+        bool isDestinationPoint = friend.StartsWith("dest_");
+
+        while (true)
+        {
+            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            {
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                {
+                    Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
+
+                    animationController.SetAnimationState("stop");
+                    transform.LookAt(target.transform);
+
+                    if (!isDestinationPoint)
+                    {
+                        SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
+                            .createAndConvertJacamoMessageIntoJsonString(
+                                "destinationReached", null, "reached_friend", null, friend));
+                    }
+
+                    // Riattiva la vision cone quando arriva
+                    EnableDisableVisionCone(true);
+
+                    yield break;
+                }
+            }
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
 
     protected IEnumerator ActivateVisionCone()
     {
@@ -135,12 +172,10 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                             SetBaloonText("Walking");
                             movementModel.StartWalking();
                             StartCoroutine(ActivateVisionCone());
-                            //aggiunta
                             if (animationController != null)
                             {
-                                animationController.SetAnimationState("walk"); // o "stop"
+                                animationController.SetAnimationState("walk"); 
                             }
-                            //fino a qui
                         });
                         break;
                     }
@@ -151,6 +186,12 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
                         reachDestination(walkData.Target);
+                        Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
+
+                        if (animationController != null)
+                        {
+                            animationController.SetAnimationState("walk"); 
+                        }
                             
                         GameObject targetObj = GameObject.Find(walkData.Target); 
                         targetConversations = targetObj.GetComponent<AgentConversations>(); 
@@ -160,7 +201,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         
                         if(conv != null){
                             reachDestination(conv.name); 
-                            StartCoroutine(CheckIfReachedFriend(walkData.Target)); 
+                            StartCoroutine(CheckIfReachedFriend(walkData.Target));
+                            Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
                         }
                         
                     });
@@ -172,12 +214,10 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         SetBaloonText("I'm stopped");
                         movementModel.IsStopped = true;
                         agent.isStopped = true;
-                        //aggiunta
                         if (animationController != null)
                         {
                             animationController.SetAnimationState("stop"); 
                         }
-                        //fino a qui
                         // [17.04.25] This goes in the rotate msg
                         // transform.LookAt(GameObject.Find(message.MessagePayload).transform);
                         // EnableDisableVisionCone(false);
