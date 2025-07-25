@@ -1,6 +1,11 @@
+using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.AI;
+using WebSocketSharp;
 
 public static class FFormation
 {
@@ -11,8 +16,7 @@ public static class FFormation
         //ConversationObject.AddAgent(agentName, conversationName, agentConversations);
         GameObject agentObj = GameObject.Find(agentName);
         ConversationObject.AddAgent(agentName, conversationName, agentConversations);
-        //ChangeFormation(conversationName);
-        ChangeFormation(conversationName, agentObj);
+        ChangeFormation(conversationName);
 
     }
 
@@ -61,7 +65,7 @@ public static class FFormation
         }
     }*/
 
-    public static void ChangeFormation(string conversationName, GameObject newAgentObj)
+    public static void ChangeFormation(string conversationName)
     {
         var conv = ConversationObject.ActiveConversations
             .Find(c => c.Conversation.name == conversationName);
@@ -69,6 +73,7 @@ public static class FFormation
         Vector3 center = ConversationObject.GetObjectPosition(conversationName);
         List<string> participants = conv.Participants;
         int count = participants.Count;
+        UnityEngine.Debug.Log("Participanti alla conversazione: " + count);
 
         if (count < 3 || count > 5)
         {
@@ -100,9 +105,14 @@ public static class FFormation
             Vector3 targetPosition = center + offset;
 
             // Creo un GameObject destinazione con tag "Artifact"
-            GameObject destPoint = new GameObject($"dest_{agentName}");
+            GameObject destPoint = GameObject.Find($"dest_{agentName}");
+            if (destPoint == null)
+            {
+                destPoint = new GameObject($"dest_{agentName}");
+                destPoint.tag = "Artifact";
+            }
             destPoint.transform.position = targetPosition;
-            destPoint.tag = "Artifact";
+
 
             // Prendo il componente ShopperAvatarScript (che eredita da AbstractAvatar)
             ShopperAvatarScript avatarScript = agentObj.GetComponent<ShopperAvatarScript>();
@@ -110,9 +120,15 @@ public static class FFormation
             {
                 // Enqueue su main thread la chiamata a reachDestination con il nome del GameObject destinazione
                 UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    Debug.Log($"Enqueue movement for: {agentName}");
                     avatarScript.reachDestination(destPoint.name);
-                    //avatarScript.CheckIfReachedFriend(destPoint.name);
+
+                    AvatarAnimationController animator = agentObj.GetComponentInChildren<AvatarAnimationController>();
+                    animator.SetAnimationState("walk");
+
+                    avatarScript.StartCoroutine(avatarScript.CheckIfReachedFriend(destPoint.name));
                     agentObj.transform.LookAt(destPoint.transform);
+
                 });
             }
             else
@@ -123,6 +139,8 @@ public static class FFormation
             // Debug
             float actualDistance = Vector3.Distance(targetPosition, center);
             Debug.Log($"Agente '{agentName}' deve muoversi a distanza {actualDistance:F2} da '{conversationName}', verso {targetPosition}");
+
+            //GameObject.Destroy(destPoint, 100f);
         }
     }
 

@@ -10,7 +10,7 @@ using WebSocketSharp;
 public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 {
     protected MovementModel movementModel;
-    protected AvatarAnimationController animationController; //aggiunta
+    protected AvatarAnimationController animationController; 
 
     [System.NonSerialized]
     public AgentConversations agentConversations;
@@ -22,7 +22,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         base.Awake();
         // Set waypoints to follow
         movementModel = GetComponent<MovementModel>();
-        animationController = GetComponentInChildren<AvatarAnimationController>();//aggiunta
+        animationController = GetComponentInChildren<AvatarAnimationController>();
     }
 
     public void SendMessageToJaCaMoBrain( string message )
@@ -30,34 +30,58 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         wsChannel.sendMessage(message);
     }
 
-    protected void resetStoppingDistance()
+    public void resetStoppingDistance()  //questo era protected
     {
         agent.stoppingDistance = 1.0f;
     }
 
-    public IEnumerator CheckIfReachedFriend(string friend) //qua era protected
+    public IEnumerator CheckIfReachedFriend(string friend)
     {
+        GameObject target = GameObject.Find(friend);
+
+        if (target == null)
+        {
+            Debug.LogWarning($"[CheckIfReachedFriend] Oggetto '{friend}' non trovato.");
+            yield break;
+        }
+
+        bool isDestinationPoint = friend.StartsWith("dest_");
+
         while (true)
         {
-            // Check if the agent has reached the destination
+            // Controlla se ha finito il path ed è fermo vicino al target
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
-                    Debug.Log("Agent has reached his friend.");
-                    animationController.SetAnimationState("stop"); //AAA
+                    Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
 
+                    // Ferma animazione e guarda il target
+                    animationController.SetAnimationState("stop");
                     transform.LookAt(GameObject.Find(friend).transform);
-                    SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
-                        .createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
-                "reached_friend", null, friend));
 
-                    yield break; // Exit the coroutine
+
+                    if (isDestinationPoint)
+                    {
+                        GameObject obj = GameObject.Find(friend);
+                        transform.LookAt(obj.transform);
+                    }
+                    else
+                    {
+                        // Invia messaggio al brain che ha raggiunto l'amico
+                        SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
+                            .createAndConvertJacamoMessageIntoJsonString(
+                                "destinationReached", null, "reached_friend", null, friend));
+                    }
+
+                    yield break;
                 }
             }
-            yield return new WaitForSeconds(0.1f); // Check every 0.1 seconds
+
+            yield return new WaitForSeconds(0.1f); 
         }
     }
+
 
     protected IEnumerator ActivateVisionCone()
     {
@@ -190,11 +214,12 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     SaysData saysData = message.Data.ToObject<SaysData>();
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
-                        SetBaloonText(saysData.Msg);
                         if (animationController != null)
                         {
                             animationController.SetAnimationState("say"); 
                         }
+                        SetBaloonText(saysData.Msg);
+                        
                     });
                     break;
                 default:

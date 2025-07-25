@@ -11,6 +11,8 @@ public class SaysData {
     [JsonProperty("performative")]
     public string? Performative { get; set; } 
 
+    public SaysData() {}
+
     public SaysData( string msg ) {
         Msg = msg;
     }

@@ -8,7 +8,7 @@
 // My friend is already talking with another agent
 +!evaluateIfCanStartConversation(Friend, Reply) : Reply \== false <-
     .print([Friend, " is already talking with an agent"]);
-    !start_walking.
+    vesna.stop.
 
 // My friend is talking with nobody
 +!evaluateIfCanStartConversation(Friend, false) <-
@@ -39,13 +39,13 @@
     -talking_to(_);
     .send(Friend, achieve, start_walking).
 
-@actual_plan_for_conversation // Actual plan for the conversation
+@actual_plan_for_conversation // Actual plan for the conversation - DA RIVEDERE
 +!friend_message(Content)[source(Sender)] : Content \== "Bye!!" <-
     !writeLog(["Message received from ", Sender, ": ", Content]);
     processConversation(Content, Reply);
     !writeLog(["Send to ", Sender, " The content: ", Reply]);
     !update_balloon_message(Reply);
-    .wait(2000);
+    .wait(10000);
     .send(Sender, achieve, friend_message(Reply)).
 
 @friend_message_finish_conversation
