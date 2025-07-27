@@ -157,7 +157,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         print("Connection established for " + objInUse.name);
                     });
                     break;
-                case "walk":
+                /*case "walk":
                     print("Agent needs to reach destination.");
                     // Avatar receives the type of artifact to reach
                     WalkData walkData = message.Data.ToObject<WalkData>();
@@ -206,7 +206,74 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         }
                         
                     });
+                    break;*/
+                case "walk":
+                    print("Agent needs to reach destination.");
+                    WalkData walkData = message.Data.ToObject<WalkData>();
+
+                    if (walkData.Target == "random")
+                    {
+                        print("ANDREA CIAO");
+                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                        {
+                            
+                            if (agentConversations != null && agentConversations.Conversations.Count > 0)
+                            {
+                                string actualConversation = agentConversations.Conversations[0];
+                                FFormation.LeaveConversation(objInUse.name, actualConversation, agentConversations);
+                                
+                            }
+
+                            resetStoppingDistance();
+                            movementModel.IsStopped = false;
+                            agent.ResetPath();
+                            SetBaloonText("Walking");
+                            movementModel.StartWalking();
+                            StartCoroutine(ActivateVisionCone());
+
+                            if (animationController != null)
+                            {
+                                animationController.SetAnimationState("walk");
+                            }
+                        });
+                        break;
+                    }
+
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        if (agentConversations != null && agentConversations.Conversations.Count > 0)
+                        {
+                            string actualConversation = agentConversations.Conversations[0];
+                            FFormation.LeaveConversation(objInUse.name, actualConversation, agentConversations);
+                            
+                        }
+
+                        SetBaloonText("New destination: " + walkData.Target);
+                        movementModel.IsStopped = true;
+                        agent.ResetPath();
+                        EnableDisableVisionCone(false);
+                        reachDestination(walkData.Target);
+                        Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
+
+                        if (animationController != null)
+                        {
+                            animationController.SetAnimationState("walk");
+                        }
+
+                        GameObject targetObj = GameObject.Find(walkData.Target);
+                        targetConversations = targetObj.GetComponent<AgentConversations>();
+                        agentConversations = objInUse.GetComponent<AgentConversations>();
+
+                        GameObject conv = ConversationRules.CheckConversation(walkData.Target, agentConversations, targetConversations, objInUse.name, AgentBeliefs);
+                        if (conv != null)
+                        {
+                            reachDestination(conv.name);
+                            StartCoroutine(CheckIfReachedFriend(walkData.Target));
+                            Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
+                        }
+                    });
                     break;
+
                 case "stop":
                     print("Stopping the agent.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>

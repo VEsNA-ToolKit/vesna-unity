@@ -18,6 +18,14 @@ public static class FFormation
 
     }
 
+    public static void LeaveConversation(string agentName, string conversationName, AgentConversations agentConversations)
+    {
+        GameObject agentObj = GameObject.Find(agentName);
+        ConversationObject.RemoveAgent(agentName, conversationName, agentConversations);
+        ChangeFormation(conversationName);
+    }
+
+
     public static void ChangeFormation(string conversationName)
     {
         var conv = ConversationObject.ActiveConversations

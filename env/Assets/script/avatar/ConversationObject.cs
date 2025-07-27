@@ -60,4 +60,42 @@ public static class ConversationObject
         }
     }
 
+    public static void RemoveAgent(string agentName, string conversationName, AgentConversations agentConversations)
+    {
+        var conversation = ActiveConversations.Find(conv => conv.Conversation.name == conversationName);
+        if (conversation != null)
+        {
+            if (conversation.Participants.Contains(agentName))
+            {
+                conversation.Participants.Remove(agentName);
+                agentConversations.Conversations.Remove(conversationName);
+                UnityEngine.Debug.Log($"Removed agent '{agentName}' from conversation '{conversationName}'.");
+            }
+            else
+            {
+                UnityEngine.Debug.LogWarning($"RemoveAgentFromConversation: agent '{agentName}' is not a participant of conversation '{conversationName}'.");
+            }
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning($"RemoveAgentFromConversation: conversation '{conversationName}' not found.");
+        }
+    }
+
+    public static void DeleteObject(string conversationName)
+    {
+        var conversationData = ActiveConversations.Find(conv => conv.Conversation.name == conversationName);
+        if (conversationData != null)
+        {
+            ActiveConversations.Remove(conversationData);
+            UnityEngine.Object.Destroy(conversationData.Conversation);
+            UnityEngine.Debug.Log($"Deleted conversation object '{conversationName}'.");
+        }
+        else
+        {
+            UnityEngine.Debug.LogWarning($"DeleteObject: conversation '{conversationName}' not found.");
+        }
+    }
+
+
 }
