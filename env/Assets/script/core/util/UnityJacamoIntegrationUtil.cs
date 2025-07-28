@@ -18,6 +18,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 
 	private static string _jcmFilePath;
 	private static string[] _fileLines;
+	private static Process _jacamoProcess;
 
 	//Utility used to configure .jcm file by adding agents
 	public static void ConfigureJcmFile(GameObject[] avatars, GameObject[] envArtifacts)
@@ -156,10 +157,13 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 	}
 
 	// Open JaCaMo application
+	//TODO: Fix this by finding the root folder (before "env") and then going to the "mind" folder
 	public static async Task RunJaCaMoApp()
 	{
-		string command = "gradle run";
-		bool isWindows = RuntimeInformation.IsOSPlatform( OSPlatform.Windows );
+		var isWindows = RuntimeInformation.IsOSPlatform( OSPlatform.Windows );
+		var mindPath = GetJacamoPath(Application.dataPath);
+		var gradleWrapper = isWindows ? "gradlew.bat" : "./gradlew";
+		var command = $"{gradleWrapper} run";
 		var psi = new ProcessStartInfo {
 			FileName = isWindows ? "cmd.exe" : "/bin/bash",
 			Arguments = isWindows ? $"/c {command}" : $"-c \"{command}\"",
@@ -167,63 +171,23 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 			RedirectStandardError = true,
 			UseShellExecute = false,
 			CreateNoWindow = true,
-			WorkingDirectory = System.IO.Path.Combine( Application.dataPath, "../mind" )
+			WorkingDirectory = mindPath
 		};
 
-		try {
-			using ( var process = Process.Start( psi ) ) {
-				string output = process.StandardOutput.ReadToEnd();
-				string error = process.StandardError.ReadToEnd();
-				process.WaitForExit();
+		try
+		{
+			_jacamoProcess = Process.Start(psi);
+			var output = await _jacamoProcess.StandardOutput.ReadToEndAsync();
+			var error  = await _jacamoProcess.StandardError.ReadToEndAsync();
+			
+			_jacamoProcess.WaitForExit();
 
-				print( "[JACAMO] Gradle output:\n" + output );
-				if ( ! string.IsNullOrEmpty( error ) )
-					print( "[JACAMO] Gradle error:\n" + error );
-			}
+			print( "[JACAMO] Gradle output:\n" + output );
+			if ( ! string.IsNullOrEmpty( error ) )
+				print( "[JACAMO] Gradle error:\n" + error );
 		} catch ( Exception e ) {
 			print( "[JACAMO] Error during gradle start: " + e.Message );
 		}
-		// Process jacamoProcess;
-		// string jacamoFolderPath = Path.Combine( Directory.GetCurrentDirectory(), "../mind/" );
-		// string gradleCommand = "gradle run";
-
-		// await Task.Run(() =>
-		// {
-		//     jacamoProcess = new Process();
-		//     jacamoProcess.StartInfo.WorkingDirectory = jacamoFolderPath;
-		//     jacamoProcess.StartInfo.FileName = "/bin/bash"; // For Windows
-		//     jacamoProcess.StartInfo.Arguments = $"/c \"cd '{jacamoFolderPath}' && {gradleCommand}\"";
-		//     jacamoProcess.StartInfo.UseShellExecute = false;
-		//     jacamoProcess.StartInfo.RedirectStandardOutput = true; // Capture output
-		//     jacamoProcess.StartInfo.RedirectStandardError = true;
-		//     jacamoProcess.StartInfo.CreateNoWindow = true; // Hide the command window
-
-		//     try
-		//     {
-		//         // Start the process
-		//         jacamoProcess.Start();
-		//         string output = "";
-		//         // Read the output to determine if Jacamo has successfully started
-		//         while (!jacamoProcess.HasExited) // Keep reading while the process is running
-		//         {
-		//             output = jacamoProcess.StandardOutput.ReadLine();
-		//             if (!string.IsNullOrEmpty(output))
-		//             {
-		//                 // Check for the signal from the .bat file
-		//                 if (output.Contains("JACAMO_LAUNCH_SUCCESSFUL"))
-		//                 {
-		//                     print("Jacamo Output: " + output);
-		//                     break;
-		//                 }
-		//             }
-		//         }
-		//     }
-		//     catch (Exception ex)
-		//     {
-		//         print("Error starting Jacamo application: " + ex.Message);
-		//     }
-
-		// });
 	}
 
 	// Starts web socket connections for avatars and environment objects
@@ -317,5 +281,18 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 				break;
 		}
 		return JsonConvert.SerializeObject( wsMsg );
+	}
+	private static string GetJacamoPath(string startingPath)
+	{
+		var dir = new DirectoryInfo(startingPath);
+		while (dir != null)
+		{
+			var mindPath = Path.Combine(dir.FullName, "mind");
+			if (Directory.Exists(mindPath))
+				return mindPath;
+			dir = dir.Parent;
+		}
+		
+		throw new DirectoryNotFoundException("Could not find the mind folder");
 	}
 }

@@ -14,14 +14,14 @@ public class RunJacamo : MonoBehaviour
 
         print(".jcm file configuration done successfully.");
 
-        // Run jacamo application in async
-        await UnityJacamoIntegrationUtil.RunJaCaMoApp();
-
-        print("JaCaMo application started successfully.");
-
         // Start to connect each avatar
         await UnityJacamoIntegrationUtil.StartWebSocketConnections(avatars, environmentArtifacts);
 
         print("ALL AVATARS AND ENVIRONMENT OBJECTS HAVE BEEN CONNECTED TO JACAMO!!!");
+        
+        // Run jacamo application in async
+        await UnityJacamoIntegrationUtil.RunJaCaMoApp();
+
+        print("JaCaMo application started successfully.");
     }
 }
