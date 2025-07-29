@@ -7,8 +7,10 @@ import static jason.asSyntax.ASSyntax.*;
 
 import java.net.URI;
 
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.JSONObject;
 import org.json.JSONArray;
+
 import jason.asSyntax.parser.ParseException;
 
 // VesnaAgent class extends the Agent class making the agent embodied;
@@ -104,6 +106,7 @@ public class VesnaAgent extends Agent{
         if ( ! sight.isNull( "model" ) )
             model = sight.getString( "model" );
         String name = sight.getString( "name" );
+        name = StringEscapeUtils.escapeJava(name);
         System.out.println( "Got type: " + type + ", model: " + model + ", name: " + name );
         try {
             Literal percept = createSightPercept(type, model, name);
@@ -198,9 +201,10 @@ public class VesnaAgent extends Agent{
     // Helper method to create sight percepts
     private Literal createSightPercept(String type, String model, String name) throws ParseException {
         if (model.isEmpty()) {
-            return parseLiteral(String.format("seen(\"%s\", _, \"%s\")", type, name));
+            return parseLiteral(String.format("seen(%s, _, \"%s\")", type, name));
         } else {
-            return parseLiteral(String.format("seen(\"%s\", \"%s\", \"%s\")", type, model, name));
+            String test = String.format("seen(%s, %s, \"%s\")", type, model, name);
+            return parseLiteral(test);
         }
     }
 }
