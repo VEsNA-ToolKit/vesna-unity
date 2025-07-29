@@ -1,17 +1,15 @@
 package vesna;
 
-import jason.JasonException;
 import jason.asSemantics.*;
 import jason.asSyntax.*;
-import jason.runtime.RuntimeServicesFactory;
 
 import static jason.asSyntax.ASSyntax.*;
 
 import java.net.URI;
 
-import org.gradle.internal.impldep.org.apache.commons.lang.StringUtils;
 import org.json.JSONObject;
 import org.json.JSONArray;
+import jason.asSyntax.parser.ParseException;
 
 // VesnaAgent class extends the Agent class making the agent embodied;
 // It connects to the body using a WebSocket connection;
@@ -108,11 +106,7 @@ public class VesnaAgent extends Agent{
         String name = sight.getString( "name" );
         System.out.println( "Got type: " + type + ", model: " + model + ", name: " + name );
         try {
-            Literal percept;
-            if ( model != "" )
-                percept = parseLiteral( "seen(" + type + "," + model + "," + name + ")" );
-            else
-                percept = parseLiteral( "seen(" + type + ", _, " + name + ")" );
+            Literal percept = createSightPercept(type, model, name);
             sense( percept );
         } catch ( Exception e ) {
             e.printStackTrace();
@@ -161,23 +155,12 @@ public class VesnaAgent extends Agent{
         String type = log.getString( "type" );
         JSONObject data = log.getJSONObject( "data" );
         switch( type ){
-            case "signal":
-                handle_event( data );
-                break;
-            case "sight":
-                handle_sight( data );
-                break;
-            case "movement":
-                handle_movement( data );
-                break;
-            case "door":
-                handle_door( data );
-                break;
-            case "artifactStrategy":
-                handle_arts( data );
-                break;
-            default:
-                System.out.println( "Unknown message type: " + type );
+            case "signal" -> handle_event( data );
+            case "sight" -> handle_sight( data );
+            case "movement" -> handle_movement( data );
+            case "door" -> handle_door( data );
+            case "artifactStrategy" -> handle_arts( data );
+            default -> System.out.println( "Unknown message type: " + type );
         }
     }
 
@@ -212,4 +195,12 @@ public class VesnaAgent extends Agent{
         }
     }
 
+    // Helper method to create sight percepts
+    private Literal createSightPercept(String type, String model, String name) throws ParseException {
+        if (model.isEmpty()) {
+            return parseLiteral(String.format("seen(\"%s\", _, \"%s\")", type, name));
+        } else {
+            return parseLiteral(String.format("seen(\"%s\", \"%s\", \"%s\")", type, model, name));
+        }
+    }
 }
