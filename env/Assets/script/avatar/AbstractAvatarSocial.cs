@@ -101,7 +101,19 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
 
                     animationController.SetAnimationState("stop");
-                    transform.LookAt(target.transform);
+                    
+                    //ADD look at the center of the conversation
+                    if(agentConversations != null && agentConversations.Conversations.Count > 0)
+                    {
+                        string conversationName = agentConversations.Conversations[0];
+                        Vector3 center = ConversationObject.GetObjectPosition(conversationName);
+                        StartCoroutine(SmoothLookAt(center));
+                    }
+                    else
+                    {
+                        StartCoroutine(SmoothLookAt(target.transform.position)); // fallback
+                    }
+
 
                     if (!isDestinationPoint)
                     {
@@ -119,6 +131,24 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
             yield return new WaitForSeconds(0.1f);
         }
     }
+
+    //ADD for a more realistic turn
+    protected IEnumerator SmoothLookAt(Vector3 targetPosition, float duration = 0.5f)
+    {
+        Quaternion startRotation = transform.rotation;
+        Quaternion targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
+        float time = 0f;
+
+        while (time < duration)
+        {
+            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.rotation = targetRotation;
+     }
+
 
     protected IEnumerator ActivateVisionCone()
     {

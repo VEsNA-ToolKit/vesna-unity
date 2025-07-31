@@ -15,15 +15,65 @@ public static class FFormation
         GameObject agentObj = GameObject.Find(agentName);
         ConversationObject.AddAgent(agentName, conversationName, agentConversations);
         ChangeFormation(conversationName);
-
     }
 
     public static void LeaveConversation(string agentName, string conversationName, AgentConversations agentConversations)
     {
+        // Rimuove l'agente corrente dalla conversazione
         GameObject agentObj = GameObject.Find(agentName);
         ConversationObject.RemoveAgent(agentName, conversationName, agentConversations);
-        ChangeFormation(conversationName);
+
+        // Trova la conversazione aggiornata
+        var conv = ConversationObject.ActiveConversations
+            .Find(c => c.Conversation.name == conversationName);
+
+        // Se la conversazione è stata completamente rimossa, esce (null)
+        if (conv == null)
+        {
+            Debug.Log($"La conversazione '{conversationName}' è già stata rimossa.");
+            return;
+        }
+
+        int count = conv.Participants.Count;
+
+        if (count > 1)
+        {
+            // Se ci sono ancora almeno 2 partecipanti, aggiorna la formazione
+            ChangeFormation(conversationName);
+        }
+        else
+        {
+            // Se resta solo un partecipante, lo rimuove
+            if (conv.Participants.Count == 1)
+            {
+                string lastAgent = conv.Participants[0];
+                GameObject lastAgentObj = GameObject.Find(lastAgent);
+                if (lastAgentObj != null)
+                {
+                    AgentConversations lastAgentConvs = lastAgentObj.GetComponent<AgentConversations>();
+                    if (lastAgentConvs != null)
+                    {
+                        ConversationObject.RemoveAgent(lastAgent, conversationName, lastAgentConvs);
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[LeaveConversation] Il componente AgentConversations non è stato trovato per '{lastAgent}'");
+                    }
+                }
+                else
+                {
+                    Debug.LogWarning($"[LeaveConversation] Agente '{lastAgent}' non trovato in scena.");
+                }
+            }
+
+
+            // Elimina la conversazione
+            ConversationObject.DeleteObject(conversationName);
+            Debug.Log($"Conversazione '{conversationName}' terminata e rimossa.");
+        }
+
     }
+
 
 
     public static void ChangeFormation(string conversationName)
@@ -36,11 +86,13 @@ public static class FFormation
         int count = participants.Count;
         UnityEngine.Debug.Log("Participanti alla conversazione: " + count);
 
-        if (count < 3 || count > 5)
+        /*if (count < 3)
         {
-            UnityEngine.Debug.LogWarning("FFormation: il numero di partecipanti deve essere tra 3 e 5.");
-            return;
-        }
+            //UnityEngine.Debug.LogWarning("FFormation: il numero di partecipanti deve essere tra 3 e 5.");
+            if (count == 2){
+                
+            }
+        }*/
 
         float radius = 5f;
 
@@ -55,7 +107,14 @@ public static class FFormation
             {
                 float angle = i * 120f * Mathf.Deg2Rad;
                 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            }
+            } /*else if(count == 2)
+            {
+                float angle = i * 180f * Mathf.Deg2Rad;
+                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
+            } else if (count < 2){
+                ConversationObject.DeleteObject(conversationName);
+                return;
+            }*/
             else
             {
                 float angleStep = 360f / count;
@@ -89,6 +148,8 @@ public static class FFormation
 
                     avatarScript.StartCoroutine(avatarScript.CheckIfReachedFriend(destPoint.name));
                     agentObj.transform.LookAt(destPoint.transform);
+
+                    //forse va fatto un resetPath o qualcosa del genere
 
                 });
             }

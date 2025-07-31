@@ -21,28 +21,6 @@ mas supermarket {
 			
 	}
 
-	agent kate:shopper.asl {
-		ag-class: vesna.VesnaAgent
-		beliefs: address( localhost )
-			port( 3341 )
-			budget(100), friends([]), neutrals([pippo]), personality([estroversione(50), gradevolezza(20), coscienziosita(20)])
-		goals:	buy_coffee, call_parents
-		join: w
-		focus: w.envManager
-			
-	}
-
-	agent paul:shopper.asl {
-		ag-class: vesna.VesnaAgent
-		beliefs: address( localhost )
-			port( 3349 )
-			budget(100), friends([pippo]), neutrals([]), personality([estroversione(0), gradevolezza(0), coscienziosita(0)])
-		goals:	buy_coffee, call_parents
-		join: w
-		focus: w.envManager
-			
-	}
-
 	workspace w {
 		artifact dressShop: artifact.DressShopArtifact("dressShop", 6767, "[{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10},{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10}]")
 		artifact fruitShop: artifact.FruitShopArtifact("fruitShop", 7070, "[{\"itemName\":\"Apple\",\"price\":10.0,\"quantity\":10}]")
