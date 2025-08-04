@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.gradle.internal.impldep.org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 public class ObjectMapperUtils {
 
@@ -36,7 +36,7 @@ public class ObjectMapperUtils {
         try{
             return objectMapper.writeValueAsString(object);
         }catch (Exception e){
-            System.out.println("Exception occored when convert object into json string. " + e);
+            System.out.println("Exception occurred when convert object into json string. " + e);
         }
         return null;
     }

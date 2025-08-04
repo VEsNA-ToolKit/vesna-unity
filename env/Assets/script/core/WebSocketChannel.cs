@@ -156,7 +156,7 @@ public class WebSocketChannel
 
         protected override void OnClose(CloseEventArgs e)
         {
-            Debug.Log($"Client disconnected with reason: {e.Reason}");
+            Debug.Log($"Client disconnected with reason: {e.Reason}");  
         }
 
         protected override void OnError(ErrorEventArgs e)

@@ -2,7 +2,10 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using script.core.model.io;
+using script.core.util;
 using TMPro;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.AI;
 using WebSocketSharp;
@@ -57,12 +60,11 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
     // Unity avatar receives message from jacamo agent
     protected override void OnMessage(object sender, MessageEventArgs e)
     {
-        string data = e.Data;
+        var data = e.Data;
         print("Received message: " + data);
-        WsMessage message = null;
         try
         {
-            message = JsonConvert.DeserializeObject<WsMessage>(data);
+            var message = JsonConvert.DeserializeObject<WsMessage>(data);
             print("Received Message Type: " + message.Type);
             switch (message.Type)
             {
@@ -79,13 +81,13 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 //         StartCoroutine(ActivateVisionCone());
                 //     });
                 //     break;
-                case "wsInitialization":
+                case MessageTypes.WsInitialization:
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         print("Connection established for " + objInUse.name);
                     });
                     break;
-                case "walk":
+                case MessageTypes.Walk:
                     print("Agent needs to reach destination.");
                     // Avatar receives the type of artifact to reach
                     WalkData walkData = message.Data.ToObject<WalkData>();
@@ -117,7 +119,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         EnableDisableVisionCone(false);
                         reachDestination(walkData.Target);
 
-                        // Se il target è un friend, aggiorna stoppingDistance e avvia il controllo specifico
+                        // Se il target ï¿½ un friend, aggiorna stoppingDistance e avvia il controllo specifico
                         if (AgentBeliefs != null && AgentBeliefs.Friends.Contains(walkData.Target))
                         {
                             agent.stoppingDistance = 8.0f;
@@ -136,7 +138,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         }
                     });
                     break;
-                case "stop":
+                case MessageTypes.Stop:
                     print("Stopping the agent.");
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
@@ -154,8 +156,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         // EnableDisableVisionCone(false);
                     });
                     break;
-
-                case "rotate":
+                case MessageTypes.Rotate:
                     RotateData rotateData = message.Data.ToObject<RotateData>();
                     if (rotateData.Type == "lookat")
                     {
@@ -180,7 +181,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                        StartCoroutine(CheckIfReachedFriend(message.MessagePayload));
                     });
                     break;*/
-                case "say":
+                case MessageTypes.Say:
                     // Avatar receives the type of artifact to reach
                     SaysData saysData = message.Data.ToObject<SaysData>();
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -190,6 +191,15 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         {
                             animationController.SetAnimationState("say");
                         }
+                    });
+                    break;
+                case MessageTypes.Grab:
+                    print("Agent needs to grab an artifact.");
+                    var grabData = message.Data.ToObject<GrabData>();
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        var artifact = GameObject.Find(grabData.Name.Trim('"'));
+                        HandleArtifactGrabAndRelease(artifact);
                     });
                     break;
                 default:
@@ -204,5 +214,4 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
             return;
         }
     }
-
 }

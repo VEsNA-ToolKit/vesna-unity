@@ -1,6 +1,8 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using script.core.model.io;
+using script.core.util;
 using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
@@ -15,7 +17,7 @@ public abstract class AbstractAvatar : AbstractMasElement
     protected TextMeshPro nameTextMeshPro;
     protected string jaCaMoAgentClassPath;
     protected NavMeshAgent agent;
-    protected string artifacToReach;
+    protected string artifactToReach;
 
     protected virtual void Awake()
     {
@@ -33,6 +35,25 @@ public abstract class AbstractAvatar : AbstractMasElement
         else
         {
             Debug.LogWarning("TextMeshPro component not found in the avatar's children.");
+        }
+    }
+    
+    protected void HandleArtifactGrabAndRelease(GameObject artifact)
+    {
+        if (artifact != null)
+        {
+            var artifactSocket = this.transform.Find("Body/artifactHolder");
+            artifact.transform.SetParent(artifactSocket);
+            
+            artifact.transform.localPosition = Vector3.zero; // Reset position to the socket's position
+            artifact.transform.localRotation = Quaternion.identity; // Reset rotation to the socket's rotation
+            artifact.SetActive(true); // Ensure the artifact is active
+            
+            print("Holding artifact: " + artifact.name);
+        }
+        else
+        {
+            print("No artifact to hold.");
         }
     }
 
@@ -60,8 +81,8 @@ public abstract class AbstractAvatar : AbstractMasElement
 
     public string ArtifactToReach
     {
-        get { return artifacToReach; }
-        set { artifacToReach = value; }
+        get { return artifactToReach; }
+        set { artifactToReach = value; }
     }
 
 
@@ -94,10 +115,10 @@ public abstract class AbstractAvatar : AbstractMasElement
             message = JsonConvert.DeserializeObject<WsMessage>(data);
             switch (message.Type)
             {
-                case "wsInitialization":
+                case MessageTypes.WsInitialization:
                     print("Connection established for " + objInUse.name);
                     break;
-                case "walk":
+                case MessageTypes.Walk:
                     print("Agent needs to reach destination.");
                     // Avatar receives the type of artifact to reach
                     WalkData walkData = message.Data.ToObject<WalkData>();

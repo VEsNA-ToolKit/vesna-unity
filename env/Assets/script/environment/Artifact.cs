@@ -12,6 +12,7 @@ using WebSocketSharp;
 public class Artifact : AbstractArtifact
 {
     // All artifact properties
+    //TODO: Why are these here? shouldn't they be in the subclasses?
     public List<CoffeeInfo> barProperties;
     public List<FruitInfo> fruitShopProperties;
     public List<ClothesInfo> dressShopProperties;

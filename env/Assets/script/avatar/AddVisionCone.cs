@@ -36,7 +36,8 @@ public class AddVisionCone : MonoBehaviour
             {
                 meshCollider.convex = true;
                 meshCollider.isTrigger = true;
-                meshCollider.includeLayers = LayerMask.GetMask("artifact", "agent");
+                // Again, not layers, but tags.
+                //meshCollider.includeLayers = LayerMask.GetMask("artifact", "agent");
             }
 
             //Add script to manage collision

@@ -85,8 +85,3 @@
     -+actual_intention(start_walking);
     !start_walking;
     -friend_reached(Friend).
-
-
-
-
-
