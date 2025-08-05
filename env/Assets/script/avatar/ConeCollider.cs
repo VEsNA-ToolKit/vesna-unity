@@ -61,12 +61,24 @@ public class ConeCollider : MonoBehaviour
 
     private static string retrieveArtifactType(GameObject other)
     {
-        // Get artifact type 
         GenericArtifactType artType = other.GetComponent<GenericArtifactType>();
+
+        // se non c'è sul GameObject colpito, provo a risalire al padre
+        if (artType == null && other.transform.parent != null)
+        {
+            Debug.LogWarning($"[ConeCollider] 'GenericArtifactType' non trovato su {other.name}. Provo il parent: {other.transform.parent.name}");
+            artType = other.transform.parent.GetComponent<GenericArtifactType>();
+        }
+
+        // se ancora non lo trovo, restituisco "unknown"
         if (artType == null)
         {
-            throw new Exception("Artifact type script is null");
+            Debug.LogError($"[ConeCollider] 'GenericArtifactType' è null anche nel parent. Oggetto: {other.name}");
+            return "unknown";
         }
+
+        // tutto ok, ritorno il tipo
         return artType.GetShopType().ToString().ToLower();
     }
+
 }

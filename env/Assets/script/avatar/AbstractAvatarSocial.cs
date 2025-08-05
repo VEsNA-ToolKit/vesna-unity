@@ -16,6 +16,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
     public AgentConversations agentConversations;
     [System.NonSerialized]
     public AgentConversations targetConversations;
+    private CheckAnchors currentAnchor;
 
     protected override void Awake()
     {
@@ -35,52 +36,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         agent.stoppingDistance = 1.0f;
     }
 
-    /*public IEnumerator CheckIfReachedFriend(string friend)
-    {
-        GameObject target = GameObject.Find(friend);
-
-        if (target == null)
-        {
-            Debug.LogWarning($"[CheckIfReachedFriend] Oggetto '{friend}' non trovato.");
-            yield break;
-        }
-
-        bool isDestinationPoint = friend.StartsWith("dest_");
-
-        while (true)
-        {
-            // Controlla se ha finito il path ed è fermo vicino al target
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
-            {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
-                {
-                    Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
-
-                    // Ferma animazione e guarda il target
-                    animationController.SetAnimationState("stop");
-                    transform.LookAt(GameObject.Find(friend).transform);
-
-
-                    if (isDestinationPoint)
-                    {
-                        GameObject obj = GameObject.Find(friend);
-                        transform.LookAt(obj.transform);
-                    }
-                    else
-                    {
-                        // Invia messaggio al brain che ha raggiunto l'amico
-                        SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
-                            .createAndConvertJacamoMessageIntoJsonString(
-                                "destinationReached", null, "reached_friend", null, friend));
-                    }
-
-                    yield break;
-                }
-            }
-
-            yield return new WaitForSeconds(0.1f); 
-        }
-    }*/
     public IEnumerator CheckIfReachedFriend(string friend)
     {
         GameObject target = GameObject.Find(friend);
@@ -92,45 +47,59 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
         bool isDestinationPoint = friend.StartsWith("dest_");
 
-        while (true)
+        float maxWaitTime = 10f; // sicurezza: massimo 10 secondi di attesa
+        float elapsedTime = 0f;
+
+        while (elapsedTime < maxWaitTime)
         {
-            if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
+            if (!agent.pathPending)
             {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                float distance = Vector3.Distance(agent.transform.position, target.transform.position);
+                //Debug.Log($"[CheckIfReachedFriend] agent.remainingDistance = {agent.remainingDistance}, distance = {distance}, velocity = {agent.velocity.magnitude}");
+
+                if (agent.remainingDistance <= agent.stoppingDistance)
                 {
-                    Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
-
-                    animationController.SetAnimationState("stop");
-                    
-                    //ADD look at the center of the conversation
-                    if(agentConversations != null && agentConversations.Conversations.Count > 0)
+                    // In alcuni casi Unity non resetta il path, lo forziamo
+                    if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f || distance < 0.5f)
                     {
-                        string conversationName = agentConversations.Conversations[0];
-                        Vector3 center = ConversationObject.GetObjectPosition(conversationName);
-                        StartCoroutine(SmoothLookAt(center));
+                        Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
+
+                        agent.ResetPath(); // forza la fine del movimento
+                        animationController.SetAnimationState("stop");
+
+                        // Guarda verso il centro della conversazione (se presente)
+                        if (agentConversations != null && agentConversations.Conversations.Count > 0)
+                        {
+                            string conversationName = agentConversations.Conversations[0];
+                            Vector3 center = ConversationObject.GetObjectPosition(conversationName);
+                            StartCoroutine(SmoothLookAt(center));
+                        }
+                        else
+                        {
+                            StartCoroutine(SmoothLookAt(target.transform.position));
+                        }
+
+                        if (!isDestinationPoint)
+                        {
+                            SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
+                                .createAndConvertJacamoMessageIntoJsonString(
+                                    "destinationReached", null, "reached_friend", null, friend));
+                        }
+
+                        EnableDisableVisionCone(true);
+                        yield break;
                     }
-                    else
-                    {
-                        StartCoroutine(SmoothLookAt(target.transform.position)); // fallback
-                    }
-
-
-                    if (!isDestinationPoint)
-                    {
-                        SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
-                            .createAndConvertJacamoMessageIntoJsonString(
-                                "destinationReached", null, "reached_friend", null, friend));
-                    }
-
-                    // Riattiva la vision cone quando arriva
-                    EnableDisableVisionCone(true);
-
-                    yield break;
                 }
             }
+
+            elapsedTime += 0.1f;
             yield return new WaitForSeconds(0.1f);
         }
+
+        Debug.LogWarning($"[CheckIfReachedFriend] TIMEOUT: L'agente '{gameObject.name}' non ha raggiunto '{friend}' dopo {maxWaitTime} secondi.");
     }
+
+
 
     //ADD for a more realistic turn
     protected IEnumerator SmoothLookAt(Vector3 targetPosition, float duration = 0.5f)
@@ -147,13 +116,36 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         }
 
         transform.rotation = targetRotation;
-     }
+    }
 
 
     protected IEnumerator ActivateVisionCone()
     {
         yield return new WaitForSeconds(4.0f);
         EnableDisableVisionCone(true);
+    }
+
+    // serve per controllare quando si libera l'anchor 
+    private IEnumerator WaitForFreeAnchor(GameObject targetObj)
+    {
+        CheckAnchors[] anchors = targetObj.GetComponentsInChildren<CheckAnchors>();
+
+        while (true)
+        {
+            foreach (var anchor in anchors)
+            {
+                if (anchor.IsFree())
+                {
+                    anchor.AssignAgent(objInUse.name);
+                    currentAnchor = anchor;
+                    Debug.Log($"[Anchor] {objInUse.name} ha trovato anchor libero: {anchor.name}");
+                    reachDestination(anchor.name);
+                    yield break;
+                }
+            }
+
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     // Unity avatar receives message from jacamo agent
@@ -187,56 +179,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         print("Connection established for " + objInUse.name);
                     });
                     break;
-                /*case "walk":
-                    print("Agent needs to reach destination.");
-                    // Avatar receives the type of artifact to reach
-                    WalkData walkData = message.Data.ToObject<WalkData>();
-                    if (walkData.Target == "random")
-                    {
-                        print("ANDREA CIAO");
-                        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                        {
-                            resetStoppingDistance();
-                            movementModel.IsStopped = false;
-                            agent.ResetPath();
-                            SetBaloonText("Walking");
-                            movementModel.StartWalking();
-                            StartCoroutine(ActivateVisionCone());
-                            if (animationController != null)
-                            {
-                                animationController.SetAnimationState("walk"); 
-                            }
-                        });
-                        break;
-                    }
-                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
-                    {
-                        SetBaloonText("New destination: " + walkData.Target);
-                        movementModel.IsStopped = true;
-                        agent.ResetPath();
-                        EnableDisableVisionCone(false);
-                        reachDestination(walkData.Target);
-                        Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
-
-                        if (animationController != null)
-                        {
-                            animationController.SetAnimationState("walk"); 
-                        }
-                            
-                        GameObject targetObj = GameObject.Find(walkData.Target); 
-                        targetConversations = targetObj.GetComponent<AgentConversations>(); 
-                        agentConversations = objInUse.GetComponent<AgentConversations>();
-
-                        GameObject conv = ConversationRules.CheckConversation(walkData.Target, agentConversations, targetConversations, objInUse.name, AgentBeliefs); ///B
-                        
-                        if(conv != null){
-                            reachDestination(conv.name); 
-                            StartCoroutine(CheckIfReachedFriend(walkData.Target));
-                            Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
-                        }
-                        
-                    });
-                    break;*/
                 case "walk":
                     print("Agent needs to reach destination.");
                     WalkData walkData = message.Data.ToObject<WalkData>();
@@ -246,12 +188,22 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         print("ANDREA CIAO");
                         UnityMainThreadDispatcher.Instance().Enqueue(() =>
                         {
-                            
+                            // Chekc per controllare se esiste un anchor associato all'agente
+                            CheckAnchors[] allAnchors = FindObjectsByType<CheckAnchors>(FindObjectsSortMode.None);
+                            foreach (var anchor in allAnchors)
+                            {
+                                if (anchor.currentAgentName == objInUse.name)
+                                {
+                                    anchor.FreeAnchor();
+                                    Debug.Log($"[Anchor] {objInUse.name} ha liberato anchor: {anchor.name} (cammino verso 'random')");
+                                    break;
+                                }
+                            }
+
                             if (agentConversations != null && agentConversations.Conversations.Count > 0)
                             {
                                 string actualConversation = agentConversations.Conversations[0];
                                 FFormation.LeaveConversation(objInUse.name, actualConversation, agentConversations);
-                                
                             }
 
                             resetStoppingDistance();
@@ -282,15 +234,42 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         movementModel.IsStopped = true;
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
-                        reachDestination(walkData.Target);
-                        Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
+                        //reachDestination(walkData.Target);
+                        Debug.Log("DESTINAZIONE di " + objInUse.name + " : " + walkData.Target);
+                        GameObject targetObj = GameObject.Find(walkData.Target);
 
                         if (animationController != null)
                         {
                             animationController.SetAnimationState("walk");
                         }
 
-                        GameObject targetObj = GameObject.Find(walkData.Target);
+                        if (targetObj.CompareTag("Artifact"))
+                        {
+                            CheckAnchors[] anchors = targetObj.GetComponentsInChildren<CheckAnchors>();
+                            bool assigned = false;
+
+                            foreach (var anchor in anchors)
+                            {
+                                if (anchor.IsFree())
+                                {
+                                    anchor.AssignAgent(objInUse.name);
+                                    reachDestination(anchor.name);
+                                    assigned = true;
+                                    break;
+                                }
+                            }
+
+                            if (!assigned)
+                            {
+                                Debug.Log($"[Anchor] Nessun anchor libero ora per {objInUse.name}, in attesa...");
+                                StartCoroutine(WaitForFreeAnchor(targetObj));
+
+                                // qua volendo si può mandare un messaggio a JaCaMo e decide il cervello poi che fare
+                                // magari anche in base alla personalità
+                            }
+                        }
+
+
                         targetConversations = targetObj.GetComponent<AgentConversations>();
                         agentConversations = objInUse.GetComponent<AgentConversations>();
 

@@ -10,6 +10,7 @@ public static class ConversationRules
     public static string conversation;
 
     public static GameObject CheckConversation(string targetName, AgentConversations agentConversations, AgentConversations targetConversations, string agentName, AgentBeliefs beliefs){
+        UnityEngine.Debug.Log("Agente: " + agentName + " chiama CheckConversation");
         if (targetConversations == null || targetConversations.Conversations == null) {
             return null;
         }

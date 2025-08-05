@@ -34,25 +34,37 @@ public class AvatarBody : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Agent " + root.name + " reached " + other.name);
-        print("Agent " + root.name + " reached destination " + other.name.FirstCharacterToLower());
-        // reached_destination(destName)
-        if (!other.gameObject.name.Contains("counter") && (other.gameObject.tag == "Artifact"))
+        GameObject hit = other.gameObject;
+
+        // Se l'oggetto è un anchor, risali al padre
+        if (hit.name.ToLower().Contains("anchor") && hit.transform.parent != null)
+            hit = hit.transform.parent.gameObject;
+
+        if (!hit.name.Contains("counter") && hit.tag == "Artifact")
         {
-            print("Agent " + root.name + " reached destination " + other.name.FirstCharacterToLower());
-            mainAvatarScript.SetBaloonText("Reached destination: " + other.name.FirstCharacterToLower());
-            mainAvatarScript.SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
-                "reached_destination", null, other.name.FirstCharacterToLower()));
-            artifactReached = other.name.FirstCharacterToLower();
+            string dest = hit.name.FirstCharacterToLower();
+            Debug.Log("Agent " + root.name + " reached destination " + dest);
+            mainAvatarScript.SetBaloonText("Reached destination: " + dest);
+            mainAvatarScript.SendMessageToJaCaMoBrain(
+                UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
+                    "destinationReached", null, "reached_destination", null, dest
+                )
+            );
+            artifactReached = dest;
             mainAvatarScript.EnableDisableVisionCone(false);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (!artifactReached.Equals("") && other.name.FirstCharacterToLower().Equals(artifactReached)){
+        GameObject ex = other.gameObject;
+        if (ex.name.ToLower().Contains("anchor") && ex.transform.parent != null)
+            ex = ex.transform.parent.gameObject;
+
+        if (!artifactReached.Equals("") && ex.name.FirstCharacterToLower().Equals(artifactReached))
+        {
             mainAvatarScript.EnableDisableVisionCone(true);
             artifactReached = "";
-        }        
+        }
     }
 }

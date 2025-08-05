@@ -66,14 +66,12 @@ public static class FFormation
                 }
             }
 
-
             // Elimina la conversazione
             ConversationObject.DeleteObject(conversationName);
             Debug.Log($"Conversazione '{conversationName}' terminata e rimossa.");
         }
 
     }
-
 
 
     public static void ChangeFormation(string conversationName)
@@ -85,14 +83,6 @@ public static class FFormation
         List<string> participants = conv.Participants;
         int count = participants.Count;
         UnityEngine.Debug.Log("Participanti alla conversazione: " + count);
-
-        /*if (count < 3)
-        {
-            //UnityEngine.Debug.LogWarning("FFormation: il numero di partecipanti deve essere tra 3 e 5.");
-            if (count == 2){
-                
-            }
-        }*/
 
         float radius = 5f;
 
@@ -107,14 +97,7 @@ public static class FFormation
             {
                 float angle = i * 120f * Mathf.Deg2Rad;
                 offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            } /*else if(count == 2)
-            {
-                float angle = i * 180f * Mathf.Deg2Rad;
-                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            } else if (count < 2){
-                ConversationObject.DeleteObject(conversationName);
-                return;
-            }*/
+            } 
             else
             {
                 float angleStep = 360f / count;
@@ -132,7 +115,6 @@ public static class FFormation
                 destPoint.tag = "Artifact";
             }
             destPoint.transform.position = targetPosition;
-
 
             // Prendo il componente ShopperAvatarScript (che eredita da AbstractAvatar)
             ShopperAvatarScript avatarScript = agentObj.GetComponent<ShopperAvatarScript>();
