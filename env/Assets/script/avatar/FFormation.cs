@@ -1,90 +1,75 @@
-using Newtonsoft.Json;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.AI;
-using WebSocketSharp;
 
 public static class FFormation
 {
+    private const float RADIUS = 5f;
 
     public static void JoinConversation(string agentName, string conversationName, AgentConversations agentConversations)
     {
         GameObject agentObj = GameObject.Find(agentName);
+        if (agentObj == null)
+        {
+            Debug.LogWarning($"[JoinConversation] Agente '{agentName}' non trovato.");
+            return;
+        }
+
         ConversationObject.AddAgent(agentName, conversationName, agentConversations);
         ChangeFormation(conversationName);
     }
 
     public static void LeaveConversation(string agentName, string conversationName, AgentConversations agentConversations)
     {
-        // Rimuove l'agente corrente dalla conversazione
         GameObject agentObj = GameObject.Find(agentName);
         ConversationObject.RemoveAgent(agentName, conversationName, agentConversations);
 
-        // Trova la conversazione aggiornata
-        var conv = ConversationObject.ActiveConversations
-            .Find(c => c.Conversation.name == conversationName);
-
-        // Se la conversazione è stata completamente rimossa, esce (null)
+        var conv = ConversationObject.ActiveConversations.Find(c => c.Conversation.name == conversationName);
         if (conv == null)
         {
             Debug.Log($"La conversazione '{conversationName}' è già stata rimossa.");
             return;
         }
 
-        int count = conv.Participants.Count;
-
-        if (count > 1)
+        if (conv.Participants.Count > 1)
         {
-            // Se ci sono ancora almeno 2 partecipanti, aggiorna la formazione
             ChangeFormation(conversationName);
         }
         else
         {
-            // Se resta solo un partecipante, lo rimuove
-            if (conv.Participants.Count == 1)
-            {
-                string lastAgent = conv.Participants[0];
-                GameObject lastAgentObj = GameObject.Find(lastAgent);
-                if (lastAgentObj != null)
-                {
-                    AgentConversations lastAgentConvs = lastAgentObj.GetComponent<AgentConversations>();
-                    if (lastAgentConvs != null)
-                    {
-                        ConversationObject.RemoveAgent(lastAgent, conversationName, lastAgentConvs);
-                    }
-                    else
-                    {
-                        Debug.LogWarning($"[LeaveConversation] Il componente AgentConversations non è stato trovato per '{lastAgent}'");
-                    }
-                }
-                else
-                {
-                    Debug.LogWarning($"[LeaveConversation] Agente '{lastAgent}' non trovato in scena.");
-                }
-            }
-
-            // Elimina la conversazione
-            ConversationObject.DeleteObject(conversationName);
-            Debug.Log($"Conversazione '{conversationName}' terminata e rimossa.");
+            RemoveLastParticipant(conv, conversationName);
         }
-
     }
 
+    private static void RemoveLastParticipant(ConversationData conv, string conversationName)
+    {
+        if (conv.Participants.Count == 1)
+        {
+            string lastAgent = conv.Participants[0];
+            GameObject lastObj = GameObject.Find(lastAgent);
+            if (lastObj != null)
+            {
+                var lastConvs = lastObj.GetComponent<AgentConversations>();
+                if (lastConvs != null)
+                {
+                    ConversationObject.RemoveAgent(lastAgent, conversationName, lastConvs);
+                }
+            }
+        }
+
+        ConversationObject.DeleteObject(conversationName);
+        Debug.Log($"Conversazione '{conversationName}' terminata e rimossa.");
+    }
 
     public static void ChangeFormation(string conversationName)
     {
-        var conv = ConversationObject.ActiveConversations
-            .Find(c => c.Conversation.name == conversationName);
+        var conv = ConversationObject.ActiveConversations.Find(c => c.Conversation.name == conversationName);
+        if (conv == null) return;
 
         Vector3 center = ConversationObject.GetObjectPosition(conversationName);
         List<string> participants = conv.Participants;
         int count = participants.Count;
-        UnityEngine.Debug.Log("Participanti alla conversazione: " + count);
 
-        float radius = 5f;
+        Debug.Log("Partecipanti alla conversazione: " + count);
 
         for (int i = 0; i < count; i++)
         {
@@ -92,59 +77,83 @@ public static class FFormation
             GameObject agentObj = GameObject.Find(agentName);
             if (agentObj == null) continue;
 
-            Vector3 offset;
-            if (count == 3)
-            {
-                float angle = i * 120f * Mathf.Deg2Rad;
-                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            } 
-            else
-            {
-                float angleStep = 360f / count;
-                float angle = i * angleStep * Mathf.Deg2Rad;
-                offset = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * radius;
-            }
-
+            Vector3 offset = ComputeOffset(participants, i, count);
             Vector3 targetPosition = center + offset;
 
-            // Creo un GameObject destinazione con tag "Artifact"
-            GameObject destPoint = GameObject.Find($"dest_{agentName}");
-            if (destPoint == null)
-            {
-                destPoint = new GameObject($"dest_{agentName}");
-                destPoint.tag = "Artifact";
-            }
-            destPoint.transform.position = targetPosition;
-
-            // Prendo il componente ShopperAvatarScript (che eredita da AbstractAvatar)
-            ShopperAvatarScript avatarScript = agentObj.GetComponent<ShopperAvatarScript>();
-            if (avatarScript != null)
-            {
-                // Enqueue su main thread la chiamata a reachDestination con il nome del GameObject destinazione
-                UnityMainThreadDispatcher.Instance().Enqueue(() => {
-                    Debug.Log($"Enqueue movement for: {agentName}");
-                    avatarScript.reachDestination(destPoint.name);
-
-                    AvatarAnimationController animator = agentObj.GetComponentInChildren<AvatarAnimationController>();
-                    animator.SetAnimationState("walk");
-
-                    avatarScript.StartCoroutine(avatarScript.CheckIfReachedFriend(destPoint.name));
-                    agentObj.transform.LookAt(destPoint.transform);
-
-                    //forse va fatto un resetPath o qualcosa del genere
-
-                });
-            }
-            else
-            {
-                Debug.LogWarning($"GameObject {agentName} non ha componente ShopperAvatarScript.");
-            }
+            GameObject destination = GetOrCreateDestination(agentName, targetPosition);
+            MoveAgent(agentObj, agentName, destination);
 
             float actualDistance = Vector3.Distance(targetPosition, center);
             Debug.Log($"Agente '{agentName}' deve muoversi a distanza {actualDistance:F2} da '{conversationName}', verso {targetPosition}");
-
-            //GameObject.Destroy(destPoint, 100f);
         }
     }
 
+    private static Vector3 ComputeOffset(List<string> participants, int index, int count)
+    {
+        if (count == 3)
+        {
+            float angle = index * 120f * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * RADIUS;
+        }
+        else if (count == 2)
+        {
+            string agentA = participants[0];
+            string agentB = participants[1];
+
+            GameObject objA = GameObject.Find(agentA);
+            GameObject objB = GameObject.Find(agentB);
+            if (objA == null || objB == null) return Vector3.zero;
+
+            var beliefsA = objA.GetComponent<ShopperAvatarScript>()?.AgentBeliefs;
+            var beliefsB = objB.GetComponent<ShopperAvatarScript>()?.AgentBeliefs;
+            if (beliefsA == null || beliefsB == null) return Vector3.zero;
+
+            float distAB = SocialDistance.SetDistance(agentB, beliefsA);
+            float distBA = SocialDistance.SetDistance(agentA, beliefsB);
+
+            Vector3 direction = (objB.transform.position - objA.transform.position).normalized;
+            return (participants[index] == agentA) ? -direction * (distAB / 2f) : direction * (distBA / 2f);
+        }
+        else
+        {
+            float angleStep = 360f / count;
+            float angle = index * angleStep * Mathf.Deg2Rad;
+            return new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle)) * RADIUS;
+        }
+    }
+
+    private static GameObject GetOrCreateDestination(string agentName, Vector3 position)
+    {
+        GameObject dest = GameObject.Find($"dest_{agentName}");
+        if (dest == null)
+        {
+            dest = new GameObject($"dest_{agentName}");
+            dest.tag = "Artifact";
+        }
+
+        dest.transform.position = position;
+        return dest;
+    }
+
+    private static void MoveAgent(GameObject agentObj, string agentName, GameObject destination)
+    {
+        ShopperAvatarScript avatar = agentObj.GetComponent<ShopperAvatarScript>();
+        if (avatar == null)
+        {
+            Debug.LogWarning($"GameObject '{agentName}' non ha componente ShopperAvatarScript.");
+            return;
+        }
+
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            Debug.Log($"Enqueue movement for: {agentName}");
+            avatar.reachDestination(destination.name);
+
+            var animator = agentObj.GetComponentInChildren<AvatarAnimationController>();
+            animator?.SetAnimationState("walk");
+
+            avatar.StartCoroutine(avatar.CheckIfReachedFriend(destination.name));
+            agentObj.transform.LookAt(destination.transform);
+        });
+    }
 }

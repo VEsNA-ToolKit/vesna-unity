@@ -69,4 +69,10 @@ public static class SocialDistance
 
         return conversationObj;
     }
+
+    public static float SetDistance(string targetName, AgentBeliefs beliefs){
+        float distance = GetStoppingDistance(targetName, beliefs);
+
+        return distance;
+    }
 }
