@@ -30,7 +30,7 @@ public static class FFormation
             return;
         }
 
-        if (conv.Participants.Count > 1)
+        if (conv.Participants.Count >= 1)
         {
             ChangeFormation(conversationName);
         }
@@ -108,8 +108,8 @@ public static class FFormation
             var beliefsB = objB.GetComponent<ShopperAvatarScript>()?.AgentBeliefs;
             if (beliefsA == null || beliefsB == null) return Vector3.zero;
 
-            float distAB = SocialDistance.SetDistance(agentB, beliefsA);
-            float distBA = SocialDistance.SetDistance(agentA, beliefsB);
+            float distAB = SocialDistance.GetDistance(agentB, beliefsA);
+            float distBA = SocialDistance.GetDistance(agentA, beliefsB);
 
             Vector3 direction = (objB.transform.position - objA.transform.position).normalized;
             return (participants[index] == agentA) ? -direction * (distAB / 2f) : direction * (distBA / 2f);

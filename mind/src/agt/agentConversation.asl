@@ -1,3 +1,4 @@
+/*
 // Plans to execute a conversation with a friend met in the scene
 
 // the other agent is free to speak with me
@@ -85,7 +86,92 @@
     -+actual_intention(start_walking);
     !start_walking;
     -friend_reached(Friend).
+*/
 
+// Provo a iniziare una conversazione con Friend
++!startConversation(Friend) <-
+    .send(Friend, askOne, talking_to(Any), Reply);
+    !evaluateIfCanStartConversation(Friend, Reply).
+
+// Friend è già impegnato: provo a unirmi
++!evaluateIfCanStartConversation(Friend, Reply) : Reply \== false <- 
+    .print([Friend, " is already talking with someone, trying to join"]);
+    .my_name(Me);
+    .send(Friend, achieve, join_conversation(Me)).
+
+// Friend è libero: inizio la conversazione
++!evaluateIfCanStartConversation(Friend, false) <-
+    .send(Friend, tell, talking_to(Me));
+    +talking_to(Friend);
+    -+actual_intention(talk);
+    .print(["Starting conversation with: ", Friend]);
+    vesna.says(Friend, "Heiiii!");
+    .wait(2000);
+    .send(Friend, achieve, stop_and_talk).
+
+@agent_not_busy_start_conversation
++!stop_and_talk[source(Friend)] : not busy <- 
+    !writeLog(["My friend ", Friend, " asked me to talk."]);
+    -+actual_intention(talk);
+    vesna.walk(Friend).
+
+@agent_busy_into_another_conversation
++!stop_and_talk(Friend) : busy <- 
+    .send(Friend, achieve, join_conversation(Me)).
+
+// Ricevo una richiesta di entrare in una conversazione
++!join_conversation(NewFriend)[source(NewFriend)] <-
+    !writeLog(["Allowing ", NewFriend, " to join the conversation"]);
+    +talking_to(NewFriend); // aggiungo il nuovo partecipante
+    .send(NewFriend, tell, joined_conversation).
+
++joined_conversation[source(Friend)] <-
+    .print(["Joined conversation with ", Friend]);
+    +talking_to(Friend);
+    -+actual_intention(talk);
+    vesna.walk(Friend);
+    .wait(1000);
+    vesna.says(Friend, "Ciao, mi unisco anch'io!").
+
+@actual_plan_for_conversation
++!friend_message(Content)[source(Sender)] : Content \== "Bye!!" <- 
+    !writeLog(["Message received from ", Sender, ": ", Content]);
+    processConversation(Content, Reply);
+    !update_balloon_message(Reply);
+    .wait(10000);
+    .send(Sender, achieve, friend_message(Reply)).
+
+
+@friend_message_finish_conversation
++!friend_message("Bye!!")[source(Sender)] <- 
+    !update_balloon_message("Scambio le informazioni");
+    .wait(2000);
+    .findall(seen_artifact(A, T), seen_artifact(A, T), Artifacts);
+    .send(Sender, tell, Artifacts);
+    .send(Sender, achieve, finish_conversation);
+    !update_balloon_message(Artifacts).
+
+@finished_conversation
++!finish_conversation[source(Sender)] <- 
+    .wait(2000);
+    .findall(seen_artifact(A, T), seen_artifact(A, T), Artifacts);
+    .send(Sender, tell, Artifacts);
+    !writeLog(["Conversation finished"]);
+    .wait(2000);
+    !update_balloon_message(Artifacts);
+    .wait(3000);
+    
+    -talking_to(Sender);
+    -+actual_intention(start_walking);
+    !start_walking;
+    .send(Sender, achieve, finish_other_conversation).
+
+@finish_other_conversation
++!finish_other_conversation[source(Sender)] <- 
+    -talking_to(Sender);
+    .wait(2000);
+    -+actual_intention(start_walking);
+    !start_walking.
 
 
 

@@ -14,7 +14,7 @@ mas supermarket {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
 			port( 3343 )
-			budget(100), friends([]), neutrals([pippo]), personality([estroversione(50), gradevolezza(20), coscienziosita(20)])
+			budget(100), friends([]), neutrals([pippo]), personality([estroversione(10), gradevolezza(20), coscienziosita(30)])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
@@ -25,7 +25,7 @@ mas supermarket {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
 			port( 3349 )
-			budget(100), friends([pippo]), neutrals([]), personality([estroversione(0), gradevolezza(0), coscienziosita(0)])
+			budget(100), friends([pippo]), neutrals([]), personality([estroversione(80), gradevolezza(0), coscienziosita(0)])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager

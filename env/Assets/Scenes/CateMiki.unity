@@ -1549,6 +1549,10 @@ PrefabInstance:
       value: kate
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Openness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.friends.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -1582,6 +1586,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: shopperBeliefs.personalityProfile.AperturaAlleEsperienze
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Neuroticism_Extraversion
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Conscientiousness_Agreeableness
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2341087531120083934, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
@@ -2169,6 +2181,10 @@ PrefabInstance:
       value: pippo
       objectReference: {fileID: 0}
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Openness
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: initialShopperAgentBeliefs.friends.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -2195,6 +2211,14 @@ PrefabInstance:
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: shopperBeliefs.personalityProfile.AperturaAlleEsperienze
       value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Neuroticism_Extraversion
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Conscientiousness_Agreeableness
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2341087531120083934, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: m_LocalScale.x
@@ -2927,6 +2951,14 @@ PrefabInstance:
     - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: shopperBeliefs.personalityProfile.AperturaAlleEsperienze
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Neuroticism_Extraversion
+      value: 0.8
+      objectReference: {fileID: 0}
+    - target: {fileID: 2085553386495400356, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
+      propertyPath: shopperBeliefs.personalityProfile.Conscientiousness_Agreeableness
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 2341087531120083934, guid: 99599b0370991254ba7496a8a1fa8816, type: 3}
       propertyPath: m_LocalScale.x
