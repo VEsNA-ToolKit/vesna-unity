@@ -15,6 +15,11 @@ actual_shop(none).
 is_friend( Name ) :- friends( Friends ) & .member( Name, Friends ).
 is_neutral( Name ) :- neutrals( Neutrals ) & .member( Name, Neutrals ). // Added acquaintances list 
 
+count(0).
+
+// Regola per recuperare l'ID della conversazione in cui è coinvolto un agente
+conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agent, AgentsList).
+
 /* ----------------- LOGIC PLANS ---------------------*/
 
 // Agent reached supermarket door - Inside supermarket
