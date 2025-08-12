@@ -23,10 +23,10 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 	//Utility used to configure .jcm file by adding agents
 	public static void ConfigureJcmFile(GameObject[] avatars, GameObject[] envArtifacts)
 	{
-		var envManagerObject = envArtifacts.FirstOrDefault(envArtifact => envArtifact.GetComponent<EnvManager>() != null);
+		var envManagerObject = envArtifacts.FirstOrDefault(envArtifact => envArtifact.GetComponent<EnvironmentManagerArtifact>() != null);
 
 		if (envManagerObject != null)
-			_jcmFilePath = envManagerObject.GetComponent<EnvManager>().jcmFilePath;
+			_jcmFilePath = envManagerObject.GetComponent<EnvironmentManagerArtifact>().jcmFilePath;
 		else
 			Debug.LogError("No GameObject with EnvManager component found in envArtifacts");
 
@@ -130,22 +130,33 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 			workspaceName = match.Groups[1].Value;
 		var updatedContent = "";
 		
-		foreach (var envArtifact in envArtifacts)
+		foreach (var currentArtifact in envArtifacts)
 		{
-			var script = envArtifact.GetComponent<Artifact>();
+			var script = currentArtifact.GetComponent<Artifact>();
 			
-			print("Analyze " + envArtifact.name);
+			print("Analyze " + currentArtifact.name);
 			print(" of type: " + script.ArtifactType);
 			
-			var artifact = "\t\t" + $@"artifact {envArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(" + "\"" + envArtifact.name + "\", " + script.Port;
+			var artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(" + "\"" + currentArtifact.name + "\", " + script.Port;
 			
 			if (string.IsNullOrEmpty(script.Port)) // If the port is not set, there are no arguments
-				artifact = "\t\t" + $@"artifact {envArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(";
+				artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(";
 			
 			// If the artifact has properties, add them
 			if (!script.ArtifactProperties.IsNullOrEmpty())
 			{
 				artifact += $@", ""{script.ArtifactProperties}"")";
+			}
+			else if (script.ArtifactType == ArtifactTypeEnum.Grabbable)
+			{
+				// Get artifact position and rotation
+				var position = currentArtifact.transform.position;
+				var rotation = currentArtifact.transform.rotation.eulerAngles; 
+				
+				// Add position and rotation to the artifact definition
+				var positionData = $"[{position.x}, {position.y}, {position.z}]";
+				var rotationData = $"[{rotation.x}, {rotation.y}, {rotation.z}]";
+				artifact += $", \"{{position: {positionData}, rotation: {rotationData}}}\")";
 			}
 			else
 				artifact += ")";

@@ -1,10 +1,6 @@
-using Newtonsoft.Json;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -18,6 +14,7 @@ public class Artifact : AbstractArtifact
     public List<ClothesInfo> dressShopProperties;
     public bool doorProperties;
 
+    
     protected virtual void Awake()
     {
         propertyNames.Clear();

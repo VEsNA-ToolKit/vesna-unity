@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEditor.Experimental;
 
-public class EnvManager : Artifact
+public class EnvironmentManagerArtifact : Artifact
 {
     public string jcmFilePath = "../mind/supermarket.jcm";
     
@@ -38,13 +38,16 @@ public class EnvManager : Artifact
             switch (messagePayload)
             {
                 case "all_artifact_by_type": // Retrieve all artifacts by the type                    
-                    retrieveArtifactsByType(message.Param.ToString(), message.AgentName);
+                    RetrieveArtifactsByType(message.Param.ToString(), message.AgentName);
                     break;
                 case "all_artifact":
-                    retrieveAllArtifacts(message.AgentName);
+                    RetrieveAllArtifacts(message.AgentName);
                     break;
                 case "nearest":
                     RetrieveNearestArtifactsByType(message.Param.ToString(), message.AgentName);
+                    break;
+                case "artifact_position":
+                    RetrieveArtifactPosition(message.Param.ToString(), message.AgentName);
                     break;
 
             }
@@ -55,7 +58,7 @@ public class EnvManager : Artifact
         }
     }
 
-    private async void retrieveAllArtifacts(string agentName)
+    private async void RetrieveAllArtifacts(string agentName)
     {
         // Create a TaskCompletionSource to await the result
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
@@ -75,7 +78,7 @@ public class EnvManager : Artifact
             null, "artifact_names", agentName, artifactNames));
     }
 
-    private async void retrieveArtifactsByType(string resourceType, string agentName)
+    private async void RetrieveArtifactsByType(string resourceType, string agentName)
     {
         // Create a TaskCompletionSource to await the result
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
@@ -139,5 +142,44 @@ public class EnvManager : Artifact
         string[] artifactNames = await tcs.Task;
         wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
+    }
+    
+    private async void RetrieveArtifactPosition(string artifactName, string agentName)
+    {
+        TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
+
+        await UnityMainThreadDispatcher.Instance()
+            .EnqueueAsync(() =>
+            {
+                var artifact = GameObject.Find(artifactName);
+                
+                if (artifact == null)
+                {
+                    Debug.LogError($"Artifact {artifactName} not found.");
+                    tcs.SetResult(new string[] { "Artifact not found" });
+                    return;
+                }
+                
+                Vector3 position = artifact.transform.position;
+                var positionData = new string[]
+                {
+                    position.x.ToString(),
+                    position.y.ToString(),
+                    position.z.ToString()
+                };
+                
+                tcs.SetResult(positionData);
+            });
+        
+        var positionData = await tcs.Task;
+        if (positionData.Length == 3)
+        {
+            wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+                null, "artifact_position", agentName, positionData));
+        }
+        else
+        {
+            Debug.LogError("Position data is not in the expected format.");
+        }
     }
 }

@@ -1,21 +1,46 @@
 package artifact;
 
 import artifact.lib.maselements.AbstractMasElementArtifact;
+import artifact.lib.model.Point3D;
 import artifact.lib.model.WsMessage;
 import artifact.lib.utils.ObjectMapperUtils;
-import cartago.GUARD;
 import cartago.OPERATION;
 import cartago.ObsProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GrabbableArtifact extends AbstractMasElementArtifact {
 
-    @Override
-    public void init(String artifactName, int webSocketPort) {
+    protected Point3D startingPosition;
+    protected Point3D startingRotation;
+
+    @OPERATION
+    public void init(String artifactName, int webSocketPort, String transformJson) {
         super.init(artifactName, webSocketPort);
         defineObsProperty("isAvailable", true);
         defineObsProperty("currentOwner", "null");
+
+        // parse the position from JSON
+        JSONObject transformObject = new JSONObject(transformJson);
+        JSONArray positionObject = transformObject.getJSONArray("position");
+        JSONArray rotationObject = transformObject.getJSONArray("rotation");
+
+
+        this.startingPosition = new Point3D(
+            positionObject.getDouble(0),
+            positionObject.getDouble(1),
+            positionObject.getDouble(2)
+        );
+
+        this.startingRotation = new Point3D(
+            rotationObject.getDouble(0),
+            rotationObject.getDouble(1),
+            rotationObject.getDouble(2)
+        );
+
+        defineObsProperty("position", this.startingPosition.toString());
+        defineObsProperty("rotation", this.startingRotation.toString());
     }
 
     /**
@@ -29,11 +54,11 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         String agentName = getCurrentOpAgentId().getAgentName();
         writeLog("Agent is grabbing " + this.artifactName);
         if (isAvailable()) {
-            defineObsProperty("isAvailable", false);
-            defineObsProperty("currentOwner", agentName);
-            writeLog(String.format("Agent %s grabbed the artifact", agentName));
-
+            updateObsProperty("isAvailable", false);
+            updateObsProperty("currentOwner", agentName);
             signal(getCurrentOpAgentId(), "grabbed", this.artifactName);
+
+            writeLog(String.format("Agent %s grabbed the artifact", agentName));
         } else {
             // Signal failure
             System.out.println("Grab failed - artifact not available");
@@ -42,10 +67,14 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
     }
 
     @OPERATION
-    void attemptRelease(String agentName) {
+    void attemptRelease() {
+        String agentName = getCurrentOpAgentId().getAgentName();
         if (agentName.equals(getOwner())) {
-            defineObsProperty("isAvailable", true);
-            defineObsProperty("currentOwner", "null");
+            updateObsProperty("isAvailable", true);
+            updateObsProperty("currentOwner", "null");
+            String position = getObsProperty("position").getValue().toString();
+            String rotation = getObsProperty("rotation").getValue().toString();
+            signal(getCurrentOpAgentId(), "released", this.artifactName, position, rotation);
 
             writeLog(String.format("Agent %s released the artifact", agentName));
         }
@@ -82,4 +111,16 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         }
     }
 
+    // UTILITIES
+
+    private void requestPositionFromUnity() {
+        WsMessage wsMessage = new WsMessage();
+
+        wsMessage.setMessageType("requestPosition");
+        wsMessage.setMessagePayload("requestPositionFromUnity");
+        wsMessage.setAgentName(this.artifactName);
+        wsMessage.setParam(new JSONObject().put("artifactName", this.artifactName).toString());
+
+        send(ObjectMapperUtils.convertIntoJsonString(wsMessage));
+    }
 }

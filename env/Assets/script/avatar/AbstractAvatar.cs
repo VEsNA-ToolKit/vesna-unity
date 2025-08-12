@@ -38,7 +38,7 @@ public abstract class AbstractAvatar : AbstractMasElement
         }
     }
     
-    protected void HandleArtifactGrabAndRelease(GameObject artifact)
+    protected void HandleArtifactGrab(GameObject artifact)
     {
         if (artifact != null)
         {
@@ -47,13 +47,57 @@ public abstract class AbstractAvatar : AbstractMasElement
             
             artifact.transform.localPosition = Vector3.zero; // Reset position to the socket's position
             artifact.transform.localRotation = Quaternion.identity; // Reset rotation to the socket's rotation
-            artifact.SetActive(true); // Ensure the artifact is active
             
             print("Holding artifact: " + artifact.name);
         }
         else
         {
             print("No artifact to hold.");
+        }
+    }
+    
+    protected void HandleArtifactRelease(GameObject artifact, string position, string rotation)
+    {
+        // Assuming position and rotation are in the format "x,y,z" and "x,y,z,w" respectively
+        position = position.Trim('(', ')'); // Remove parentheses
+        var positionParts = position.Split(',');
+        if (positionParts.Length != 3)
+        {
+            Debug.LogError("Invalid position format. Expected format: x,y,z");
+            return;
+        }
+        
+        var releasePosition = new Vector3(
+            float.Parse(positionParts[0]),
+            float.Parse(positionParts[1]),
+            float.Parse(positionParts[2])
+        );
+        
+        rotation = rotation.Trim('(', ')'); // Remove parentheses
+        var rotationParts = rotation.Split(',');
+        if (rotationParts.Length != 3)
+        {
+            Debug.LogError("Invalid rotation format. Expected format: x,y,z");
+            return;
+        }
+        var releaseRotation = new Vector3(
+            float.Parse(rotationParts[0]),
+            float.Parse(rotationParts[1]),
+            float.Parse(rotationParts[2])
+        );
+        
+        // Set the artifact's position and rotation
+        if (artifact != null)
+        {
+            artifact.transform.SetParent(null); // Remove the parent
+            artifact.transform.position = releasePosition;
+            artifact.transform.rotation = Quaternion.Euler(releaseRotation); // Convert to Quaternion
+            
+            print("Released artifact: " + artifact.name);
+        }
+        else
+        {
+            print("No artifact to release.");
         }
     }
 

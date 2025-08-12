@@ -8,5 +8,6 @@
         public const string Rotate              = "rotate";
         public const string Say                 = "say";
         public const string Grab                = "grab";
+        public const string Release             = "release";
     }
 }

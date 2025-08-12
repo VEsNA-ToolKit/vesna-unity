@@ -199,7 +199,18 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         var artifact = GameObject.Find(grabData.Name.Trim('"'));
-                        HandleArtifactGrabAndRelease(artifact);
+                        HandleArtifactGrab(artifact);
+                    });
+                    break;
+                case MessageTypes.Release:
+                    print("Agent needs to release an artifact.");
+                    var releaseData = message.Data.ToObject<ReleaseData>();
+                    UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        var artifact = GameObject.Find(releaseData.Name.Trim('"'));
+                        var position = releaseData.Position.Trim('"');
+                        var rotation = releaseData.Rotation.Trim('"');
+                        HandleArtifactRelease(artifact, position, rotation);
                     });
                     break;
                 default:
