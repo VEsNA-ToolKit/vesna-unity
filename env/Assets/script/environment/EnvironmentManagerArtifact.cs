@@ -174,8 +174,12 @@ public class EnvironmentManagerArtifact : Artifact
         var positionData = await tcs.Task;
         if (positionData.Length == 3)
         {
-            wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
-                null, "artifact_position", agentName, positionData));
+            wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
+                "artifactStrategy",
+                null, 
+                "artifact_position", 
+                agentName, 
+                positionData));
         }
         else
         {

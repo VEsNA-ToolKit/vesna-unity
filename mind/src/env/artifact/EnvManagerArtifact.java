@@ -5,6 +5,8 @@ import artifact.lib.model.WsMessage;
 import artifact.lib.utils.ObjectMapperUtils;
 import cartago.OPERATION;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -66,12 +68,25 @@ public class EnvManagerArtifact extends AbstractMasElementArtifact {
         try{
             lock.lock();
             // Signal the agent that requested the artifact
-            WsMessage wsMessage = ObjectMapperUtils
-                    .convertJsonStringToObject(message, new TypeReference<>() {});
-            List<String> artifactNames = ObjectMapperUtils.convertObject(wsMessage.getParam(), new TypeReference<>() {});
+            //WsMessage wsMessage = ObjectMapperUtils.convertJsonStringToObject(message, new TypeReference<>() {});
+            JSONObject messageJson = new JSONObject(message);
+            String type = messageJson.getString("type");
+            String receiver = messageJson.getString("receiver");
+            String sender = messageJson.getString("sender");
 
-            execInternalOp("signalAgent", wsMessage.getAgentName(),
-                    wsMessage.getAgentEvent(), artifactNames.toArray());
+            if (!type.equals("arts_info"))
+                throw new Exception("Wrong message type: " + type + ". Expected 'arts_info'.");
+
+            // Extract artifact names from the message
+            List<String> artifactNames = messageJson.getJSONObject("data")
+                    .getJSONArray("names")
+                    .toList()
+                    .stream()
+                    .map(Object::toString)
+                    .toList();
+
+            // Signal the agent that requested the artifact
+            execInternalOp("signalAgent", receiver, "artifact_names", artifactNames.toArray());
         }catch (Exception e){
             e.printStackTrace();
         }finally {

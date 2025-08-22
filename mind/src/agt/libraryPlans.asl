@@ -141,3 +141,6 @@ seen_agent([]).
     // // !define_payload("conversation", Content, ReturnMsg);
     // // !sendMessageToUnity(ReturnMsg).
     vesna.says( Content ).
+
++artifact_names(ArtifactList) : true <-
+    +artifact_names(ArtifactList).

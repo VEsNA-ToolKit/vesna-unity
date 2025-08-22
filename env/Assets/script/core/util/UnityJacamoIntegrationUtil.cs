@@ -171,6 +171,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 	//TODO: Fix this by finding the root folder (before "env") and then going to the "mind" folder
 	public static async Task RunJaCaMoApp()
 	{
+		return;
 		var isWindows = RuntimeInformation.IsOSPlatform( OSPlatform.Windows );
 		var mindPath = GetJacamoPath(Application.dataPath);
 		var gradleWrapper = isWindows ? "gradlew.bat" : "./gradlew";
@@ -240,8 +241,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		await Task.WhenAll(tasks);
 	}
 
-	public static string createAndConvertJacamoMessageIntoJsonString(string messageType,
-		string messagePayload, string agentEvent, string agentName, object param)
+	public static string createAndConvertJacamoMessageIntoJsonString(string messageType, string messagePayload, string agentEvent, string agentName, object param)
 	{
 		// In sight: messagePayload is null. agentName is null. param può essere o la stringa del nome o una struttura
 	 // artifactInfo.
@@ -273,10 +273,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 				}
 				wsMsg = new BrainMessage( "body", "vesna", "movement", moveData );
 				break;
-				
-// 			case "counter":
-
-
+			
 			case "supermarketDoorStatus":
 				DoorData doorData = new DoorData( (bool) param );
 				wsMsg = new BrainMessage( "body", "vesna", "door", doorData );
