@@ -69,7 +69,7 @@ public abstract class AbstractAvatarWithEyesAndVoice : AbstractAvatar
                     {
                         WalkData data = message.Data.ToObject<WalkData>();
                         SetBaloonText("New destination: " + data.Target );
-                        reachDestination( data.Target );
+                        ReachDestination( data.Target );
                     });
                     break;
                 default:

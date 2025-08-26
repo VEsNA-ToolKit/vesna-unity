@@ -136,10 +136,19 @@ public abstract class AbstractAvatar : AbstractMasElement
         set { jaCaMoAgentClassPath = value; }
     }
 
-    protected void reachDestination(string dest)
+    protected void ReachDestination(string dest)
     {
         agent.isStopped = false;
-        agent.SetDestination(GameObject.Find(dest).transform.position);
+
+
+        var destObject = GameObject.Find(dest);
+        if (destObject == null)
+        {
+            Debug.LogError($"Destination is null.");
+            return;
+        }
+        
+        agent.SetDestination(destObject.transform.position);
     }
 
     public void SendMessageToJaCaMoBrain( string message )
@@ -168,7 +177,7 @@ public abstract class AbstractAvatar : AbstractMasElement
                     WalkData walkData = message.Data.ToObject<WalkData>();
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
-                        reachDestination( walkData.Target );
+                        ReachDestination( walkData.Target );
                     });
                     break;
                 default:
