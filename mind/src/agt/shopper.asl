@@ -13,12 +13,14 @@ inside_supermarket(false).
 actual_shop(none).
 
 is_friend( Name ) :- friends( Friends ) & .member( Name, Friends ).
-is_neutral( Name ) :- neutrals( Neutrals ) & .member( Name, Neutrals ). // Added acquaintances list 
+is_neutral( Name ) :- neutrals( Neutrals ) & .member( Name, Neutrals ). //AGGIUNTA
 
 count(0).
 
+
 // Regola per recuperare l'ID della conversazione in cui è coinvolto un agente
 conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agent, AgentsList).
+
 
 /* ----------------- LOGIC PLANS ---------------------*/
 
@@ -118,10 +120,13 @@ conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agen
 // NEW PLANS
 
 +reached(friend, Friend) <-
+    vesna.stop;
+    .print("MAAAA");
     Content = "Hi! How are you?";
     !writeLog(["Sending to ", Friend, ": ", Content]);
+    .print("Sending to ", Friend, ": ", Content);
     !update_balloon_message(Content);
-    .wait(2000);
+    //.wait(2000);
     .send(Friend, achieve, friend_message(Content)).
 
 +new_agent_seen(AgentElement) <-

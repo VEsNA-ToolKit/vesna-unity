@@ -30,7 +30,7 @@ public static class FFormation
             return;
         }
 
-        if (conv.Participants.Count >= 1)
+        if (conv.Participants.Count > 1)
         {
             ChangeFormation(conversationName);
         }

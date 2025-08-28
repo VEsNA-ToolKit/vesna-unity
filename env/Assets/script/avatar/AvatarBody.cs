@@ -9,6 +9,7 @@ public class AvatarBody : MonoBehaviour
     NavMeshAgent agent;
     GameObject root;
     ShopperAvatarScript mainAvatarScript;
+    AvatarAnimationController animationController; 
     string artifactReached = "";
 
     // Start is called before the first frame update
@@ -16,8 +17,8 @@ public class AvatarBody : MonoBehaviour
     {
         root = transform.parent.gameObject;
         mainAvatarScript = root.GetComponent<ShopperAvatarScript>();
-
         agent = GetComponent<NavMeshAgent>();
+        animationController = GetComponent<AvatarAnimationController>();
     }
 
     // Update is called once per frame
@@ -30,6 +31,7 @@ public class AvatarBody : MonoBehaviour
     {
         agent.isStopped = false;
         agent.SetDestination(GameObject.Find(dest).transform.position);
+        animationController.SetAnimationState("walk");
     }
 
     private void OnTriggerEnter(Collider other)
@@ -50,6 +52,8 @@ public class AvatarBody : MonoBehaviour
                     "destinationReached", null, "reached_destination", null, dest
                 )
             );
+            
+            animationController.SetAnimationState("stop");
             artifactReached = dest;
             mainAvatarScript.EnableDisableVisionCone(false);
         }
@@ -67,4 +71,5 @@ public class AvatarBody : MonoBehaviour
             artifactReached = "";
         }
     }
+    
 }

@@ -37,9 +37,10 @@ public class says extends DefaultInternalAction {
             data.put( "msg", args[1].toString() );
         }
         else if ( args.length == 3 ) {
-            data.put( "performative", args[0].toString() );
-            data.put( "recipient", args[1].toString() );
-            data.put( "msg", args[2].toString() );
+            //data.put( "performative", args[0].toString() );
+            data.put( "recipient", args[0].toString());
+            data.put( "msg", args[1].toString());
+            data.put("mood", args[2].toString());
         }
         action.put( "data", data );
 

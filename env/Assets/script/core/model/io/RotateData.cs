@@ -1,3 +1,4 @@
+#nullable enable
 using Newtonsoft.Json;
 using System;
 using UnityEngine;

@@ -26,7 +26,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         animationController = GetComponentInChildren<AvatarAnimationController>();
     }
 
-    public void SendMessageToJaCaMoBrain( string message )
+
+    public new void SendMessageToJaCaMoBrain( string message )
     {
         wsChannel.sendMessage(message);
     }
@@ -51,10 +52,12 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         {
             if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance)
             {
-                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                if (!agent.hasPath /*|| agent.velocity.sqrMagnitude == 0f*/)
                 {
                     Debug.Log($"[CheckIfReachedFriend] Agente ha raggiunto {(isDestinationPoint ? "la destinazione" : "l'amico")}: {friend}");
 
+                    agent.isStopped = true;
+                    movementModel.IsStopped = true;
                     animationController.SetAnimationState("stop");
 
                     if(agentConversations != null && agentConversations.Conversations.Count > 0)
@@ -130,7 +133,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
             yield return new WaitForSeconds(0.1f);
         }
     }
-
 
     // Unity avatar receives message from jacamo agent
     protected override void OnMessage(object sender, MessageEventArgs e)
@@ -210,9 +212,11 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         Debug.Log("DESTINAZIONE di " + objInUse.name + " : " + walkData.Target);
                         GameObject targetObj = GameObject.Find(walkData.Target);
 
+
                         if (animationController != null)
                         {
                             animationController.SetAnimationState("walk");
+                            Debug.Log("CAMMINA");
                         }
 
                         if (targetObj.CompareTag("Artifact"))
@@ -226,6 +230,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 {
                                     anchor.AssignAgent(objInUse.name);
                                     reachDestination(anchor.name);
+                                    //animationController.SetAnimationState("walk");
                                     assigned = true;
                                     break;
                                 }
@@ -240,7 +245,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 // magari anche in base alla personalità
                             }
                         }
-
 
                         targetConversations = targetObj.GetComponent<AgentConversations>();
                         agentConversations = objInUse.GetComponent<AgentConversations>();
@@ -302,6 +306,10 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 case "say":
                     // Avatar receives the type of artifact to reach
                     SaysData saysData = message.Data.ToObject<SaysData>();
+                    if(!string.IsNullOrEmpty(saysData.Mood)){
+                        Debug.Log($"[Say] Msg: {saysData.Msg}, Mood: {saysData.Mood}");
+                    }
+
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         if (animationController != null)
@@ -309,6 +317,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                             animationController.SetAnimationState("say"); 
                         }
                         SetBaloonText(saysData.Msg);
+                        Debug.Log(objInUse.name + " sta parlando");
                         
                     });
                     break;

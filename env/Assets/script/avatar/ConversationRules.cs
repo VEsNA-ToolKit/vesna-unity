@@ -21,10 +21,10 @@ public static class ConversationRules
         else{
             conversation = targetConversations.Conversations[0];
             partecipants = ConversationObject.GetParticipantsCount(conversation);
-            if(partecipants < 5){
-                UnityEngine.Debug.Log("FFormation!!!");
-                FFormation.JoinConversation(agentName, conversation, agentConversations);
-            }
+            
+            UnityEngine.Debug.Log("FFormation!!!");
+            FFormation.JoinConversation(agentName, conversation, agentConversations);
+            
             return null;
         }
     }
