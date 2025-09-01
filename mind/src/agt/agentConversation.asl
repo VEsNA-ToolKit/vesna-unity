@@ -107,6 +107,11 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     .print(["Conversation is full, cannot add ", NewFriend]);
     .send(NewFriend, achieve, walk_and_not_talk).
 
++!join_conversation(NewFriend)[source(NewFriend)] : not count2(ID, _) <- 
+    .print("No count2 found, cannot join, retry in 1 second");
+    .wait(1000);            
+    !evaluateIfCanStartConversation(NewFriend, Me, Reply). 
+
 +!walk_and_not_talk[source(NewFriend)] <-
     .print("CAMMINA");
     -+actual_intention(start_walking);
