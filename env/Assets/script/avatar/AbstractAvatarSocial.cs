@@ -46,7 +46,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
             yield break;
         }
 
-        bool isDestinationPoint = friend.StartsWith("dest_");
+        bool isDestinationPoint = friend.StartsWith("dest_") || GameObject.Find(friend)?.tag == "Artifact" || friend.StartsWith("anchor");
 
         while (true)
         {
@@ -78,9 +78,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 "destinationReached", null, "reached_friend", null, friend));
                         Debug.Log("DESTINAZIONE: " + friend);
                     }
-
-                    // Riattiva la vision cone quando arriva
-                    EnableDisableVisionCone(false); //Questo l'ho messo false
+                    
+                    EnableDisableVisionCone(false); 
 
                     yield break;
                 }
@@ -111,7 +110,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         EnableDisableVisionCone(true);
     }
 
-    // Serve per controllare quando si libera l'anchor 
     private IEnumerator WaitForFreeAnchor(GameObject targetObj)
     {
         CheckAnchors[] anchors = targetObj.GetComponentsInChildren<CheckAnchors>();
@@ -161,7 +159,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         print("ANDREA CIAO");
                         UnityMainThreadDispatcher.Instance().Enqueue(() =>
                         {
-                            // Check per controllare se esiste un anchor associato all'agente
                             CheckAnchors[] allAnchors = FindObjectsByType<CheckAnchors>(FindObjectsSortMode.None);
                             foreach (var anchor in allAnchors)
                             {
@@ -184,13 +181,11 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                             agent.ResetPath();
                             SetBaloonText("Walking");
                             movementModel.StartWalking();
-                            EnableDisableVisionCone(false); //a 11.08
+                            EnableDisableVisionCone(false); 
                             StartCoroutine(ActivateVisionCone());
 
-                            if (animationController != null)
-                            {
-                                animationController.SetAnimationState("walk");
-                            }
+                            animationController.SetAnimationState("walk");
+                            
                         });
                         break;
                     }
@@ -208,16 +203,14 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         movementModel.IsStopped = true;
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
-                        //reachDestination(walkData.Target);
                         Debug.Log("DESTINAZIONE di " + objInUse.name + " : " + walkData.Target);
                         GameObject targetObj = GameObject.Find(walkData.Target);
+                        animationController.SetAnimationState("walk");
 
+                        targetConversations = targetObj.GetComponent<AgentConversations>();
+                        agentConversations = objInUse.GetComponent<AgentConversations>();
 
-                        if (animationController != null)
-                        {
-                            animationController.SetAnimationState("walk");
-                            Debug.Log("CAMMINA");
-                        }
+                        GameObject conv = ConversationRules.CheckConversation(walkData.Target, agentConversations, targetConversations, objInUse.name, AgentBeliefs);
 
                         if (targetObj.CompareTag("Artifact"))
                         {
@@ -230,7 +223,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 {
                                     anchor.AssignAgent(objInUse.name);
                                     reachDestination(anchor.name);
-                                    //animationController.SetAnimationState("walk");
+                                    StartCoroutine(CheckIfReachedFriend(anchor.name));
                                     assigned = true;
                                     break;
                                 }
@@ -246,16 +239,13 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                             }
                         }
 
-                        targetConversations = targetObj.GetComponent<AgentConversations>();
-                        agentConversations = objInUse.GetComponent<AgentConversations>();
-
-                        GameObject conv = ConversationRules.CheckConversation(walkData.Target, agentConversations, targetConversations, objInUse.name, AgentBeliefs);
-                        if (conv != null)
-                        {
+                        if(conv != null){
                             reachDestination(conv.name);
                             StartCoroutine(CheckIfReachedFriend(walkData.Target));
                             Debug.Log("WALK-DATA di " + objInUse.name + " : " + walkData.Target);
                         }
+
+                        
                     });
                     break;
 
@@ -266,11 +256,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         SetBaloonText("I'm stopped");
                         movementModel.IsStopped = true;
                         agent.isStopped = true;
-                        if (animationController != null)
-                        {
-                            animationController.SetAnimationState("stop"); 
-                        }
-
+                        animationController.SetAnimationState("stop"); 
                         EnableDisableVisionCone(false);
                         // [17.04.25] This goes in the rotate msg
                         // transform.LookAt(GameObject.Find(message.MessagePayload).transform);
@@ -312,10 +298,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
-                        if (animationController != null)
-                        {
-                            animationController.SetAnimationState("say"); 
-                        }
+                        animationController.SetAnimationState("say"); 
                         SetBaloonText(saysData.Msg);
                         Debug.Log(objInUse.name + " sta parlando");
                         
