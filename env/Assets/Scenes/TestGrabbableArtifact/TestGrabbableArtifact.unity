@@ -918,7 +918,6 @@ GameObject:
   - component: {fileID: 1493583820}
   - component: {fileID: 1493583819}
   - component: {fileID: 1493583818}
-  - component: {fileID: 1493583822}
   - component: {fileID: 1493583823}
   - component: {fileID: 1493583824}
   m_Layer: 0
@@ -1019,18 +1018,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1493583822
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1493583817}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4735d0a26469baf4aacada0b37ce9905, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1493583823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1045,6 +1032,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objInUse: {fileID: 1493583817}
   port: 666
+  artifactType: 7
   barProperties: []
   fruitShopProperties: []
   dressShopProperties: []
@@ -1268,6 +1256,10 @@ PrefabInstance:
     - target: {fileID: 9161112310336426716, guid: 7d570a711f748954b81f7ef6dad82ca2, type: 3}
       propertyPath: jcmFilePath
       value: ../mind/testGrabbableArtifact.jcm
+      objectReference: {fileID: 0}
+    - target: {fileID: 9161112310336426716, guid: 7d570a711f748954b81f7ef6dad82ca2, type: 3}
+      propertyPath: artifactType
+      value: 8
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

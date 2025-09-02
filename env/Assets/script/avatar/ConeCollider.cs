@@ -42,7 +42,7 @@ public class ConeCollider : MonoBehaviour
             ArtifactInfo artifactInfo = new ArtifactInfo
             {
                 ArtifactName = other.name,
-                ArtifactType = retrieveArtifactType(obj),                
+                ArtifactType = RetrieveArtifactType(obj),                
             };
 
             root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
@@ -61,14 +61,11 @@ public class ConeCollider : MonoBehaviour
         // }
     }
 
-    private static string retrieveArtifactType(GameObject other)
+    private static string RetrieveArtifactType(GameObject other)
     {
         // Get artifact type 
-        GenericArtifactType artType = other.GetComponent<GenericArtifactType>();
-        if (artType == null)
-        {
-            throw new Exception("Artifact type script is null");
-        }
-        return artType.GetShopType().ToString().ToLower();
+        var artifactType = other.GetComponent<Artifact>().ArtifactType;
+        
+        return artifactType.ToString().ToLower();
     }
 }

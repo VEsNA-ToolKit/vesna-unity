@@ -19,8 +19,8 @@ public class Artifact : AbstractArtifact
     {
         propertyNames.Clear();
         // Retrieve all fields
-        FieldInfo[] fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-        foreach (FieldInfo field in fields)
+        var fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+        foreach (var field in fields)
         {
             if (field.Name != "port" && field.Name != "objInUse")
             {
@@ -28,7 +28,6 @@ public class Artifact : AbstractArtifact
             }
         }
         objInUse = gameObject;
-        artifactType = gameObject.GetComponent<GenericArtifactType>().GetShopType();
 
         if (Application.IsPlaying(gameObject))
         {
@@ -51,7 +50,7 @@ public class Artifact : AbstractArtifact
         else
         {
             // Editor logic
-            foreach (string prop in propertyNames)
+            foreach (var prop in propertyNames)
             {
                 print(prop);
             }

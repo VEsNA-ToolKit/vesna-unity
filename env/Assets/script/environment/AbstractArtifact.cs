@@ -6,6 +6,7 @@ public class AbstractArtifact : AbstractMasElement
 {
     // Properties in JSON format to configure .jcm file
     protected string artifactProperties;
+    [SerializeField]
     protected ArtifactTypeEnum artifactType;
     // List of all property names
     protected List<string> propertyNames = new List<string>();
@@ -15,13 +16,7 @@ public class AbstractArtifact : AbstractMasElement
         set { artifactProperties = value; }
     }
 
-    public ArtifactTypeEnum ArtifactType
-    {
-        get { return artifactType; }
-    }
+    public ArtifactTypeEnum ArtifactType => artifactType;
 
-    public List<string> PropertyNames
-    {
-        get { return propertyNames; }
-    }
+    public List<string> PropertyNames => propertyNames;
 }

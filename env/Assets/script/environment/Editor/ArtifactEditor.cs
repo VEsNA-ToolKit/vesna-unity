@@ -12,51 +12,51 @@ public class ArtifactEditor : Editor
 
     public VisualTreeAsset visualTree;
     // Script that has dynamic inspector
-    private Artifact artifactScript;
+    private Artifact _artifactScript;
     // Artifact type
-    private ArtifactTypeEnum artifactType;
-    private VisualElement root;
+    private ArtifactTypeEnum _artifactType;
+    private VisualElement _root;
 
     // All artifact properties
-    private PropertyField property;
-    private List<string> propertyNames;
+    private PropertyField _property;
+    private List<string> _propertyNames;
 
     private void OnEnable()
     {
-        artifactScript = (Artifact)target;
-        artifactType = artifactScript.gameObject.GetComponent<GenericArtifactType>().GetShopType();        
+        _artifactScript = (Artifact)target;
+        _artifactType = _artifactScript.ArtifactType;        
     }
 
     public override VisualElement CreateInspectorGUI()
     {
-        root = new VisualElement();
+        _root = new VisualElement();
         // Add UI builder into the root to update the UI of the inspector
-        visualTree.CloneTree(root);
+        visualTree.CloneTree(_root);
 
-        string artType = artifactType.ToString();
+        string artType = _artifactType.ToString();
         artType = char.ToLower(artType[0]) + artType.Substring(1);
         Debug.Log("Art Type: " + artType);
         ShowAndHide(artType + "Properties");
 
-        return root;
+        return _root;
     }
 
     private void ShowAndHide(string propertyName)
     {
-        propertyNames = artifactScript.PropertyNames;        
-        property = root.Q<PropertyField>(propertyName);
-        if (property != null)
+        _propertyNames = _artifactScript.PropertyNames;        
+        _property = _root.Q<PropertyField>(propertyName);
+        if (_property != null)
         {
             Debug.Log("Showing " + propertyName);
-            property.style.display = DisplayStyle.Flex;
+            _property.style.display = DisplayStyle.Flex;
         }
     
         // Hide others        
-        foreach(var propName in propertyNames)
+        foreach(var propName in _propertyNames)
         {
             if (propName != propertyName)
             {
-                var propField = root.Q<PropertyField>(propName);
+                var propField = _root.Q<PropertyField>(propName);
                 if (propField != null)
                 {
                     Debug.Log("Hiding " + propName);
