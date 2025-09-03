@@ -11,7 +11,7 @@ public static class ConversationObject
 
     public static GameObject CreateConversation(string agentName, string targetName, AgentConversations agentConversations, AgentConversations targetConversations){
         
-        GameObject conversationObj = new GameObject($"conversation {conversationCount}");
+        GameObject conversationObj = new GameObject($"conversation_{conversationCount}");
         ActiveConversations.Add(new ConversationData
         {
         Conversation = conversationObj,

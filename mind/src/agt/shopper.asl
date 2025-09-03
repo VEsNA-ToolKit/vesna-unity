@@ -125,6 +125,7 @@ conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agen
     Content = "Hi! How are you?";
     !writeLog(["Sending to ", Friend, ": ", Content]);
     .print("Sending to ", Friend, ": ", Content);
+    vesna.says(Friend, Content);
     !update_balloon_message(Content);
     //.wait(2000);
     .send(Friend, achieve, friend_message(Content)).

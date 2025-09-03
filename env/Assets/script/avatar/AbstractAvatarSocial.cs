@@ -106,7 +106,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
     protected IEnumerator ActivateVisionCone()
     {
-        yield return new WaitForSeconds(4.0f);
+        yield return new WaitForSeconds(3.0f);
         EnableDisableVisionCone(true);
     }
 
@@ -231,8 +231,18 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
                             if (!assigned)
                             {
-                                Debug.Log($"[Anchor] Nessun anchor libero ora per {objInUse.name}, in attesa...");
-                                StartCoroutine(WaitForFreeAnchor(targetObj));
+                                if (anchors.Length == 0)
+                                {
+                                    // Non ci sono anchor, vai direttamente alla destinazione dell’Artifact
+                                    reachDestination(targetObj.name);
+                                    StartCoroutine(CheckIfReachedFriend(targetObj.name));
+                                }
+                                else
+                                {
+                                    StartCoroutine(WaitForFreeAnchor(targetObj));
+                                }
+
+                                
 
                                 // qua volendo si può mandare un messaggio a JaCaMo e decide il cervello poi che fare
                                 // magari anche in base alla personalità

@@ -19,13 +19,6 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     +count2(ID, N1);
     .print("Contatore conversazione: ", ID ," incrementato, numero agenti: ", N1).
 
-
-+!send_finish_to_all([]) <- .print("Messaggi finish inviati a tutti.").
-
-+!send_finish_to_all([Agent|Rest]) <-
-    .send(Agent, achieve, finish_conversation);
-    !send_finish_to_all(Rest).
-
 // Provo a iniziare una conversazione con Friend
 +!startConversation(Friend)<-
     .send(Friend, tell, conversation_lock(Friend, true));
@@ -86,7 +79,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     !send_to_all(Rest, Perf, Content).
 
 // --- JOIN FIX ---
-+!join_conversation(NewFriend)[source(NewFriend)] : count2(ID, N) & N < 3 <-
++!join_conversation(NewFriend) : count2(ID, N) & N < 3 <-
     .print("CONTEGGIO AGENTI: ", N, " ID: ", ID);
     !writeLog(["Allowing ", NewFriend, " to join the conversation"]);
     .print("JOIN");
@@ -102,15 +95,16 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     !send_to_all(NewAgentsList, tell, conversation_update(ID, NewAgentsList));
     .send(NewFriend, tell, joined_conversation).
 
-+!join_conversation(NewFriend)[source(NewFriend)] : count2(ID, N) & N >= 3 <-
++!join_conversation(NewFriend) : count2(ID, N) & N >= 3 <-
     .print("CONTEGGIO AGENTI: ", N, " ID: ", ID);
     .print(["Conversation is full, cannot add ", NewFriend]);
     .send(NewFriend, achieve, walk_and_not_talk).
 
-+!join_conversation(NewFriend)[source(NewFriend)] : not count2(ID, _) <- 
-    .print("No count2 found, cannot join, retry in 1 second");
-    .wait(1000);            
-    !evaluateIfCanStartConversation(NewFriend, Me, Reply). 
++!join_conversation(NewFriend) : not count2(ID, _) <- 
+    .print("No count2 found, cannot join, retry in another time");
+    .wait(1000); 
+    -+actual_intention(start_walking);
+    !start_walking.
 
 +!walk_and_not_talk[source(NewFriend)] <-
     .print("CAMMINA");
@@ -133,8 +127,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     -+actual_intention(talk);
     vesna.walk(Friend);
     .wait(1000);
-    vesna.says(Friend, "Ciao, mi unisco anch'io!");
-    .print("PROVA").
+    vesna.says(Friend, "Ciao, mi unisco anch'io!").
 
 @actual_plan_for_conversation
 +!friend_message(Content)[source(Sender)] : Content \== "Bye!!" <- 
@@ -160,20 +153,23 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     -+actual_intention(start_walking);
     !start_walking.
 
-
-+!finish_conversation[source(Sender)] <-
++!finish_conversation[source(Sender)] <- 
     .wait(2000);
     !writeLog(["Conversation finished by ", Sender]);
-    // Rimuovo tutte le talking_to locali
     .abolish(talking_to(_));
-    // Rimuovo la conversazione
-    ?conversation(ID, AgentsList);
-    -conversation(ID, AgentsList);
-    -count2(ID, _);
-    // Riprendo a camminare
     -+actual_intention(start_walking);
-    !start_walking.
+    !start_walking;
+    ?conversation(ID, AgentsList);
+    .delete(AgentsList, Sender, Others);
+    !send_finish_to_all(Others);
+    -conversation(ID, AgentsList);
+    -count2(ID, _).
 
++!send_finish_to_all([]) <- .print("Messaggi finish inviati a tutti.").
+
++!send_finish_to_all([Agent|Rest]) <- 
+    .send(Agent, achieve, finish_conversation);
+    !send_finish_to_all(Rest).
 
 @finish_other_conversation
 +!finish_other_conversation[source(Sender)] <- 
