@@ -123,6 +123,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     anchor.AssignAgent(objInUse.name);
                     currentAnchor = anchor;
                     Debug.Log($"[Anchor] {objInUse.name} ha trovato anchor libero: {anchor.name}");
+                    animationController.SetAnimationState("walk");
                     reachDestination(anchor.name);
                     yield break;
                 }
@@ -239,6 +240,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 }
                                 else
                                 {
+                                    animationController.SetAnimationState("stop");
                                     StartCoroutine(WaitForFreeAnchor(targetObj));
                                 }
 

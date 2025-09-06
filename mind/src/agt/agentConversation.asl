@@ -25,7 +25,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     .send(Friend, askOne, talking_to(Any), Reply);
     .print("REPLY: ", Reply);
     .my_name(Me);
-    .print("Friend", Friend);
+    .print("Friend: ", Friend);
     !evaluateIfCanStartConversation(Friend, Me, Reply).
 
 
@@ -56,7 +56,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     -+actual_intention(talk);
     .print(["Starting conversation with: ", Friend, " in conversation ", NewID]);
     //vesna.says("inform", Friend, "Heiiii!", "felice");
-    vesna.says(Friend, "Heiiii!", "felice");
+    vesna.says(Friend, "Heiiii!", "happy");
     .send(Friend, achieve, stop_and_talk).   
 
 @agent_not_busy_start_conversation
@@ -101,8 +101,10 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     .send(NewFriend, achieve, walk_and_not_talk).
 
 +!join_conversation(NewFriend) : not count2(ID, _) <- 
+    .print("NewFriend: ", NewFriend);
     .print("No count2 found, cannot join, retry in another time");
     .wait(1000); 
+    -talking_to(_);
     -+actual_intention(start_walking);
     !start_walking.
 
@@ -112,14 +114,21 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     !start_walking.
 
 // --- Aggiorna la conversazione quando ricevo un update ---
+// Caso in cui ho già la conversazione
 +conversation_update(ID, NewAgentsList)[source(Sender)] : conversation(ID, OldList) <- 
     -conversation(ID, OldList);
     +conversation(ID, NewAgentsList);
-    .print(["Conversation ", ID, " aggiornata: ", NewAgentsList]).
+    Length = .length(NewAgentsList);
+    -count2(ID, _);                
+    +count2(ID, Length);           
+    .print(["Conversation ", ID, " aggiornata: ", NewAgentsList, " ", Length, " agenti"]).
 
+// Caso in cui è la prima volta che sento parlare di questa conversazione
 +conversation_update(ID, NewAgentsList)[source(Sender)] : not conversation(ID, _) <- 
     +conversation(ID, NewAgentsList);
-    .print(["Conversation ", ID, " aggiunta: ", NewAgentsList]).
+    Length = .length(NewAgentsList);
+    +count2(ID, Length);
+    .print(["Conversation ", ID, " aggiunta: ", NewAgentsList, " ", Length, " agenti"]).
 
 +joined_conversation[source(Friend)] <-
     .print(["Joined conversation with ", Friend]);
