@@ -109,6 +109,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     !start_walking.
 
 +!walk_and_not_talk[source(NewFriend)] <-
+    .wait(2000);
     .print("CAMMINA");
     -+actual_intention(start_walking);
     !start_walking.
@@ -162,22 +163,25 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     -+actual_intention(start_walking);
     !start_walking.
 
-+!finish_conversation[source(Sender)] <- 
-    .wait(2000);
++!finish_conversation[source(Sender)] <-
+    ?conversation(ID, AgentsList);
     !writeLog(["Conversation finished by ", Sender]);
+    !send_finish_to_all(AgentsList);
+    -conversation(ID, AgentsList);
+    -count2(ID,_);
     .abolish(talking_to(_));
     -+actual_intention(start_walking);
-    !start_walking;
-    ?conversation(ID, AgentsList);
-    .delete(AgentsList, Sender, Others);
-    !send_finish_to_all(Others);
-    -conversation(ID, AgentsList);
-    -count2(ID, _).
+    !start_walking.
+
++!finish_conv <- 
+    .abolish(talking_to(_));
+    -+actual_intention(start_walking);
+    !start_walking.
 
 +!send_finish_to_all([]) <- .print("Messaggi finish inviati a tutti.").
 
 +!send_finish_to_all([Agent|Rest]) <- 
-    .send(Agent, achieve, finish_conversation);
+    .send(Agent, achieve, finish_conv);
     !send_finish_to_all(Rest).
 
 @finish_other_conversation
