@@ -11,6 +11,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 {
     protected MovementModel movementModel;
     protected AvatarAnimationController animationController; 
+    protected AvatarFACS avatarMood;
 
     [System.NonSerialized]
     public AgentConversations agentConversations;
@@ -24,6 +25,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         // Set waypoints to follow
         movementModel = GetComponent<MovementModel>();
         animationController = GetComponentInChildren<AvatarAnimationController>();
+        avatarMood = GetComponentInChildren<AvatarFACS>();
     }
 
 
@@ -313,6 +315,14 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         animationController.SetAnimationState("say"); 
                         SetBaloonText(saysData.Msg);
                         Debug.Log(objInUse.name + " sta parlando");
+                        
+                        
+                       if(!string.IsNullOrEmpty(saysData.Mood)){
+                            if(avatarMood == null)
+                                Debug.LogWarning("avatarMood is null!");
+                            else
+                                avatarMood.SetSkinnerMesh(saysData.Mood);
+                        }
                         
                     });
                     break;
