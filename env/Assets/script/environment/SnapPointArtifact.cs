@@ -1,17 +1,28 @@
+using System;
+using UnityEditor.UIElements;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace script.environment
 {
     
     [ExecuteInEditMode]
-    public class SnapPoint : MonoBehaviour
+    public class SnapPointArtifact : Artifact
     {
+        [SerializeField]
         public bool snapToSurface;
 
-        public SnapPoint(bool snapToSurface)
+        protected override void Awake()
+        {
+            artifactType = ArtifactTypeEnum.SnapPoint;
+            base.Awake();
+        }
+
+        public SnapPointArtifact(bool snapToSurface)
         {
             this.snapToSurface = snapToSurface;
         }
+        
         private void Update()
         {
             // TODO: We could add a custom button in the inspector to trigger this action.

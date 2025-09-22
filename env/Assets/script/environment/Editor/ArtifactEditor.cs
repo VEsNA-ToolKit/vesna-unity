@@ -26,14 +26,14 @@ public class ArtifactEditor : Editor
         _artifactScript = (Artifact)target;
         _artifactType = _artifactScript.ArtifactType;        
     }
-
+    
     public override VisualElement CreateInspectorGUI()
     {
         _root = new VisualElement();
         // Add UI builder into the root to update the UI of the inspector
         visualTree.CloneTree(_root);
 
-        string artType = _artifactType.ToString();
+        var artType = _artifactType.ToString();
         artType = char.ToLower(artType[0]) + artType.Substring(1);
         Debug.Log("Art Type: " + artType);
         ShowAndHide(artType + "Properties");
@@ -44,25 +44,31 @@ public class ArtifactEditor : Editor
     private void ShowAndHide(string propertyName)
     {
         _propertyNames = _artifactScript.PropertyNames;        
+        if (_propertyNames == null) return;
+        
         _property = _root.Q<PropertyField>(propertyName);
         if (_property != null)
         {
             Debug.Log("Showing " + propertyName);
             _property.style.display = DisplayStyle.Flex;
         }
-    
+        
         // Hide others        
         foreach(var propName in _propertyNames)
         {
-            if (propName != propertyName)
-            {
-                var propField = _root.Q<PropertyField>(propName);
-                if (propField != null)
-                {
-                    Debug.Log("Hiding " + propName);
-                    propField.style.display = DisplayStyle.None;
-                }
-            }
+            if (propName == propertyName) continue;
+            
+            // Skip snapToSurface - handled in SnapPointArtifact
+            if (propName == "snapToSurface") continue;
+            
+            var propField = _root.Q<PropertyField>(propName);
+            if (propField == null) continue;
+            
+            // Hide artifactType if this is a SnapPoint
+            if (_artifactType == ArtifactTypeEnum.SnapPoint && propName == "artifactType") continue;
+            
+            Debug.Log("Hiding " + propName);
+            propField.style.display = DisplayStyle.None;
         }
     }
 }

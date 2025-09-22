@@ -14,14 +14,13 @@ public class release extends DefaultInternalAction {
 
     @Override
     public Object execute(TransitionSystem ts, Unifier un, Term[] args) throws Exception {
-        if (args.length != 3) {
+        if (args.length != 2) {
             return false;
         }
 
         JSONObject data = new JSONObject();
         data.put("name", args[0].toString());
-        data.put("position", args[1].toString());
-        data.put("rotation", args[2].toString());
+        data.put("snap_name", args[1].toString());
 
         JSONObject action = new JSONObject();
         action.put( "sender", ts.getAgArch().getAgName() );

@@ -7,6 +7,7 @@ public enum ArtifactTypeEnum
     Bar,
     SkyScraper,
     Inventory,
-    Grabbable,
-    EnvManager
+    EnvManager,
+    SnapPoint,
+    Cylinder // Temporary, for testing purposes only
 }

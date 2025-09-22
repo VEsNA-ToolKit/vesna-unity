@@ -29,7 +29,7 @@ public class EnvironmentManagerArtifact : Artifact
         catch (Exception)
         {
             print(data);
-            print("Message could not be converted.");
+            Debug.LogError("Message could not be converted.");
             return;
         }
         try
@@ -46,17 +46,16 @@ public class EnvironmentManagerArtifact : Artifact
                 case "nearest":
                     RetrieveNearestArtifactsByType(message.Param.ToString(), message.AgentName);
                     break;
-                case "artifact_position":
-                    RetrieveArtifactPosition(message.Param.ToString(), message.AgentName);
-                    break;
 
             }
         }
         catch (Exception ex)
         {
-            print("Exception occoured OnMessage " + ex);
+            Debug.LogError($"[Artifact {name}] Exception occurred OnMessage " + ex);
         }
     }
+
+    
 
     private async void RetrieveAllArtifacts(string agentName)
     {
@@ -146,44 +145,6 @@ public class EnvironmentManagerArtifact : Artifact
     
     private async void RetrieveArtifactPosition(string artifactName, string agentName)
     {
-        TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
-
-        await UnityMainThreadDispatcher.Instance()
-            .EnqueueAsync(() =>
-            {
-                var artifact = GameObject.Find(artifactName);
-                
-                if (artifact == null)
-                {
-                    Debug.LogError($"Artifact {artifactName} not found.");
-                    tcs.SetResult(new string[] { "Artifact not found" });
-                    return;
-                }
-                
-                Vector3 position = artifact.transform.position;
-                var positionData = new string[]
-                {
-                    position.x.ToString(),
-                    position.y.ToString(),
-                    position.z.ToString()
-                };
-                
-                tcs.SetResult(positionData);
-            });
-        
-        var positionData = await tcs.Task;
-        if (positionData.Length == 3)
-        {
-            wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
-                "artifactStrategy",
-                null, 
-                "artifact_position", 
-                agentName, 
-                positionData));
-        }
-        else
-        {
-            Debug.LogError("Position data is not in the expected format.");
-        }
+        throw new NotImplementedException();
     }
 }

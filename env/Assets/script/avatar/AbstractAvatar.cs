@@ -56,48 +56,29 @@ public abstract class AbstractAvatar : AbstractMasElement
         }
     }
     
-    protected void HandleArtifactRelease(GameObject artifact, string position, string rotation)
+    protected void HandleArtifactRelease(GameObject artifact, GameObject snapPoint)
     {
-        // Assuming position and rotation are in the format "x,y,z" and "x,y,z,w" respectively
-        position = position.Trim('(', ')'); // Remove parentheses
-        var positionParts = position.Split(',');
-        if (positionParts.Length != 3)
+        if (artifact != null && snapPoint != null)
         {
-            Debug.LogError("Invalid position format. Expected format: x,y,z");
-            return;
-        }
-        
-        var releasePosition = new Vector3(
-            float.Parse(positionParts[0]),
-            float.Parse(positionParts[1]),
-            float.Parse(positionParts[2])
-        );
-        
-        rotation = rotation.Trim('(', ')'); // Remove parentheses
-        var rotationParts = rotation.Split(',');
-        if (rotationParts.Length != 3)
-        {
-            Debug.LogError("Invalid rotation format. Expected format: x,y,z");
-            return;
-        }
-        var releaseRotation = new Vector3(
-            float.Parse(rotationParts[0]),
-            float.Parse(rotationParts[1]),
-            float.Parse(rotationParts[2])
-        );
-        
-        // Set the artifact's position and rotation
-        if (artifact != null)
-        {
-            artifact.transform.SetParent(null); // Remove the parent
-            artifact.transform.position = releasePosition;
-            artifact.transform.rotation = Quaternion.Euler(releaseRotation); // Convert to Quaternion
+            artifact.transform.SetParent(null); // Detach from avatar
             
-            print("Released artifact: " + artifact.name);
+            Collider surfaceCollider = snapPoint.GetComponent<Collider>();
+            Renderer movingRenderer = artifact.GetComponent<Renderer>();
+            
+            Vector3 newPos = snapPoint.transform.position; // XZ position of snap point
+            float surfaceTopY = surfaceCollider.bounds.max.y;
+            float movingBottomY = movingRenderer.bounds.min.y;
+            float yOffset = surfaceTopY - movingBottomY;
+
+            newPos.y += yOffset;
+            artifact.transform.position = newPos;
+            artifact.transform.rotation = snapPoint.transform.rotation;
+            
+            print("Released artifact: " + artifact.name + " to snap point: " + snapPoint.name);
         }
         else
         {
-            print("No artifact to release.");
+            print("No artifact to release or no snap point provided.");
         }
     }
 
@@ -181,14 +162,14 @@ public abstract class AbstractAvatar : AbstractMasElement
                     });
                     break;
                 default:
-                    print("Unknown message type for " + objInUse.name);
+                    Debug.LogError("Unknown message type for " + objInUse.name);
                     break;
             }
         }
         catch (Exception)
         {
             print(data);
-            print("Message could not be converted.");
+            Debug.LogError("Message could not be converted.");
             return;
         }
     }

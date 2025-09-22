@@ -10,7 +10,8 @@ mas testGrabbableArtifact {
 	}
 
 	workspace ws {
+		artifact snapPoint: artifact.SnapPointArtifact("SnapPoint", 684)
 		artifact envManager: artifact.EnvManagerArtifact("envManager", 5126)
-		artifact cylinder: artifact.GrabbableArtifact("Cylinder", 666, "{position: [0.3746215, 0.6077099, -0.02803373], rotation: [0, 0, 0]}")
+		artifact cylinder: artifact.CylinderArtifact("Cylinder", 666)
 	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using Newtonsoft.Json;
 using Unity.VisualScripting;
 using System.Runtime.InteropServices;
@@ -147,17 +148,6 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 			{
 				artifact += $@", ""{script.ArtifactProperties}"")";
 			}
-			else if (script.ArtifactType == ArtifactTypeEnum.Grabbable)
-			{
-				// Get artifact position and rotation
-				var position = currentArtifact.transform.position;
-				var rotation = currentArtifact.transform.rotation.eulerAngles; 
-				
-				// Add position and rotation to the artifact definition
-				var positionData = $"[{position.x}, {position.y}, {position.z}]";
-				var rotationData = $"[{rotation.x}, {rotation.y}, {rotation.z}]";
-				artifact += $", \"{{position: {positionData}, rotation: {rotationData}}}\")";
-			}
 			else
 				artifact += ")";
 			
@@ -281,7 +271,12 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 
 			case "artifactStrategy":
 				ArtsData artsData = new ArtsData( (string[]) param );
+				
 				wsMsg = new BrainMessage( "body", agentName, "arts_info", artsData );
+				break;
+			
+			case "grabbableStatus":
+				wsMsg = new BrainMessage( "body", agentName, "grabbable_status", (bool) param );
 				break;
 
 			default:

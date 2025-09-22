@@ -6,19 +6,15 @@ namespace script.core.model.io
     {
         
         [JsonProperty("name")]
-        public string Name { get; set; }
-        [JsonProperty("position")]
+        public string ArtifactName { get; set; }
         
-        public string Position { get; set; }
-        [JsonProperty("rotation")]
+        [JsonProperty("snap_name")]
+        public string SnapPointName { get; set; }
         
-        public string Rotation { get; set; }
-        
-        public ReleaseData(string name, string position, string rotation)
+        public ReleaseData(string artifactName, string snapPointName)
         {
-            Name = name;
-            Position = position;
-            Rotation = rotation;
+            ArtifactName = artifactName;
+            SnapPointName = snapPointName;
         }
     }
 }

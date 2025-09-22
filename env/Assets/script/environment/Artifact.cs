@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -8,15 +10,17 @@ using WebSocketSharp;
 public class Artifact : AbstractArtifact
 {
     // All artifact properties
-    //TODO: Why are these here? shouldn't they be in the subclasses?
-    public List<CoffeeInfo> barProperties;
-    public List<FruitInfo> fruitShopProperties;
-    public List<ClothesInfo> dressShopProperties;
-    public bool doorProperties;
+    //TODO: Find out what subclasses are needed and remove the rest
+    // public List<CoffeeInfo> barProperties;
+    // public List<FruitInfo> fruitShopProperties;
+    // public List<ClothesInfo> dressShopProperties;
+    // public bool doorProperties;
 
     
     protected virtual void Awake()
     {
+        propertyNames ??= new List<string>(); // If null, initialize the list
+        
         propertyNames.Clear();
         // Retrieve all fields
         var fields = GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
@@ -27,24 +31,25 @@ public class Artifact : AbstractArtifact
                 propertyNames.Add(field.Name);
             }
         }
+
         objInUse = gameObject;
 
         if (Application.IsPlaying(gameObject))
         {
-            // Play logic            
+            // Play logic
             // Retrieve the property that belongs to the artifact       
-            string artifactPropertyName = artifactType.ToString();
-            artifactPropertyName = char.ToLower(artifactPropertyName[0]) + artifactPropertyName.Substring(1) + "Properties";
+            var artifactPropertyName = artifactType.ToString();
+            artifactPropertyName = char.ToLower(artifactPropertyName[0]) + artifactPropertyName[1..] + "Properties";
 
             // Find the field with the specified name
-            FieldInfo filteredField = Array.Find(fields, f => f.Name == artifactPropertyName);
+            var filteredField = Array.Find(fields, f => f.Name == artifactPropertyName);
             if (filteredField != null)
             {
                 // Map in JSON the artifact property        
                 artifactProperties = EscapeJson(convertObjectIntoJson(filteredField.GetValue(this)));
                 Debug.Log("Artifact property: " + artifactProperties.ToString());
-
             }
+
             initializeWebSocketConnection(OnMessage);
         }
         else
@@ -57,7 +62,69 @@ public class Artifact : AbstractArtifact
         }
     }
 
-    protected virtual void OnMessage(object sender, MessageEventArgs e) { }
+    protected virtual void OnMessage(object sender, MessageEventArgs e)
+    {
+        string data = e.Data;
+        
+        ArtifactMessage message = null;
+        try
+        {
+            message = JsonConvert.DeserializeObject<ArtifactMessage>(data);
+        }
+        catch (Exception)
+        {
+            Debug.LogError(data);
+            Debug.LogError("Message could not be converted.");
+            return;
+        }
+        
+        try
+        {
+            string messagePayload = message.MessagePayload;
+            switch (messagePayload)
+            {
+                case "is_grabbable":
+                    RetrieveGrabbableStatus(message.AgentName);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[{message.AgentName} Artifact] Exception occurred OnMessage " + ex);
+        }
+    }
+    
+    private async void RetrieveGrabbableStatus(string artifactName)
+    {
+        // Create a TaskCompletionSource to await the result
+        var tcs = new TaskCompletionSource<bool>();
+        await UnityMainThreadDispatcher.Instance()
+            .EnqueueAsync(() =>
+            {
+                var artifact = GameObject.Find(artifactName);
+                
+                if (artifact == null)
+                {
+                    Debug.LogError($"Artifact {artifactName} not found.");
+                    tcs.SetResult(false);
+                    return;
+                }
+                
+                var artifactComponent = artifact.GetComponent<Artifact>();
+                if (artifactComponent == null)
+                {
+                    Debug.LogError($"Artifact component not found on {artifactName}.");
+                    tcs.SetResult(false);
+                    return;
+                }
+                
+                bool grabbable = artifactComponent.isGrabbable;
+                tcs.SetResult(grabbable);
+            });
+        bool grabbableStatus = await tcs.Task;
 
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
+            "grabbableStatus", null, "is_grabbable", artifactName, grabbableStatus));
+    }
 
 }

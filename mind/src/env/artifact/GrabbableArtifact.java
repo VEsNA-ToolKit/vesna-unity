@@ -7,40 +7,19 @@ import artifact.lib.utils.ObjectMapperUtils;
 import cartago.OPERATION;
 import cartago.ObsProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class GrabbableArtifact extends AbstractMasElementArtifact {
 
-    protected Point3D startingPosition;
-    protected Point3D startingRotation;
 
     @OPERATION
-    public void init(String artifactName, int webSocketPort, String transformJson) {
+    public void init(String artifactName, int webSocketPort) {
         super.init(artifactName, webSocketPort);
         defineObsProperty("isAvailable", true);
         defineObsProperty("currentOwner", "null");
 
-        // parse the position from JSON
-        JSONObject transformObject = new JSONObject(transformJson);
-        JSONArray positionObject = transformObject.getJSONArray("position");
-        JSONArray rotationObject = transformObject.getJSONArray("rotation");
-
-
-        this.startingPosition = new Point3D(
-            positionObject.getDouble(0),
-            positionObject.getDouble(1),
-            positionObject.getDouble(2)
-        );
-
-        this.startingRotation = new Point3D(
-            rotationObject.getDouble(0),
-            rotationObject.getDouble(1),
-            rotationObject.getDouble(2)
-        );
-
-        defineObsProperty("position", this.startingPosition.toString());
-        defineObsProperty("rotation", this.startingRotation.toString());
+        // Request the grabbable status from Unity
+        requestGrabbableStatus();
     }
 
     /**
@@ -67,14 +46,12 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
     }
 
     @OPERATION
-    void attemptRelease() {
+    void attemptRelease(String snapName) {
         String agentName = getCurrentOpAgentId().getAgentName();
         if (agentName.equals(getOwner())) {
             updateObsProperty("isAvailable", true);
             updateObsProperty("currentOwner", "null");
-            String position = getObsProperty("position").getValue().toString();
-            String rotation = getObsProperty("rotation").getValue().toString();
-            signal(getCurrentOpAgentId(), "released", this.artifactName, position, rotation);
+            signal(getCurrentOpAgentId(), "released", this.artifactName, snapName);
 
             writeLog(String.format("Agent %s released the artifact", agentName));
         }
@@ -101,7 +78,13 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         try {
             lock.lock();
             writeLog("[GrabbableArtifact] Message received from Unity: " + message);
-            WsMessage wsMessage = ObjectMapperUtils.convertJsonStringToObject(message, new TypeReference<>() {});
+
+            JSONObject messageJson = new JSONObject(message);
+
+            if (messageJson.has("type") && messageJson.getString("type").equals("grabbable_status")) {
+                updateObsProperty("isAvailable", messageJson.getBoolean("data"));
+            }
+
             execInternalOp("signalAgentsByTick");
         } catch (Exception e){
             logger.info("Exception " + e);
@@ -111,15 +94,11 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         }
     }
 
-    // UTILITIES
-
-    private void requestPositionFromUnity() {
+    private void requestGrabbableStatus() {
         WsMessage wsMessage = new WsMessage();
-
-        wsMessage.setMessageType("requestPosition");
-        wsMessage.setMessagePayload("requestPositionFromUnity");
+        wsMessage.setMessageType("grabbableStatus");
+        wsMessage.setMessagePayload("is_grabbable");
         wsMessage.setAgentName(this.artifactName);
-        wsMessage.setParam(new JSONObject().put("artifactName", this.artifactName).toString());
 
         send(ObjectMapperUtils.convertIntoJsonString(wsMessage));
     }

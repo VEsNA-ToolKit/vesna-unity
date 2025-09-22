@@ -8,12 +8,13 @@ public class AbstractArtifact : AbstractMasElement
     protected string artifactProperties;
     [SerializeField]
     protected ArtifactTypeEnum artifactType;
+    [SerializeField] public bool isGrabbable;
     // List of all property names
     protected List<string> propertyNames = new List<string>();
     public string ArtifactProperties
     {
-        get { return artifactProperties; }
-        set { artifactProperties = value; }
+        get => artifactProperties;
+        protected set => artifactProperties = value;
     }
 
     public ArtifactTypeEnum ArtifactType => artifactType;

@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Artifact
   - JacamoAgent
-  - SnapPoint
   layers:
   - Default
   - TransparentFX
