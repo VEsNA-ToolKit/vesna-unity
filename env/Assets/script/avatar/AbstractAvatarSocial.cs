@@ -90,21 +90,21 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         }
     }
 
-    protected IEnumerator SmoothLookAt(Vector3 targetPosition, float duration = 0.5f)
+   public IEnumerator SmoothLookAt(Vector3 targetPosition, float speed = 5f)
     {
-        Quaternion startRotation = transform.rotation;
-        Quaternion targetRotation = Quaternion.LookRotation(targetPosition - transform.position);
-        float time = 0f;
+        Vector3 direction = (targetPosition - transform.position).normalized;
+        direction.y = 0f;
 
-        while (time < duration)
+        while (Vector3.Angle(transform.forward, direction) > 0.1f)
         {
-            transform.rotation = Quaternion.Slerp(startRotation, targetRotation, time / duration);
-            time += Time.deltaTime;
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, direction, speed * Time.deltaTime, 0.0f);
+            transform.rotation = Quaternion.LookRotation(newDir);
+
             yield return null;
         }
-
-        transform.rotation = targetRotation;
     }
+
+
 
     protected IEnumerator ActivateVisionCone()
     {
@@ -125,8 +125,14 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     anchor.AssignAgent(objInUse.name);
                     currentAnchor = anchor;
                     Debug.Log($"[Anchor] {objInUse.name} ha trovato anchor libero: {anchor.name}");
+
+                    movementModel.IsStopped = false;
+                    agent.isStopped = false;
                     animationController.SetAnimationState("walk");
+
                     reachDestination(anchor.name);
+                    StartCoroutine(CheckIfReachedFriend(anchor.name));
+
                     yield break;
                 }
             }
@@ -134,6 +140,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
             yield return new WaitForSeconds(0.1f);
         }
     }
+
 
     // Unity avatar receives message from jacamo agent
     protected override void OnMessage(object sender, MessageEventArgs e)
@@ -245,8 +252,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                     animationController.SetAnimationState("stop");
                                     StartCoroutine(WaitForFreeAnchor(targetObj));
                                 }
-
-                                
 
                                 // qua volendo si può mandare un messaggio a JaCaMo e decide il cervello poi che fare
                                 // magari anche in base alla personalità

@@ -1,7 +1,5 @@
 
-//TENTATIVO IN CORSO
 count(0).
-//count2(0, 0).
 conversation_lock(false).
 
 // ---- helper rules ----
@@ -79,28 +77,32 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     !send_to_all(Rest, Perf, Content).
 
 // --- JOIN FIX ---
-+!join_conversation(NewFriend) : count2(ID, N) & N < 3 <-
+// --- JOIN CONVERSATION FINO A 3 AGENTI ---
++!join_conversation(NewFriend) : count2(ID, N) & N < 3 <- 
     .print("CONTEGGIO AGENTI: ", N, " ID: ", ID);
-    !writeLog(["Allowing ", NewFriend, " to join the conversation"]);
-    .print("JOIN");
     .my_name(Me);
-    ?conversation_for_agent(Me, ID);
     ?conversation(ID, AgentsList);
     .union(AgentsList, [NewFriend], NewAgentsList);
-    !increment_counter2(ID, N2);
     -conversation(ID, AgentsList);
     +conversation(ID, NewAgentsList);
-    .print("New list: ", NewAgentsList);
-    +talking_to(NewFriend);
+    Length = .length(NewAgentsList);
+    -count2(ID, _);
+    +count2(ID, Length);
     !send_to_all(NewAgentsList, tell, conversation_update(ID, NewAgentsList));
-    .send(NewFriend, tell, joined_conversation).
+    .send(NewFriend, tell, joined_conversation);
+    .print("NewFriend ", NewFriend, " successfully joined conversation ", ID).
 
-+!join_conversation(NewFriend) : count2(ID, N) & N >= 3 <-
-    .print("CONTEGGIO AGENTI: ", N, " ID: ", ID);
-    .print(["Conversation is full, cannot add ", NewFriend]);
+// --- SE IL LIMITE È RAGGIUNTO ---
++!join_conversation(NewFriend) : count2(ID, N) & N >= 3 <- 
+    .print("Conversation full (", N, " agents), cannot add ", NewFriend);
     .send(NewFriend, achieve, walk_and_not_talk).
 
+// --- RETRY SE count2 NON ESISTE ANCORA ---
 +!join_conversation(NewFriend) : not count2(ID, _) <- 
+    .print("Conversation data not ready yet for ", NewFriend, ", retrying...");
+    .wait(500);       
+    !join_conversation(NewFriend);
+
     .print("NewFriend: ", NewFriend);
     .print("No count2 found, cannot join, retry in another time");
     .wait(1000); 
@@ -111,6 +113,7 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
 +!walk_and_not_talk[source(NewFriend)] <-
     .wait(2000);
     .print("CAMMINA");
+    -actual_intention(talk);
     -+actual_intention(start_walking);
     !start_walking.
 
@@ -163,30 +166,38 @@ in_conversation(Agent, Conversation) :- conversation_members(Conversation, Membe
     -+actual_intention(start_walking);
     !start_walking.
 
-+!finish_conversation[source(Sender)] <-
-    ?conversation(ID, AgentsList);
-    !writeLog(["Conversation finished by ", Sender]);
-    !send_finish_to_all(AgentsList);
-    -conversation(ID, AgentsList);
-    -count2(ID,_);
-    .abolish(talking_to(_));
-    -+actual_intention(start_walking);
-    !start_walking.
-
-+!finish_conv <- 
-    .abolish(talking_to(_));
-    -+actual_intention(start_walking);
-    !start_walking.
-
 +!send_finish_to_all([]) <- .print("Messaggi finish inviati a tutti.").
 
 +!send_finish_to_all([Agent|Rest]) <- 
     .send(Agent, achieve, finish_conv);
     !send_finish_to_all(Rest).
 
-@finish_other_conversation
-+!finish_other_conversation[source(Sender)] <- 
-    -talking_to(Sender);
+
+// --- CHIUSURA CONVERSAZIONE ---
+/*+!friend_message("Bye!!")[source(Sender)] <- 
+    !update_balloon_message("Scambio le informazioni");
     .wait(2000);
-    -+actual_intention(start_walking);
+    .print(">>> Fine conversazione avviata da ", Sender);
+    !finish_conversation(Sender).*/
+
++!finish_conversation(Sender) <-
+    
+    -conversation(_, _);
+    -count2(_, _);
+    -conversation_lock(_, _);
+    -talking_to(_);
+    -friend_reached(_);
+    -actual_intention(talk);
+
+    +conversation_lock(false);
+
+    +actual_intention(start_walking);
+    .print(">>> RESET completato (finish_conversation da ", Sender, ")");
     !start_walking.
+
++!finish_conv <- 
+    !finish_conversation("self").   // usa la stessa logica anche quando sei tu a chiudere
+
++!finish_other_conversation[source(Sender)] <- 
+    .print(">>> Altro agente ", Sender, " ha chiuso, resetto anch’io");
+    !finish_conversation(Sender).

@@ -81,7 +81,7 @@ public static class FFormation
             Vector3 targetPosition = center + offset;
 
             GameObject destination = GetOrCreateDestination(agentName, targetPosition);
-            MoveAgent(agentObj, agentName, destination);
+            MoveAgent(agentObj, agentName, destination, center); 
 
             float actualDistance = Vector3.Distance(targetPosition, center);
             Debug.Log($"Agente '{agentName}' deve muoversi a distanza {actualDistance:F2} da '{conversationName}', verso {targetPosition}");
@@ -135,7 +135,7 @@ public static class FFormation
         return dest;
     }
 
-    private static void MoveAgent(GameObject agentObj, string agentName, GameObject destination)
+    private static void MoveAgent(GameObject agentObj, string agentName, GameObject destination, Vector3 center)
     {
         ShopperAvatarScript avatar = agentObj.GetComponent<ShopperAvatarScript>();
         if (avatar == null)
@@ -153,7 +153,6 @@ public static class FFormation
             animator?.SetAnimationState("walk");
 
             avatar.StartCoroutine(avatar.CheckIfReachedFriend(destination.name));
-            agentObj.transform.LookAt(destination.transform);
         });
     }
 }
