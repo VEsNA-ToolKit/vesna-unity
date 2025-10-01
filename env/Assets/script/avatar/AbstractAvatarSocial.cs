@@ -26,6 +26,11 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         movementModel = GetComponent<MovementModel>();
         animationController = GetComponentInChildren<AvatarAnimationController>();
         avatarMood = GetComponentInChildren<AvatarFACS>();
+
+        // Associa subito agentConversations
+        agentConversations = GetComponent<AgentConversations>();
+        if (agentConversations == null)
+        Debug.LogWarning($"{name} non ha AgentConversations collegato!");
     }
 
 
@@ -62,6 +67,9 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     movementModel.IsStopped = true;
                     animationController.SetAnimationState("stop");
 
+                    Debug.Log("agentConversations: " + agentConversations);
+                    Debug.Log("targetConversations: " + targetConversations);
+
                     if(agentConversations != null && agentConversations.Conversations.Count > 0)
                     {
                         string conversationName = agentConversations.Conversations[0];
@@ -71,6 +79,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     else
                     {
                         StartCoroutine(SmoothLookAt(target.transform.position)); // fallback
+                        Debug.Log("NON STO GUARDANDO IL CENTRO, ma sto guardando " + target);
+                        
                     }
 
                     if (!isDestinationPoint)
