@@ -6,10 +6,12 @@
             <uie:PropertyField binding-path="port" name="port" />
             <uie:PropertyField binding-path="jcmFilePath" name="jcmFilePath" />
             <uie:PropertyField binding-path="artifactType" name="artifactType" />
+            <uie:PropertyField binding-path="snapToSurface" name="snapToSurface" />
         </ui:VisualElement>
     </ui:VisualElement>
     <ui:VisualElement name="Pane2" style="flex-grow: 1;">
         <ui:Label tabindex="-1" text="Artifact Properties" parse-escape-sequences="true" display-tooltip-when-elided="true" name="PropertyHeader" class="header" />
+        <uie:PropertyField binding-path="isGrabbable" name="IsGrabbable" />
         <uie:PropertyField name="dressShopProperties" binding-path="dressShopProperties" />
         <uie:PropertyField name="fruitShopProperties" binding-path="fruitShopProperties" />
         <uie:PropertyField name="barProperties" binding-path="barProperties" />

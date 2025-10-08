@@ -135,13 +135,13 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		{
 			var script = currentArtifact.GetComponent<Artifact>();
 			
-			print("Analyze " + currentArtifact.name);
-			print(" of type: " + script.ArtifactType);
+			print($"Analyze {currentArtifact.name} of type {script.ArtifactType}");
 			
-			var artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(" + "\"" + currentArtifact.name + "\", " + script.Port;
+			string artifactClass = ResolveArtifactClass(script);
+			var artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: {artifactClass}(" + "\"" + currentArtifact.name + "\", " + script.Port;
 			
 			if (string.IsNullOrEmpty(script.Port)) // If the port is not set, there are no arguments
-				artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: artifact.{script.ArtifactType}Artifact(";
+				artifact = "\t\t" + $@"artifact {currentArtifact.name.FirstCharacterToLower()}: {artifactClass}(";
 			
 			// If the artifact has properties, add them
 			if (!script.ArtifactProperties.IsNullOrEmpty())
@@ -297,5 +297,20 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		}
 		
 		throw new DirectoryNotFoundException("Could not find the mind folder");
+	}
+
+	private static string ResolveArtifactClass(Artifact script)
+	{
+		string artifactFolder = Path.Combine(GetJacamoPath(Application.dataPath), "src", "env", "artifact"); // percorso reale del tuo progetto JaCaMo
+		string artifactType = script.ArtifactType.ToString();
+		string fullPath = Path.Combine(artifactFolder, $"{artifactType}Artifact.java");
+
+		if (File.Exists(fullPath))
+			return $"artifact.{artifactType}Artifact";
+		
+		if (script.isGrabbable)
+			return "artifact.GrabbableArtifact";
+		
+		return "artifact.GenericArtifact";
 	}
 }

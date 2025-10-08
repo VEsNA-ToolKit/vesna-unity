@@ -8,6 +8,7 @@ public class DoorScript : Artifact
 {
     private int flag = -1;
     private bool isSupermarketOpen;
+    public bool doorProperties;
 
     protected override void Awake()
     {
