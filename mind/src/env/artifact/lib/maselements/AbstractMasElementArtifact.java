@@ -2,17 +2,8 @@ package artifact.lib.maselements;
 
 import artifact.lib.utils.ObjectMapperUtils;
 import cartago.INTERNAL_OPERATION;
-import cartago.OPERATION;
 import cartago.ObsProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public abstract class AbstractMasElementArtifact extends AbstractMasElement {
     protected String artifactName;
@@ -40,7 +31,7 @@ public abstract class AbstractMasElementArtifact extends AbstractMasElement {
 
     @INTERNAL_OPERATION
     protected <R> R getProperty(String propertyName, TypeReference<R> target) {
-        // Retrive the property
+        // Retrieve the property
         ObsProperty prop = getObsProperty(propertyName);
         // Retrieve the value and convert it to List<FruitInfo>
         Object value = prop.getValue();
@@ -76,4 +67,5 @@ public abstract class AbstractMasElementArtifact extends AbstractMasElement {
     public void onConnectionEstablished(){
         writeLog("Connection Established");
     }
+
 }

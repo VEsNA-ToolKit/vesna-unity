@@ -20,7 +20,11 @@ public abstract class AbstractMasElement : MonoBehaviour
     }
 
     public async Task startServer() {
-        await Task.Run( async () => wsChannel.StartServer() );
+        await Task.Run(() =>
+        {
+            wsChannel.StartServer();
+            return Task.CompletedTask;
+        });
     }
 
     // Method to connect to the websocket channel

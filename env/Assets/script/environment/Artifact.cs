@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using script.core.util;
 using UnityEngine;
 using WebSocketSharp;
 
@@ -15,10 +16,17 @@ public class Artifact : AbstractArtifact
     // public List<FruitInfo> fruitShopProperties;
     // public List<ClothesInfo> dressShopProperties;
     // public bool doorProperties;
+    public Dictionary<string, object> Properties { get; private set; }
 
-    
+    private void OnValidate()
+    {
+        ResolveProperties();
+    }
+
     protected virtual void Awake()
     {
+        ResolveProperties();
+        
         propertyNames ??= new List<string>(); // If null, initialize the list
         
         propertyNames.Clear();
@@ -125,6 +133,19 @@ public class Artifact : AbstractArtifact
 
         wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
             "grabbableStatus", null, "is_grabbable", artifactName, grabbableStatus));
+    }
+    
+    private void ResolveProperties()
+    {
+        var props = ArtifactResolver.GetAllProperties($"{artifactType}Artifact");
+    
+        if (props is not { Count: > 0 }) return;
+        
+        Properties = new Dictionary<string, object>();
+        foreach (var prop in props)
+        {
+            Properties[prop.Name] = prop.Value;
+        }
     }
 
 }

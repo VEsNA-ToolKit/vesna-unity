@@ -4,10 +4,11 @@ import artifact.lib.maselements.AbstractMasElementArtifact;
 import artifact.lib.model.Point3D;
 import artifact.lib.model.WsMessage;
 import artifact.lib.utils.ObjectMapperUtils;
-import cartago.OPERATION;
-import cartago.ObsProperty;
+import cartago.*;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.json.JSONObject;
+import org.json.JSONArray;
+import java.util.List;
 
 public class GrabbableArtifact extends AbstractMasElementArtifact {
 
@@ -15,8 +16,8 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
     @OPERATION
     public void init(String artifactName, int webSocketPort) {
         super.init(artifactName, webSocketPort);
-        defineObsProperty("isAvailable", true);
-        defineObsProperty("currentOwner", "null");
+        initializeProperty("isAvailable", true);
+        initializeProperty("currentOwner", "null");
 
         // Request the grabbable status from Unity
         requestGrabbableStatus();
@@ -54,8 +55,7 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
             signal(getCurrentOpAgentId(), "released", this.artifactName, snapName);
 
             writeLog(String.format("Agent %s released the artifact", agentName));
-        }
-        else {
+        } else {
             writeLog(String.format("Agent %s attempted to release the artifact but is not the owner", agentName));
             failed("release", "not_owner");
         }
@@ -86,10 +86,9 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
             }
 
             execInternalOp("signalAgentsByTick");
-        } catch (Exception e){
+        } catch (Exception e) {
             logger.info("Exception " + e);
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }

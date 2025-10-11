@@ -4,12 +4,15 @@ using System;
 using UnityEngine;
 using WebSocketSharp;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEditor.Experimental;
 
 public class EnvironmentManagerArtifact : Artifact
 {
-    public string jcmFilePath = "../mind/supermarket.jcm";
+    List<Artifact> artifacts = new List<Artifact>();
+    string mindPath = Path.Combine("..", "mind");
+    public string jcmFilePath = Path.Combine("..", "mind", "supermarket.jcm");
     
     public string JcmFilePath
     {
@@ -54,8 +57,6 @@ public class EnvironmentManagerArtifact : Artifact
             Debug.LogError($"[Artifact {name}] Exception occurred OnMessage " + ex);
         }
     }
-
-    
 
     private async void RetrieveAllArtifacts(string agentName)
     {
@@ -141,10 +142,5 @@ public class EnvironmentManagerArtifact : Artifact
         string[] artifactNames = await tcs.Task;
         wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
-    }
-    
-    private async void RetrieveArtifactPosition(string artifactName, string agentName)
-    {
-        throw new NotImplementedException();
     }
 }

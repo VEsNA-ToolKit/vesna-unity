@@ -10,11 +10,11 @@ public class DressShopArtifact extends ShopAbstractMasElementArtifact {
 
     public void init(String artifactName, int webSocketPort, String properties) {
         super.init(artifactName, webSocketPort, "clothesList");
-        List<ItemInfoModel> dressInfoModelList = ObjectMapperUtils.convertJsonStringToObject(properties,
+        List<ItemInfoModel> clothesInfoModelList = ObjectMapperUtils.convertJsonStringToObject(properties,
                 new TypeReference<>() {
                 });
-        writeLog("Properties: " + dressInfoModelList.toString());
-        initializeProperty("clothesList", dressInfoModelList);
+        writeLog("Properties: " + clothesInfoModelList.toString());
+        initializeProperty("clothesList", clothesInfoModelList);
     }
 
 }

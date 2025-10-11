@@ -5,6 +5,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using script.core.model;
 using Unity.VisualScripting;
 
 public class ShopperAvatarScript : AbstractAvatarSocial
