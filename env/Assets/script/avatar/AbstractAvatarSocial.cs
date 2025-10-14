@@ -335,12 +335,42 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                        if(!string.IsNullOrEmpty(saysData.Mood)){
                             if(avatarMood == null)
                                 Debug.LogWarning("avatarMood is null!");
-                            else
-                                avatarMood.SetSkinnerMesh(saysData.Mood);
-                        }
-                        
+                            else {
+                                string mood = saysData.Mood.Trim().Trim('"').ToLowerInvariant();
+                                Debug.Log($"[Say] Applying mood '{mood}' to {objInUse.name}");
+                                 switch (mood)
+                                {
+                                    case "happy":
+                                        avatarMood.SetHappiness();
+                                        break;
+                                    case "sad":
+                                        avatarMood.SetSadness();
+                                        break;
+                                    case "surprised":
+                                        avatarMood.SetSurprise();
+                                        break;
+                                    case "angry":
+                                    case "anger":
+                                        avatarMood.SetAnger();
+                                        break;
+                                    case "disgust":
+                                        avatarMood.SetDisgust();
+                                        break;
+                                    case "fear":
+                                        avatarMood.SetFear();
+                                        break;
+                                    case "neutral":
+                                    case "normal":
+                                        avatarMood.SetNeutral();
+                                        break;
+                                    default:
+                                        Debug.LogWarning($"[Say] Mood '{mood}' not handled in FacialExpressionController.");
+                                        break;
+                                    }
+                                }
+                        }                               
                     });
-                    break;
+                break;
                 default:
                     print("Unknown message type for " + objInUse.name);
                     break;
