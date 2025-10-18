@@ -3,6 +3,7 @@
 { include("buyItemPlans.asl") }
 { include("initialGoalsPlan.asl") }
 { include( "artifacts.asl")}
+{ include("conversation_data.asl")}
 
 /* ----------------- INITIAL BELIEFS ---------------------*/
 sells("FruitShop", [apple, banana, orange, mango, pineapple, strawberry, grape, pear, peach, watermelon]).
@@ -15,11 +16,11 @@ actual_shop(none).
 is_friend( Name ) :- friends( Friends ) & .member( Name, Friends ).
 is_neutral( Name ) :- neutrals( Neutrals ) & .member( Name, Neutrals ). //AGGIUNTA
 
-count(0).
+//count(0).
 
 
 // Regola per recuperare l'ID della conversazione in cui è coinvolto un agente
-conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agent, AgentsList).
+//conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agent, AgentsList).
 
 
 /* ----------------- LOGIC PLANS ---------------------*/
@@ -119,7 +120,7 @@ conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agen
 
 // NEW PLANS
 
-+reached(friend, Friend) <-
+/*+reached(friend, Friend) <-
     vesna.stop;
     .print("MAAAA");
     Content = "Hi! How are you?";
@@ -128,7 +129,7 @@ conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agen
     vesna.says(Friend, Content);
     !update_balloon_message(Content);
     //.wait(2000);
-    .send(Friend, achieve, friend_message(Content)).
+    .send(Friend, achieve, friend_message(Content)).*/
 
 +new_agent_seen(AgentElement) <-
     // ?friends(FriendList);
@@ -138,7 +139,8 @@ conversation_for_agent(Agent, ID) :- conversation(ID, AgentsList) & .member(Agen
     -new_agent_seen(AgentElement).
 
 +met_new_friend(AgentElement) <-
-    !startConversation(AgentElement);
+    .print(AgentElement);
+    !start_conversation(AgentElement);
     -met_new_friend.
 
 { include("$jacamo/templates/common-cartago.asl") }

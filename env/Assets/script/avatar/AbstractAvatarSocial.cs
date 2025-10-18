@@ -85,9 +85,9 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 
                     if (!isDestinationPoint)
                     {
-                        SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
+                        /*SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
                             .createAndConvertJacamoMessageIntoJsonString(
-                                "destinationReached", null, "reached_friend", null, friend));
+                                "destinationReached", null, "reached_friend", null, friend));*/
                         Debug.Log("DESTINAZIONE: " + friend);
                     }
                     
