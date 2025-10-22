@@ -105,14 +105,15 @@ public static class FFormation
             if (objA == null || objB == null) return Vector3.zero;
 
             var beliefsA = objA.GetComponent<ShopperAvatarScript>()?.AgentBeliefs;
-            var beliefsB = objB.GetComponent<ShopperAvatarScript>()?.AgentBeliefs;
-            if (beliefsA == null || beliefsB == null) return Vector3.zero;
+            if (beliefsA == null) return Vector3.zero;
 
-            float distAB = SocialDistance.GetDistance(agentB, beliefsA);
-            float distBA = SocialDistance.GetDistance(agentA, beliefsB);
+            float distAB = SocialDistance.GetStoppingDistance(agentB, beliefsA);
 
             Vector3 direction = (objB.transform.position - objA.transform.position).normalized;
-            return (participants[index] == agentA) ? -direction * (distAB / 2f) : direction * (distBA / 2f);
+
+            // Return symmetric offset for the agent
+            Vector3 offset = direction * (distAB / 2f);
+            return (participants[index] == agentA) ? -offset : offset;
         }
         else
         {

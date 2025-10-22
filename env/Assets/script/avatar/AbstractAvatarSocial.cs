@@ -26,11 +26,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         movementModel = GetComponent<MovementModel>();
         animationController = GetComponentInChildren<AvatarAnimationController>();
         avatarMood = GetComponentInChildren<AvatarFACS>();
-
-        // Associa subito agentConversations
         agentConversations = GetComponent<AgentConversations>();
-        if (agentConversations == null)
-        Debug.LogWarning($"{name} non ha AgentConversations collegato!");
     }
 
 
@@ -49,7 +45,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         GameObject target = GameObject.Find(friend);
         if (target == null)
         {
-            Debug.LogWarning($"[CheckIfReachedFriend] Oggetto '{friend}' non trovato.");
+            Debug.LogWarning($"[CheckIfReachedFriend] Object '{friend}' not found.");
             yield break;
         }
 
@@ -67,9 +63,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     movementModel.IsStopped = true;
                     animationController.SetAnimationState("stop");
 
-                    Debug.Log("agentConversations: " + agentConversations);
-                    Debug.Log("targetConversations: " + targetConversations);
-
                     if(agentConversations != null && agentConversations.Conversations.Count > 0)
                     {
                         string conversationName = agentConversations.Conversations[0];
@@ -78,17 +71,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     }
                     else
                     {
-                        StartCoroutine(SmoothLookAt(target.transform.position)); // fallback
-                        Debug.Log("NON STO GUARDANDO IL CENTRO, ma sto guardando " + target);
+                        StartCoroutine(SmoothLookAt(target.transform.position)); 
                         
-                    }
-
-                    if (!isDestinationPoint)
-                    {
-                        /*SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil
-                            .createAndConvertJacamoMessageIntoJsonString(
-                                "destinationReached", null, "reached_friend", null, friend));*/
-                        Debug.Log("DESTINAZIONE: " + friend);
                     }
                     
                     EnableDisableVisionCone(false); 
@@ -115,7 +99,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
     }
 
 
-
     protected IEnumerator ActivateVisionCone()
     {
         yield return new WaitForSeconds(4.0f);
@@ -134,7 +117,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 {
                     anchor.AssignAgent(objInUse.name);
                     currentAnchor = anchor;
-                    Debug.Log($"[Anchor] {objInUse.name} ha trovato anchor libero: {anchor.name}");
 
                     movementModel.IsStopped = false;
                     agent.isStopped = false;
@@ -185,7 +167,6 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                                 if (anchor.currentAgentName == objInUse.name)
                                 {
                                     anchor.FreeAnchor();
-                                    Debug.Log($"[Anchor] {objInUse.name} ha liberato anchor: {anchor.name} (cammino verso 'random')");
                                     break;
                                 }
                             }
@@ -223,7 +204,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         movementModel.IsStopped = true;
                         agent.ResetPath();
                         EnableDisableVisionCone(false);
-                        Debug.Log("DESTINAZIONE di " + objInUse.name + " : " + walkData.Target);
+                        Debug.Log("DESTINATION OF " + objInUse.name + " : " + walkData.Target);
                         GameObject targetObj = GameObject.Find(walkData.Target);
                         animationController.SetAnimationState("walk");
 
@@ -329,7 +310,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                     {
                         animationController.SetAnimationState("say"); 
                         SetBaloonText(saysData.Msg);
-                        Debug.Log(objInUse.name + " sta parlando");
+                        Debug.Log(objInUse.name + " is talking");
                         
                         
                        if(!string.IsNullOrEmpty(saysData.Mood)){

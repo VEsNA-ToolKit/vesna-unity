@@ -8,77 +8,82 @@ public static class SocialDistance
     public static float GetStoppingDistance(string targetName, AgentBeliefs beliefs)
     {
         string relationship = GetRelationshipCategory(targetName, beliefs);
-        float personalityDistance = GetPersonalityDistance(beliefs);
+        float personalityDistance = GetPersonalityDistance(beliefs, targetName);
 
         float finalDistance = 0f;
 
-        switch(relationship)
+        switch (relationship)
         {
             case "friend":
-                // Gli amici sono più vicini
-                finalDistance = personalityDistance - 0.5f; // Distanza per amici (zona personale)
-                UnityEngine.Debug.Log("Friend");
-                UnityEngine.Debug.Log("check personality distance: " + personalityDistance);
+                // Friends tend to stand closer (personal space)
+                finalDistance = personalityDistance - 0.5f;
+                Debug.Log($"[SocialDistance] Friend → base distance {personalityDistance:F2}");
                 break;
 
             case "neutral":
-                // I neutrali hanno una distanza maggiore
-                finalDistance = personalityDistance + 1.0f; // Distanza per neutri (zona sociale)
-                UnityEngine.Debug.Log("Neutral");
-                UnityEngine.Debug.Log("check personality distance: " + personalityDistance);
+                // Neutral relationships keep a bit more distance (social space)
+                finalDistance = personalityDistance + 1.0f;
+                Debug.Log($"[SocialDistance] Neutral → base distance {personalityDistance:F2}");
                 break;
 
             default:
-                finalDistance = 15.0f; // Distanza generica per relazioni sconosciute
+                // Unknown relationship → default larger distance
+                finalDistance = personalityDistance + 5.0f;
+                Debug.Log($"[SocialDistance] Unknown → base distance {personalityDistance:F2}");
                 break;
         }
 
-        return Mathf.Clamp(finalDistance, 0.5f, 3.5f); // Clamp per limitare la distanza tra la zona intima e la zona sociale
+        // Clamp distance between realistic bounds (intimate to social space)
+        return Mathf.Clamp(finalDistance, 0.5f, 10.0f);
     }
 
-    public static float GetPersonalityDistance(AgentBeliefs agentBeliefs)
+    public static float GetPersonalityDistance(AgentBeliefs agentBeliefs, string targetName)
     {
+        // Find the target GameObject
+        GameObject targetObj = GameObject.Find(targetName);
+        if (targetObj == null)
+        {
+            Debug.LogWarning($"[SocialDistance] Target '{targetName}' not found in the scene.");
+            return 1.5f;
+        }
+
+        var targetScript = targetObj.GetComponent<ShopperAvatarScript>();
+        if (targetScript == null || targetScript.AgentBeliefs == null)
+        {
+            Debug.LogWarning($"[SocialDistance] Target '{targetName}' has no valid AgentBeliefs.");
+            return 1.5f;
+        }
+
+        var targetBeliefs = targetScript.AgentBeliefs;
+
+        // --- AGENT PERSONALITY ---
         float neuroticismExtraversion = agentBeliefs.personalityProfile.Neuroticism_Extraversion;
         float conscientiousnessAgreeableness = agentBeliefs.personalityProfile.Conscientiousness_Agreeableness;
         float openness = agentBeliefs.personalityProfile.Openness;
 
+        // --- TARGET PERSONALITY ---
+        float neuroticismExtraversion_target = targetBeliefs.personalityProfile.Neuroticism_Extraversion;
+        float conscientiousnessAgreeableness_target = targetBeliefs.personalityProfile.Conscientiousness_Agreeableness;
+        float openness_target = targetBeliefs.personalityProfile.Openness;
+
         float distance = 0f;
+        float distance_target = 0f;
 
-        if (neuroticismExtraversion >= 0.5f)
-        {
-            // Estroversione alta, distanza ridotta
-            distance += 0.5f; // 0.5 m (zona intima)
-        }
-        else
-        {
-            // Neuroticismo alto, distanza maggiore
-            distance += 2.0f; // 2 m (zona sociale)
-        }
+        // --- DISTANCE BASED ON AGENT PERSONALITY ---
+        distance += (neuroticismExtraversion >= 0.5f) ? 0.5f : 2.0f;
+        distance += (conscientiousnessAgreeableness >= 0.5f) ? 0.7f : 1.2f;
+        distance += (openness >= 0.5f) ? 0.8f : 1.2f;
 
-        if (conscientiousnessAgreeableness >= 0.5f)
-        {
-            // Affabilità alta, distanza ridotta
-            distance += 0.7f; // 0.7 m (zona personale)
-        }
-        else
-        {
-            // Coscienziosità alta, distanza rispettosa
-            distance += 1.2f; // 1.2 m (zona personale)
-        }
+        // --- DISTANCE BASED ON TARGET PERSONALITY ---
+        distance_target += (neuroticismExtraversion_target >= 0.5f) ? 0.5f : 2.0f;
+        distance_target += (conscientiousnessAgreeableness_target >= 0.5f) ? 0.7f : 1.2f;
+        distance_target += (openness_target >= 0.5f) ? 0.8f : 1.2f;
 
-        if (openness >= 0.5f)
-        {
-            // Apertura alta, distanza ridotta
-            distance += 0.8f; // 0.8 m (zona personale)
-        }
-        else
-        {
-            // Apertura bassa, distanza maggiore
-            distance += 1.2f; // 1.2 m (zona personale)
-        }
+        // --- AVERAGE BETWEEN AGENT AND TARGET PERSONALITY DISTANCES ---
+        float finalDistance = (distance + distance_target) / 2f;
 
-        // Restituisci la distanza complessiva, limitata a valori realistici tra 0.5 m e 3.5 m
-        return Mathf.Clamp(distance, 0.5f, 3.5f);
+        // Clamp for realistic social distance range
+        return Mathf.Clamp(finalDistance, 0.5f, 10.0f);
     }
 
     public static string GetRelationshipCategory(string targetName, AgentBeliefs beliefs)
@@ -104,16 +109,12 @@ public static class SocialDistance
 
         float distance = GetStoppingDistance(targetName, beliefs);
         GameObject targetObj = GameObject.Find(targetName);
+
         Vector3 direction = targetObj.transform.forward;
         conversationObj.transform.position = targetObj.transform.position + direction * distance;
-        UnityEngine.Debug.Log("posizione top");
+
+        Debug.Log($"[SocialDistance] Conversation between {agentName} and {targetName} → distance {distance:F2}");
 
         return conversationObj;
-    }
-
-    public static float GetDistance(string targetName, AgentBeliefs beliefs){
-        float distance = GetStoppingDistance(targetName, beliefs);
-
-        return distance;
     }
 }

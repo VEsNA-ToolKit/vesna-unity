@@ -117,7 +117,7 @@
         !start_walking.
 
 @[atomic]
-+leaving[souce(Ag)]
++leaving[source(Ag)]
     :   conversation( AgList )
     <-  .delete( Ag, AgList, NewAgList );
         -+conversation( NewAgList ).
