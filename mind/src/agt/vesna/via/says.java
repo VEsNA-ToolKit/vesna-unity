@@ -40,7 +40,7 @@ public class says extends DefaultInternalAction {
             //data.put( "performative", args[0].toString() );
             data.put( "recipient", args[0].toString());
             data.put( "msg", args[1].toString());
-            data.put("mood", args[2].toString());
+            data.put("emotion", args[2].toString());
         }
         action.put( "data", data );
 
