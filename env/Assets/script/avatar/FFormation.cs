@@ -3,7 +3,7 @@ using UnityEngine;
 
 public static class FFormation
 {
-    private const float RADIUS = 5f;
+    private const float RADIUS = 2.7f;
 
     public static void JoinConversation(string agentName, string conversationName, AgentConversations agentConversations)
     {

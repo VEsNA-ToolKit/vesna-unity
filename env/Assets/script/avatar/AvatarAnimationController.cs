@@ -17,6 +17,13 @@ public class AvatarAnimationController : MonoBehaviour
     }
     public void SetAnimationState(string state)
     {
+
+        animator.ResetTrigger("walk");
+        animator.ResetTrigger("run");
+        animator.ResetTrigger("stop");
+        animator.ResetTrigger("say");
+
+
         switch (state)
         {
             case "walk":
@@ -47,7 +54,7 @@ public class AvatarAnimationController : MonoBehaviour
     {
         if (nav != null)
         {
-            nav.speed = walkingSpeed + 1.0f;
+            nav.speed = walkingSpeed * 1.5f;
         }
     }
 

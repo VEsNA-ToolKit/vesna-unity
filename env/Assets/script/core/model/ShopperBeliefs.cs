@@ -76,9 +76,11 @@ public class ShopperBeliefs : AgentBeliefs
         }
 
         beliefs.Append($", personality([" +
-            $"estroversione({(int)(personalityProfile.Neuroticism_Extraversion * 100)}), " +
-            $"gradevolezza({(int)(personalityProfile.Conscientiousness_Agreeableness * 100)}), " +
-            $"coscienziosita({(int)(personalityProfile.Openness * 100)})" +
+            $"neurocismo({(int)(personalityProfile.Neuroticism * 100)}), " + 
+            $"estroversione({(int)(personalityProfile.Extraversion * 100)}), " +
+            $"coscienziosita({(int)(personalityProfile.Conscientiousness * 100)}), " +
+            $"gradevolezza({(int)(personalityProfile.Agreeableness * 100)}), " +
+            $"apertura({(int)(personalityProfile.Openness * 100)})" +
             "])");
 
         return beliefs.ToString();

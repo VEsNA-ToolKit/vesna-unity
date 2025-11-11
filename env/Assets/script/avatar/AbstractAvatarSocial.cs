@@ -11,7 +11,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
 {
     protected MovementModel movementModel;
     protected AvatarAnimationController animationController; 
-    protected AvatarFACS avatarMood;
+    protected AvatarFACS avatarEmotions;
 
     [System.NonSerialized]
     public AgentConversations agentConversations;
@@ -25,7 +25,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         // Set waypoints to follow
         movementModel = GetComponent<MovementModel>();
         animationController = GetComponentInChildren<AvatarAnimationController>();
-        avatarMood = GetComponentInChildren<AvatarFACS>();
+        avatarEmotions = GetComponentInChildren<AvatarFACS>();
         agentConversations = GetComponent<AgentConversations>();
     }
 
@@ -302,8 +302,8 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                 case "say":
                     // Avatar receives the type of artifact to reach
                     SaysData saysData = message.Data.ToObject<SaysData>();
-                    if(!string.IsNullOrEmpty(saysData.Mood)){
-                        Debug.Log($"[Say] Msg: {saysData.Msg}, Mood: {saysData.Mood}");
+                    if(!string.IsNullOrEmpty(saysData.Emotion)){
+                        Debug.Log($"[Say] Msg: {saysData.Msg}, Emotion: {saysData.Emotion}");
                     }
 
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
@@ -313,39 +313,39 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
                         Debug.Log(objInUse.name + " is talking");
                         
                         
-                       if(!string.IsNullOrEmpty(saysData.Mood)){
-                            if(avatarMood == null)
-                                Debug.LogWarning("avatarMood is null!");
+                       if(!string.IsNullOrEmpty(saysData.Emotion)){
+                            if(avatarEmotions == null)
+                                Debug.LogWarning("avatarEmotions is null!");
                             else {
-                                string mood = saysData.Mood.Trim().Trim('"').ToLowerInvariant();
-                                Debug.Log($"[Say] Applying mood '{mood}' to {objInUse.name}");
-                                 switch (mood)
+                                string emotion = saysData.Emotion.Trim().Trim('"').ToLowerInvariant();
+                                Debug.Log($"[Say] Applying emotion '{emotion}' to {objInUse.name}");
+                                 switch (emotion)
                                 {
                                     case "happy":
-                                        avatarMood.SetHappiness();
+                                        avatarEmotions.SetHappiness();
                                         break;
                                     case "sad":
-                                        avatarMood.SetSadness();
+                                        avatarEmotions.SetSadness();
                                         break;
                                     case "surprised":
-                                        avatarMood.SetSurprise();
+                                        avatarEmotions.SetSurprise();
                                         break;
                                     case "angry":
                                     case "anger":
-                                        avatarMood.SetAnger();
+                                        avatarEmotions.SetAnger();
                                         break;
                                     case "disgust":
-                                        avatarMood.SetDisgust();
+                                        avatarEmotions.SetDisgust();
                                         break;
                                     case "fear":
-                                        avatarMood.SetFear();
+                                        avatarEmotions.SetFear();
                                         break;
                                     case "neutral":
                                     case "normal":
-                                        avatarMood.SetNeutral();
+                                        avatarEmotions.SetNeutral();
                                         break;
                                     default:
-                                        Debug.LogWarning($"[Say] Mood '{mood}' not handled in FacialExpressionController.");
+                                        Debug.LogWarning($"[Say] Emotion '{emotion}' not handled in FacialExpressionController.");
                                         break;
                                     }
                                 }

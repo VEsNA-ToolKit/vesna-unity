@@ -11,8 +11,8 @@ public class SaysData {
     public string? Recipient { get; set; } 
     [JsonProperty("performative")]
     public string? Performative { get; set; } 
-    [JsonProperty("mood")]
-    public string? Mood { get; set; }
+    [JsonProperty("emotion")]
+    public string? Emotion { get; set; }
 
     public SaysData() {} //aggiunto costruttore vuoto per far partire il case say 
 
@@ -25,17 +25,17 @@ public class SaysData {
         Msg = msg;
     }
     
-    public SaysData( string to, string msg, string mood) {
+    public SaysData( string to, string msg, string emotion) {
         Recipient = to;
         Msg = msg;
-        Mood = mood;
+        Emotion = emotion;
     }
 
-    public SaysData( string perf, string to, string msg, string mood){
+    public SaysData( string perf, string to, string msg, string emotion){
         Performative = perf;
         Recipient = to;
         Msg = msg;
-        Mood = mood;
+        Emotion = emotion;
     } 
 
 }

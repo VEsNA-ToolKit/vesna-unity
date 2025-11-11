@@ -39,10 +39,10 @@ public class ConeCollider : MonoBehaviour
             // Prepare artifact info to send
             ArtifactInfo artifactInfo = new ArtifactInfo
             {
-                ArtifactName = other.name,
+                ArtifactName = findArtifactName(obj),
                 ArtifactType = retrieveArtifactType(obj),                
             };
-
+            
             root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
                 "artifactSeen", null, artifactInfo));
         }
@@ -75,7 +75,23 @@ public class ConeCollider : MonoBehaviour
             return "unknown";
         }
 
+        Debug.Log("The artifact type is: " + artType);
         return artType.GetShopType().ToString().ToLower();
     }
+
+   private static string findArtifactName(GameObject other)
+    {
+
+        if (other.name.ToLower().Contains("anchor"))
+        {
+            return other.transform.parent.name;
+        } 
+        else 
+        {
+            return other.name;
+        }
+        
+    }
+
 
 }

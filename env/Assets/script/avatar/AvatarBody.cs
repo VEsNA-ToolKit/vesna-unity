@@ -37,10 +37,14 @@ public class AvatarBody : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         GameObject hit = other.gameObject;
+        Debug.Log("AvatarBody detected collision with " + hit.name);
 
         // Se l'oggetto è un anchor, risali al padre
-        if (hit.name.ToLower().Contains("anchor") && hit.transform.parent != null)
+        if (hit.name.ToLower().Contains("anchor") && hit.transform.parent != null){
             hit = hit.transform.parent.gameObject;
+            Debug.Log("AvatarBody risalito all'anchor parent: " + hit.name);
+        }
+            
 
         if (!hit.name.Contains("counter") && hit.tag == "Artifact")
         {
