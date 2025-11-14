@@ -25,26 +25,45 @@ public class PersonalityProfile
     // Applies soft correlation adjustments between traits without enforcing deterministic coupling.
     private void ApplySoftCorrelations()
     {
-        // Negative correlation: Extraversion ↔ Neuroticism (r = -0.28)
-        if (Extraversion > 0.7f && Neuroticism > 0.7f)
+        //Strong negative correlation
+        //Conscientiousness ↔ Neuroticism (ρ ≈ -0.43)
+        if (Conscientiousness > 0.7f && Neuroticism > 0.7f)
         {
-            // Slightly reduce neuroticism for very high extraversion
-            Neuroticism -= 0.1f * (Extraversion - 0.7f);
-             // Slightly reduce extraversion for very high neuroticism
-            Extraversion -= 0.1f * (Neuroticism - 0.7f);
+            // If C is very high and N is very high, slightly reduce N
+            Neuroticism -= 0.10f * (Conscientiousness - 0.7f);
         }
 
-        // Positive correlation: Extraversion ↔ Openness (r = +0.26)
-        if (Extraversion > 0.6f)
+        if (Neuroticism > 0.7f && Conscientiousness > 0.7f)
         {
-            Openness += 0.05f * (Extraversion - 0.6f);
+            // If N is very high and C is very high, slightly reduce C
+            Conscientiousness -= 0.10f * (Neuroticism - 0.7f);
         }
 
-        // Negative correlation: Neuroticism ↔ Agreeableness (r = -0.22)
-        if (Neuroticism > 0.6f)
+        // Strong positive correlation
+        // Openness ↔ Extraversion (ρ ≈ +0.43)
+        if (Extraversion > 0.7f && Openness < 1.0f)
         {
-            Agreeableness -= 0.05f * (Neuroticism - 0.6f);
+            // If E is very high, slightly raise O 
+            Openness += 0.08f * (Extraversion - 0.7f);
         }
+        if (Openness > 0.7f && Extraversion < 1.0f)
+        {
+            // If O is very high, slightly raise E  
+            Extraversion += 0.08f * (Openness - 0.7f);
+        }
+
+        // Conscientiousness ↔ Agreeableness (ρ ≈ +0.43)
+        if (Conscientiousness > 0.7f && Agreeableness < 1.0f)
+        {
+            // If C is very high, slightly raise A 
+            Agreeableness += 0.08f * (Conscientiousness - 0.7f);
+        }
+        if (Agreeableness > 0.7f && Conscientiousness < 1.0f)
+        {
+            // If A is very high, slightly raise C 
+            Conscientiousness += 0.08f * (Agreeableness - 0.7f);
+        }
+
     }
 
     // Ensures all trait values remain within the [0, 1] range.
