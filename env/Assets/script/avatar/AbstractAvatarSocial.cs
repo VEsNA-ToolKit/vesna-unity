@@ -84,7 +84,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         }
     }
 
-   public IEnumerator SmoothLookAt(Vector3 targetPosition, float speed = 5f)
+   public IEnumerator SmoothLookAt(Vector3 targetPosition, float speed = 2f)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
         direction.y = 0f;
