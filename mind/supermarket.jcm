@@ -3,7 +3,7 @@ mas supermarket {
 		ag-class: vesna.VesnaAgent
 		beliefs: address( localhost )
 			port( 3344 )
-			budget(100), friends([anna]), neutrals([paul, kate]), personality([neurocismo(100), estroversione(0), coscienziosita(2), gradevolezza(100), apertura(0)])
+			budget(100), friends([anna]), neutrals([kate, paul]), personality([neurocismo(100), estroversione(0), coscienziosita(2), gradevolezza(100), apertura(0)])
 		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
@@ -15,7 +15,7 @@ mas supermarket {
 		beliefs: address( localhost )
 			port( 3343 )
 			budget(100), friends([pippo]), neutrals([]), personality([neurocismo(96), estroversione(0), coscienziosita(97), gradevolezza(52), apertura(0)])
-		goals:	buy_coffee, buy_coffee, call_parents
+		goals:	buy_coffee, call_parents
 		join: w
 		focus: w.envManager
 			
@@ -33,10 +33,9 @@ mas supermarket {
 	}
 
 	workspace w {
-		artifact barParadisee: artifact.BarArtifact("barParadisee", 3445, "[{\"itemName\":\"Espresso\",\"price\":1.2,\"quantity\":50},{\"itemName\":\"Americano\",\"price\":2.3,\"quantity\":50}]")
 		artifact dressShop: artifact.DressShopArtifact("dressShop", 6767, "[{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10},{\"itemName\":\"Shirt\",\"price\":20.0,\"quantity\":10}]")
 		artifact fruitShop: artifact.FruitShopArtifact("fruitShop", 7070, "[{\"itemName\":\"Apple\",\"price\":10.0,\"quantity\":10}]")
-		artifact barParadise: artifact.BarArtifact("barParadise", 3446, "[{\"itemName\":\"Espresso\",\"price\":1.2,\"quantity\":50},{\"itemName\":\"Americano\",\"price\":2.3,\"quantity\":50}]")
+		artifact barParadise: artifact.BarArtifact("barParadise", 3445, "[{\"itemName\":\"Espresso\",\"price\":1.2,\"quantity\":50},{\"itemName\":\"Americano\",\"price\":2.3,\"quantity\":50}]")
 		artifact envManager: artifact.EnvManagerArtifact("envManager", 34)
 artifact conversation: artifact.lib.maselements.AgentMasElement()
 	}

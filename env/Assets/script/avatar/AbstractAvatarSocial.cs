@@ -84,18 +84,23 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         }
     }
 
-   public IEnumerator SmoothLookAt(Vector3 targetPosition, float speed = 2f)
+   public IEnumerator SmoothLookAt(Vector3 targetPosition, float rotateSpeed = 2f, float walkSpeed = 0.5f)
     {
         Vector3 direction = (targetPosition - transform.position).normalized;
         direction.y = 0f;
 
-        while (Vector3.Angle(transform.forward, direction) > 0.1f)
+        while (Vector3.Angle(transform.forward, direction) > 1f)
         {
-            Vector3 newDir = Vector3.RotateTowards(transform.forward, direction, speed * Time.deltaTime, 0.0f);
+            Vector3 newDir = Vector3.RotateTowards(transform.forward, direction, rotateSpeed * Time.deltaTime, 0);
             transform.rotation = Quaternion.LookRotation(newDir);
+
+            transform.position += transform.forward * walkSpeed * Time.deltaTime;
+            animationController.SetAnimationState("walk");
 
             yield return null;
         }
+
+        animationController.SetAnimationState("stop");
     }
 
 

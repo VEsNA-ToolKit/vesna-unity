@@ -48,6 +48,9 @@ public class AvatarAnimationController : MonoBehaviour
             case "say":
                 animator.SetTrigger("say");
                 break;
+            case "turn":
+                animator.SetTrigger("turn");
+                break;
         }
     }
     public void SetSpeed()
