@@ -142,9 +142,34 @@ public class Artifact : AbstractArtifact
         
         Properties = new Dictionary<string, object>();
         foreach (var prop in props)
-        {
+        { 
+            if (prop.Name == "canBeGrabbedByHumanUser")
+            {
+                CreateVRGrabbableComponent();
+            }
+            
             Properties[prop.Name] = prop.Value;
         }
     }
+    private void CreateVRGrabbableComponent()
+    {
+        Debug.Log("[DEBUG] Creating VR Grabbable Component");
+        
+        var grabbable = gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+        if (grabbable == null)
+        {
+            grabbable = gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
+            Debug.Log("[DEBUG] XRGrabInteractable component added to Artifact GameObject.");
+        }
 
+        // Make sure the collider is set up for interaction
+        var componentCollider = gameObject.GetComponent<Collider>();
+        if (componentCollider == null)
+        {
+            componentCollider = gameObject.AddComponent<BoxCollider>();
+            Debug.Log("[DEBUG] BoxCollider added to Artifact GameObject for XR grabbing.");
+        }
+        
+        Debug.Log("[DEBUG] VR Grabbable successfully created.");
+    }
 }
