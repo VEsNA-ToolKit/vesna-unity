@@ -43,7 +43,7 @@ public class AvatarBody : MonoBehaviour
         {
             print("Agent " + root.name + " reached destination " + other.name.FirstCharacterToLower());
             mainAvatarScript.SetBaloonText("Reached destination: " + other.name.FirstCharacterToLower());
-            mainAvatarScript.SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
+            mainAvatarScript.SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("destinationReached", null,
                 "reached_destination", null, other.name.FirstCharacterToLower()));
             artifactReached = other.name.FirstCharacterToLower();
             mainAvatarScript.EnableDisableVisionCone(false);

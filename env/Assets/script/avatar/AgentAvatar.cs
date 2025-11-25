@@ -8,16 +8,14 @@ using UnityEngine;
 using UnityEngine.AI;
 using WebSocketSharp;
 
-public abstract class AbstractAvatar : AbstractMasElement
+public abstract class AgentAvatar : AbstractMasElement
 {
-    public string agentFile; // TODO: find a better way to handle this, like a list of types that is mapped to the agent file
+    public string agentFile; // TODO: Use the same as ArtifactResolver, i.e. save in editor and load at runtime, set from menu
     public AgentBeliefs agentBeliefs;
     public GameObject[] focusedArtifacts;
     public List<GoalEnum> goals;
     protected TextMeshPro nameTextMeshPro;
-    protected string jaCaMoAgentClassPath;
     protected NavMeshAgent agent;
-    protected string artifactToReach;
 
     protected virtual void Awake()
     {
@@ -62,13 +60,13 @@ public abstract class AbstractAvatar : AbstractMasElement
         {
             artifact.transform.SetParent(null); // Detach from avatar
             
-            Collider surfaceCollider = snapPoint.GetComponent<Collider>();
-            Renderer movingRenderer = artifact.GetComponent<Renderer>();
+            var surfaceCollider = snapPoint.GetComponent<Collider>();
+            var movingRenderer = artifact.GetComponent<Renderer>();
             
-            Vector3 newPos = snapPoint.transform.position; // XZ position of snap point
-            float surfaceTopY = surfaceCollider.bounds.max.y;
-            float movingBottomY = movingRenderer.bounds.min.y;
-            float yOffset = surfaceTopY - movingBottomY;
+            var newPos = snapPoint.transform.position; // XZ position of snap point
+            var surfaceTopY = surfaceCollider.bounds.max.y;
+            var movingBottomY = movingRenderer.bounds.min.y;
+            var yOffset = surfaceTopY - movingBottomY;
 
             newPos.y += yOffset;
             artifact.transform.position = newPos;
@@ -84,38 +82,20 @@ public abstract class AbstractAvatar : AbstractMasElement
 
     public GameObject[] FocusedArtifacts
     {
-        get { return focusedArtifacts; }
-        set { focusedArtifacts = value; }
+        get => focusedArtifacts;
+        set => focusedArtifacts = value;
     }
 
-    public virtual AgentBeliefs AgentBeliefs
-    {
-        get { return agentBeliefs; }
-    }
+    public virtual AgentBeliefs AgentBeliefs => agentBeliefs;
 
-    public string AgentFile
-    {
-        get { return agentFile; }
-    }
+    public string AgentFile => agentFile;
 
-    public List<GoalEnum> Goals
-    {
-        get { return goals; }
+    public List<GoalEnum> Goals => goals;
 
-    }
-
-    public string ArtifactToReach
-    {
-        get { return artifactToReach; }
-        set { artifactToReach = value; }
-    }
+    public string ArtifactToReach { get; set; }
 
 
-    public string JaCaMoAgentClassPath
-    {
-        get { return jaCaMoAgentClassPath; }
-        set { jaCaMoAgentClassPath = value; }
-    }
+    public string JaCaMoAgentClassPath { get; set; }
 
     protected void ReachDestination(string dest)
     {
@@ -141,12 +121,11 @@ public abstract class AbstractAvatar : AbstractMasElement
     // Unity avatar receives message from jacamo agent
     protected virtual void OnMessage(object sender, MessageEventArgs e)
     {
-        string data = e.Data;
+        var data = e.Data;
         print("Received message: " + data);
-        WsMessage message = null;
         try
         {
-            message = JsonConvert.DeserializeObject<WsMessage>(data);
+            var message = JsonConvert.DeserializeObject<WsMessage>(data);
             switch (message.Type)
             {
                 case MessageTypes.WsInitialization:
@@ -155,7 +134,7 @@ public abstract class AbstractAvatar : AbstractMasElement
                 case MessageTypes.Walk:
                     print("Agent needs to reach destination.");
                     // Avatar receives the type of artifact to reach
-                    WalkData walkData = message.Data.ToObject<WalkData>();
+                    var walkData = message.Data.ToObject<WalkData>();
                     UnityMainThreadDispatcher.Instance().Enqueue(() =>
                     {
                         ReachDestination( walkData.Target );
@@ -170,7 +149,6 @@ public abstract class AbstractAvatar : AbstractMasElement
         {
             print(data);
             Debug.LogError("Message could not be converted.");
-            return;
         }
     }
 }

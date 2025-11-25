@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public class AvatarScript : AbstractAvatarSocial
+public class AvatarScript : AgentAvatarSocial
 { 
     private AutonomousWalking autonomousWalking;
     public GameObject[] waypoints;

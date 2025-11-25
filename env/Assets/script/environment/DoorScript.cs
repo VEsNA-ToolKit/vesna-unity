@@ -41,7 +41,7 @@ public class DoorScript : Artifact
                 // Change door color to blue  
                 GetComponent<Renderer>().material.color = Color.blue;
                 wsChannel.sendMessage(UnityJacamoIntegrationUtil
-                .createAndConvertJacamoMessageIntoJsonString("supermarketDoorStatus", null, null, null, true));
+                .CreateAndConvertJacamoMessageIntoJsonString("supermarketDoorStatus", null, null, null, true));
                 flag = 0;
             }
             // supermarket is closed and message has not been sent yet to JACaMo
@@ -50,7 +50,7 @@ public class DoorScript : Artifact
                 // Stay closed
                 GetComponent<Renderer>().material.color = Color.red;
                 wsChannel.sendMessage(UnityJacamoIntegrationUtil
-                .createAndConvertJacamoMessageIntoJsonString("supermarketDoorStatus", null, null, null, false));
+                .CreateAndConvertJacamoMessageIntoJsonString("supermarketDoorStatus", null, null, null, false));
                 flag = 1;
             }
         }

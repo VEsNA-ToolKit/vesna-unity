@@ -6,7 +6,7 @@ using TMPro;
 using UnityEngine;
 using WebSocketSharp;
 
-public abstract class AbstractAvatarWithEyesAndVoice : AbstractAvatar
+public abstract class AgentAvatarWithEyesAndVoice : AgentAvatar
 {
     protected GameObject avatarBody;
     protected GameObject avatarEyes;

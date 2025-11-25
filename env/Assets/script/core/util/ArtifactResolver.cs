@@ -173,7 +173,8 @@ namespace script.core.util
             switch (typeName)
             {
                 case "string":
-                    return valueExpr.Trim('"');
+                    var trimmed = valueExpr.Trim('"');
+                    return trimmed == "null" ? "" : trimmed;
                 case "bool":
                     return bool.Parse(valueExpr);
                 case "float":
@@ -242,10 +243,9 @@ namespace script.core.util
         private static void ScanArtifactsInternal()
         {
             var artifactFiles = Directory.GetFiles(ArtifactSourcePath, "*.java", SearchOption.TopDirectoryOnly);
-            
-            for (var i = 0; i < artifactFiles.Length; i++)
+
+            foreach (var file in artifactFiles)
             {
-                var file = artifactFiles[i];
                 ParseArtifact(file);
             }
         }

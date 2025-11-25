@@ -18,6 +18,7 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         super.init(artifactName, webSocketPort);
         initializeProperty("isAvailable", true);
         initializeProperty("currentOwner", "null");
+        initializeProperty("canBeGrabbedByHumanUser", true);
 
         // Request the grabbable status from Unity
         requestGrabbableStatus();
@@ -70,6 +71,12 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
     @OPERATION
     boolean isAvailable() {
         ObsProperty prop = getObsProperty("isAvailable");
+        return prop.booleanValue();
+    }
+
+    @OPERATION
+    boolean isGrabbableByHumanUser() {
+        ObsProperty prop = getObsProperty("CanBeGrabbedByHumanUser");
         return prop.booleanValue();
     }
 

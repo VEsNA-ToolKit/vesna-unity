@@ -74,7 +74,7 @@ public class EnvironmentManagerArtifact : Artifact
             tcs.SetResult(artifactNames);
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 
@@ -95,7 +95,7 @@ public class EnvironmentManagerArtifact : Artifact
             tcs.SetResult(filteredArtifactNames);
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 
@@ -140,7 +140,7 @@ public class EnvironmentManagerArtifact : Artifact
             tcs.SetResult(sortedArtifacts.Select(artifact => artifact.name).ToArray());
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 }

@@ -170,33 +170,33 @@ public class ArtifactEditor : Editor
     }
     private void ShowAndHide(string propertyName)
     {
-        // _propertyNames = _artifactScript.PropertyNames;        
-        // if (_propertyNames == null) return;
-        //
-        // _property = _root.Q<PropertyField>(propertyName);
-        // if (_property != null)
-        // {
-        //     Debug.Log("Showing " + propertyName);
-        //     _property.style.display = DisplayStyle.Flex;
-        // }
-        //
-        // // Hide others        
-        // foreach(var propName in _propertyNames)
-        // {
-        //     if (propName == propertyName) continue;
-        //     
-        //     // Skip snapToSurface - handled in SnapPointArtifact
-        //     if (propName == "snapToSurface") continue;
-        //     
-        //     var propField = _root.Q<PropertyField>(propName);
-        //     if (propField == null) continue;
-        //     
-        //     // Hide artifactType if this is a SnapPoint
-        //     if (_artifactType == ArtifactTypeEnum.SnapPoint && propName == "artifactType") continue;
-        //     
-        //     Debug.Log("Hiding " + propName);
-        //     propField.style.display = DisplayStyle.None;
-        // }
+        _propertyNames = _artifactScript.PropertyNames;        
+        if (_propertyNames == null) return;
+        
+        _property = _root.Q<PropertyField>(propertyName);
+        if (_property != null)
+        {
+            Debug.Log("Showing " + propertyName);
+            _property.style.display = DisplayStyle.Flex;
+        }
+        
+        // Hide others        
+        foreach(var propName in _propertyNames)
+        {
+            if (propName == propertyName) continue;
+            
+            // Skip snapToSurface - handled in SnapPointArtifact
+            if (propName == "snapToSurface") continue;
+            
+            var propField = _root.Q<PropertyField>(propName);
+            if (propField == null) continue;
+            
+            // Hide artifactType if this is a SnapPoint
+            if (_artifactType == ArtifactTypeEnum.SnapPoint && propName == "artifactType") continue;
+            
+            Debug.Log("Hiding " + propName);
+            propField.style.display = DisplayStyle.None;
+        }
     }
     
     private static string ResolvePropertyType(object propertyValue)

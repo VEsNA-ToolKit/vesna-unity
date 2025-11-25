@@ -56,14 +56,14 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		var agentsContent = "";
 		foreach (var avatar in avatars)
 		{
-			var avatarScript = avatar.GetComponent<AbstractAvatar>();
+			var avatarScript = avatar.GetComponent<AgentAvatar>();
 			agentsContent += BuildAgentDefinition(avatar, avatarScript, workspaceName);
 		}
 
 		return agentsContent;
 	}
 
-	private static string BuildAgentDefinition(GameObject avatar, AbstractAvatar avatarScript, string workspaceName)
+	private static string BuildAgentDefinition(GameObject avatar, AgentAvatar avatarScript, string workspaceName)
 	{
 		const string agentClass = "vesna.VesnaAgent";
 		const string localhost = "localhost";
@@ -201,7 +201,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		// Start avatar web socket connections
 		foreach (GameObject avatar in avatars)
 		{
-			AbstractAvatar avatarScript = avatar.GetComponent<AbstractAvatar>();
+			AgentAvatar avatarScript = avatar.GetComponent<AgentAvatar>();
 
 			if (avatarScript == null)
 			{
@@ -231,7 +231,7 @@ class UnityJacamoIntegrationUtil : MonoBehaviour
 		await Task.WhenAll(tasks);
 	}
 
-	public static string createAndConvertJacamoMessageIntoJsonString(string messageType, string messagePayload, string agentEvent, string agentName, object param)
+	public static string CreateAndConvertJacamoMessageIntoJsonString(string messageType, string messagePayload, string agentEvent, string agentName, object param)
 	{
 		// In sight: messagePayload is null. agentName is null. param può essere o la stringa del nome o una struttura
 	 // artifactInfo.

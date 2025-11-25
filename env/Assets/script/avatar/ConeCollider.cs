@@ -45,14 +45,14 @@ public class ConeCollider : MonoBehaviour
                 ArtifactType = RetrieveArtifactType(obj),                
             };
 
-            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
+            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("eyes", null,
                 "artifactSeen", null, artifactInfo));
         }
         else if (obj.CompareTag("JacamoAgent"))
         {
             Debug.Log("Agent " + root.name + " has met another avatar: " + obj.transform.parent.name);
             mainAvatarScript.SetBaloonText("Agent seen: " + obj.transform.parent.name);
-            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
+            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("eyes", null,
                 "agentSeen", null, obj.transform.parent.name));
         }
         // else if (obj.CompareTag("sphere")) //??? There's no "sphere" in the tags or layers, what is this?

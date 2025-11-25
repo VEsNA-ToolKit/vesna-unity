@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using WebSocketSharp;
 
-public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
+public class AgentAvatarSocial : AgentAvatarWithEyesAndVoice
 {
     protected MovementModel movementModel;
     protected AvatarAnimationController animationController; //aggiunta
@@ -70,7 +70,7 @@ public class AbstractAvatarSocial : AbstractAvatarWithEyesAndVoice
         Debug.Log($"Agent has reached his {(isFriend ? "friend" : "target")}.");
         var messageType = isFriend ? "reached_friend" : "reached_destination";
         var jacamoJsonString = UnityJacamoIntegrationUtil
-            .createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
+            .CreateAndConvertJacamoMessageIntoJsonString("destinationReached", null,
                 messageType, null, target);
         SendMessageToJaCaMoBrain(jacamoJsonString);
     }

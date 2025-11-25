@@ -26,7 +26,6 @@ public class Artifact : AbstractArtifact
     protected virtual void Awake()
     {
         ResolveProperties();
-        
         propertyNames ??= new List<string>(); // If null, initialize the list
         
         propertyNames.Clear();
@@ -126,12 +125,12 @@ public class Artifact : AbstractArtifact
                     return;
                 }
                 
-                bool grabbable = artifactComponent.isGrabbable;
+                var grabbable = artifactComponent.isGrabbable;
                 tcs.SetResult(grabbable);
             });
-        bool grabbableStatus = await tcs.Task;
+        var grabbableStatus = await tcs.Task;
 
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString(
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString(
             "grabbableStatus", null, "is_grabbable", artifactName, grabbableStatus));
     }
     

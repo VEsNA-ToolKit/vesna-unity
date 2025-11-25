@@ -9,5 +9,5 @@ public enum ArtifactTypeEnum
     Inventory,
     EnvManager,
     SnapPoint,
-    Cylinder // Temporary, for testing purposes only
+    Cylinder
 }

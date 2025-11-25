@@ -8,7 +8,7 @@ using System.Collections;
 using script.core.model;
 using Unity.VisualScripting;
 
-public class ShopperAvatarScript : AbstractAvatarSocial
+public class ShopperAvatarScript : AgentAvatarSocial
 {
     public ShopperBeliefs shopperBeliefs;
     private AutonomousWalking autonomousWalking;
