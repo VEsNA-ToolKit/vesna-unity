@@ -57,7 +57,7 @@ public class AvatarAnimationController : MonoBehaviour
     {
         if (nav != null)
         {
-            nav.speed = walkingSpeed * 1.5f;
+            nav.speed = walkingSpeed * 2f;
         }
     }
 
