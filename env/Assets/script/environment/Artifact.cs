@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using script.core.util;
 using UnityEngine;
 using WebSocketSharp;
+using script.core.util;
+using Unity.VisualScripting;
+using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
 
 [ExecuteAlways]
 public class Artifact : AbstractArtifact
@@ -21,6 +25,14 @@ public class Artifact : AbstractArtifact
     private void OnValidate()
     {
         ResolveProperties();
+    }
+
+    private void OnDestroy()
+    {
+        var grabbable = GetXRGrabbable();
+
+        grabbable.selectEntered.RemoveAllListeners();
+        grabbable.selectExited.RemoveAllListeners();
     }
 
     protected virtual void Awake()
@@ -54,7 +66,7 @@ public class Artifact : AbstractArtifact
             {
                 // Map in JSON the artifact property        
                 artifactProperties = EscapeJson(convertObjectIntoJson(filteredField.GetValue(this)));
-                Debug.Log("Artifact property: " + artifactProperties.ToString());
+                Debug.Log("Artifact property: " + artifactProperties);
             }
 
             initializeWebSocketConnection(OnMessage);
@@ -71,7 +83,7 @@ public class Artifact : AbstractArtifact
 
     protected virtual void OnMessage(object sender, MessageEventArgs e)
     {
-        string data = e.Data;
+        var data = e.Data;
         
         ArtifactMessage message = null;
         try
@@ -87,7 +99,7 @@ public class Artifact : AbstractArtifact
         
         try
         {
-            string messagePayload = message.MessagePayload;
+            var messagePayload = message.MessagePayload;
             switch (messagePayload)
             {
                 case "is_grabbable":
@@ -154,22 +166,62 @@ public class Artifact : AbstractArtifact
     private void CreateVRGrabbableComponent()
     {
         Debug.Log("[DEBUG] Creating VR Grabbable Component");
-        
-        var grabbable = gameObject.GetComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-        if (grabbable == null)
-        {
-            grabbable = gameObject.AddComponent<UnityEngine.XR.Interaction.Toolkit.Interactables.XRGrabInteractable>();
-            Debug.Log("[DEBUG] XRGrabInteractable component added to Artifact GameObject.");
-        }
+
+        var grabbable = GetXRGrabbable();
+        SetupInteractionManager(grabbable);
 
         // Make sure the collider is set up for interaction
         var componentCollider = gameObject.GetComponent<Collider>();
         if (componentCollider == null)
         {
-            componentCollider = gameObject.AddComponent<BoxCollider>();
+            gameObject.AddComponent<BoxCollider>();
             Debug.Log("[DEBUG] BoxCollider added to Artifact GameObject for XR grabbing.");
         }
         
         Debug.Log("[DEBUG] VR Grabbable successfully created.");
+        
+        // Listeners for grabbed and release events, we'll send the wsMessages from here
+        grabbable.selectEntered.AddListener(OnGrabbedVR);
+        grabbable.selectExited.AddListener(OnReleasedVR);
     }
+
+    private void OnGrabbedVR(SelectEnterEventArgs arg)
+    {
+        Debug.Log("[DEBUG] Artifact grabbed in VR.");
+        
+        // Send a Brain Message to JaCaMo
+        var msg = new BrainMessage("user", gameObject.name, "grabbed", null);
+        wsChannel.sendMessage(JsonConvert.SerializeObject(msg));
+        
+    }
+
+    private void OnReleasedVR(SelectExitEventArgs args)
+    {
+        Debug.Log("[DEBUG] Artifact released in VR.");
+        
+        // Send a Brain Message to JaCaMo
+        var msg = new BrainMessage("user", gameObject.name, "grabbed", null);
+        wsChannel.sendMessage(JsonConvert.SerializeObject(msg));
+    }
+    
+    private void SetupInteractionManager(XRGrabInteractable grabbable)
+    {
+        grabbable.interactionManager = FindFirstObjectByType<XRInteractionManager>();
+        if (grabbable.interactionManager != null) return;
+        
+        grabbable.interactionManager = gameObject.AddComponent<XRInteractionManager>();
+        Debug.Log("[DEBUG] XRInteractionManager component added to Artifact GameObject.");
+    }
+    
+    private XRGrabInteractable GetXRGrabbable()
+    {
+        var grabbable = gameObject.GetComponent<XRGrabInteractable>();
+        if (grabbable != null) return grabbable;
+
+        grabbable = gameObject.AddComponent<XRGrabInteractable>();
+        Debug.Log("[DEBUG] XRGrabInteractable component added to Artifact GameObject.");
+
+        return grabbable;
+    }
+    
 }

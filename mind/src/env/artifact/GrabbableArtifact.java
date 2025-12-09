@@ -12,7 +12,6 @@ import java.util.List;
 
 public class GrabbableArtifact extends AbstractMasElementArtifact {
 
-
     @OPERATION
     public void init(String artifactName, int webSocketPort) {
         super.init(artifactName, webSocketPort);
@@ -62,6 +61,27 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
         }
     }
 
+    @INTERNAL_OPERATION
+    void handleExternalGrab(String sender) {
+        updateObsProperty("isAvailable", false);
+        updateObsProperty("currentOwner", sender);
+        signal("grabbed", this.artifactName);
+        writeLog("Artifact grabbed by VR User/External source");
+    }
+
+    @INTERNAL_OPERATION
+    void handleExternalRelease() {
+        updateObsProperty("isAvailable", true);
+        updateObsProperty("currentOwner", "null");
+        signal("released", this.artifactName, "ground");
+        writeLog("Artifact released by VR User/External source");
+    }
+
+    @INTERNAL_OPERATION
+    void updateAvailability(boolean status) {
+        updateObsProperty("isAvailable", status);
+    }
+
     @OPERATION
     String getOwner() {
         ObsProperty prop = getObsProperty("currentOwner");
@@ -88,8 +108,22 @@ public class GrabbableArtifact extends AbstractMasElementArtifact {
 
             JSONObject messageJson = new JSONObject(message);
 
-            if (messageJson.has("type") && messageJson.getString("type").equals("grabbable_status")) {
-                updateObsProperty("isAvailable", messageJson.getBoolean("data"));
+            if (messageJson.has("type")) {
+                String type = messageJson.getString("type");
+
+                switch (type) {
+                    case "grabbable_status" -> {
+                        boolean status = messageJson.getBoolean("data");
+                        execInternalOp("updateAvailability", status);
+                    }
+                    case "grabbed" -> {
+                        String sender = messageJson.has("sender") ? messageJson.getString("sender") : "user";
+                        execInternalOp("handleExternalGrab", sender);
+                    }
+                    case "released" -> {
+                        execInternalOp("handleExternalRelease");
+                    }
+                }
             }
 
             execInternalOp("signalAgentsByTick");
