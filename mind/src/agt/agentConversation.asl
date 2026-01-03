@@ -27,7 +27,7 @@
         .send(Friend, achieve, stop_and_talk).
 
 +!join_conversation(Friend) 
-    :   .count( talking_to( _ )[source( Friend)], N ) & N > 1
+    :   .count( talking_to( _ )[source( Friend)], N ) & N > 2
     <-  .print("Conversation full (", N, " agents), cannot join");
         !walk_and_not_talk.
 
