@@ -79,13 +79,10 @@ using System;
 using UnityEngine;
 using WebSocketSharp;
 using WebSocketSharp.Server;
-using System.Threading.Tasks;
-using Unity.VisualScripting.FullSerializer;
 
 public class WebSocketChannel
 {
     private WebSocketServer wss;
-    private bool isServerRunning = false;
     private WSConnectionInfoModel connectionInfo;
     public WSConnectionInfoModel ConnectionInfoModel => connectionInfo;
 
@@ -107,14 +104,15 @@ public class WebSocketChannel
         wss = new WebSocketServer(uri.Port);
     }
 
-    public bool IsServerRunning
-    {
-        get { return isServerRunning; }
-        private set { isServerRunning = value; }
-    }
+    public bool IsServerRunning { get; private set; } = false;
+
+    public bool HasConnectedClients =>
+        IsServerRunning &&
+        wss.WebSocketServices["/"].Sessions.Count > 0;
 
     public void StartServer()
     {
+        wss.KeepClean = false; // ← aggiunge questa riga
         wss.AddWebSocketService<CustomWebSocketBehavior>("/", () => new CustomWebSocketBehavior( onMessageHandler ) );
         wss.Start();
         IsServerRunning = true;
@@ -150,11 +148,19 @@ public class WebSocketChannel
      		this.onMessageHandler = onMessageHandler;
      	}
 
-        protected override void OnMessage(MessageEventArgs e)
-        {
-            Debug.Log("Server received message: " + e.Data);
-            onMessageHandler?.Invoke( this, e );
-        }
+      protected override void OnMessage(MessageEventArgs e)
+{
+    Debug.Log("Server received message: " + e.Data);
+    Debug.Log($"[WS] handler null: {onMessageHandler == null}");
+    try
+    {
+        onMessageHandler?.Invoke(this, e);
+    }
+    catch (Exception ex)
+    {
+        Debug.Log($"[WS] ECCEZIONE in handler: {ex.Message}\n{ex.StackTrace}");
+    }
+}
 
         protected override void OnOpen()
         {
@@ -163,7 +169,7 @@ public class WebSocketChannel
 
         protected override void OnClose(CloseEventArgs e)
         {
-            Debug.Log($"Client disconnected with reason: {e.Reason}");
+            Debug.Log($"Client disconnected with reason: {e.Reason}");  
         }
 
         protected override void OnError(ErrorEventArgs e)

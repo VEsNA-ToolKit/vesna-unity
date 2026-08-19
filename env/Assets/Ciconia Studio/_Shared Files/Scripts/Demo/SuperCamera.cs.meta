@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: dec7eeaee8ae52f409f0518a94bad221
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 23087
+  packageName: Free Double Sided Shaders
+  packageVersion: 2020.2
+  assetPath: Assets/Ciconia Studio/_Shared Files/Scripts/Demo/SuperCamera.cs
+  uploadId: 641283

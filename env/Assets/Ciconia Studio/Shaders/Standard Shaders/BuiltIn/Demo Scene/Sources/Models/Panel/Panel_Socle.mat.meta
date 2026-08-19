@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: d3cf5047cee78064d970bd54ff831c52
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 2100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 23087
+  packageName: Free Double Sided Shaders
+  packageVersion: 2020.2
+  assetPath: Assets/Ciconia Studio/Shaders/Standard Shaders/BuiltIn/Demo Scene/Sources/Models/Panel/Panel_Socle.mat
+  uploadId: 641283

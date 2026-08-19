@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: a327e9ee6fee36c48b7b3c085b10ac47
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 23087
+  packageName: Free Double Sided Shaders
+  packageVersion: 2020.2
+  assetPath: Assets/Ciconia Studio/_Shared Files/Scripts/Demo/FreeCam.cs
+  uploadId: 641283

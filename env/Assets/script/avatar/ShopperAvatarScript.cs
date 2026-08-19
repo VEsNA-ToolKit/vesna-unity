@@ -5,8 +5,10 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using script.core.model;
+using Unity.VisualScripting;
 
-public class ShopperAvatarScript : AbstractAvatarSocial
+public class ShopperAvatarScript : AgentAvatarSocial
 {
     public ShopperBeliefs shopperBeliefs;
     private AutonomousWalking autonomousWalking;
@@ -15,15 +17,12 @@ public class ShopperAvatarScript : AbstractAvatarSocial
     protected override void Awake()
     {
         base.Awake();   
-        agentFile = "shopper.asl";
+        agentFile = string.IsNullOrEmpty(agentFile) ? "shopper.asl" : agentFile;
         JaCaMoAgentClassPath = "artifact.lib.maselements.AgentMasElement";
         autonomousWalking = (AutonomousWalking) movementModel;
-        autonomousWalking.Waypoints = waypoints;
+        if (waypoints is { Length: > 0 })
+            autonomousWalking.Waypoints = waypoints;
     }
 
-    public override AgentBeliefs AgentBeliefs
-    {
-        get { return shopperBeliefs; }
-    }
-
+    public override AgentBeliefs AgentBeliefs => shopperBeliefs;
 }

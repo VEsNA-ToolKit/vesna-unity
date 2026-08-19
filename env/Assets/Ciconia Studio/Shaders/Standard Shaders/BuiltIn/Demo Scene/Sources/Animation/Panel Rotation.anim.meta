@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0c5c30d418c9c1946bc3d232b254a375
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 23087
+  packageName: Free Double Sided Shaders
+  packageVersion: 2020.2
+  assetPath: Assets/Ciconia Studio/Shaders/Standard Shaders/BuiltIn/Demo Scene/Sources/Animation/Panel
+    Rotation.anim
+  uploadId: 641283

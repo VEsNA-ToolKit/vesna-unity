@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5c76409c584a24447b47f13cfa119e51
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 23087
+  packageName: Free Double Sided Shaders
+  packageVersion: 2020.2
+  assetPath: Assets/Ciconia Studio/Shaders/Standard Shaders/BuiltIn/Demo Scene/Sources/Standard
+    Demo_Build-in_Profiles/Post-process Volume Profile.asset
+  uploadId: 641283

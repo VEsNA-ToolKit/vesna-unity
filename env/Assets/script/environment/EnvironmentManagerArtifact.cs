@@ -4,12 +4,22 @@ using System;
 using UnityEngine;
 using WebSocketSharp;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using UnityEditor.Experimental;
 
-public class EnvManager : Artifact
+public class EnvironmentManagerArtifact : Artifact
 {
-
+    List<Artifact> artifacts = new List<Artifact>();
+    string mindPath = Path.Combine("..", "mind");
+    public string jcmFilePath = Path.Combine("..", "mind", "exploration.jcm");
+    
+    public string JcmFilePath
+    {
+        get => jcmFilePath;
+        set => jcmFilePath = value;
+    }
+    
     protected override void OnMessage(object sender, MessageEventArgs e)
     {
         string data = e.Data;
@@ -22,7 +32,7 @@ public class EnvManager : Artifact
         catch (Exception)
         {
             print(data);
-            print("Message could not be converted.");
+            Debug.LogError("Message could not be converted.");
             return;
         }
         try
@@ -31,24 +41,24 @@ public class EnvManager : Artifact
             switch (messagePayload)
             {
                 case "all_artifact_by_type": // Retrieve all artifacts by the type                    
-                    retrieveArtifactsByType(message.Param.ToString(), message.AgentName);
+                    RetrieveArtifactsByType(message.Param.ToString(), message.AgentName);
                     break;
                 case "all_artifact":
-                    retrieveAllArtifacts(message.AgentName);
+                    RetrieveAllArtifacts(message.AgentName);
                     break;
                 case "nearest":
-                    retrieveNearestShopsOfType(message.Param.ToString(), message.AgentName);
+                    RetrieveNearestArtifactsByType(message.Param.ToString(), message.AgentName);
                     break;
 
             }
         }
         catch (Exception ex)
         {
-            print("Exception occoured OnMessage " + ex);
+            Debug.LogError($"[Artifact {name}] Exception occurred OnMessage " + ex);
         }
     }
 
-    private async void retrieveAllArtifacts(string agentName)
+    private async void RetrieveAllArtifacts(string agentName)
     {
         // Create a TaskCompletionSource to await the result
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
@@ -64,11 +74,11 @@ public class EnvManager : Artifact
             tcs.SetResult(artifactNames);
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 
-    private async void retrieveArtifactsByType(string resourceType, string agentName)
+    private async void RetrieveArtifactsByType(string resourceType, string agentName)
     {
         // Create a TaskCompletionSource to await the result
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
@@ -85,11 +95,11 @@ public class EnvManager : Artifact
             tcs.SetResult(filteredArtifactNames);
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 
-    private async void retrieveNearestShopsOfType(string resourceType, string agentName)
+    private async void RetrieveNearestArtifactsByType(string resourceType, string agentName)
     {
         TaskCompletionSource<string[]> tcs = new TaskCompletionSource<string[]>();
         UnityMainThreadDispatcher.Instance()
@@ -98,7 +108,7 @@ public class EnvManager : Artifact
             GameObject avatar = GameObject.Find(agentName);
             if (avatar == null)
             {
-                print("No avatar found");
+                print($"No avatar named {agentName} found");
                 return;
             }
             // Find all objects with the 'Shop' tag
@@ -130,7 +140,7 @@ public class EnvManager : Artifact
             tcs.SetResult(sortedArtifacts.Select(artifact => artifact.name).ToArray());
         });
         string[] artifactNames = await tcs.Task;
-        wsChannel.sendMessage(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("artifactStrategy",
+        wsChannel.sendMessage(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("artifactStrategy",
             null, "artifact_names", agentName, artifactNames));
     }
 }

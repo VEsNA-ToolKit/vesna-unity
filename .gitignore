@@ -89,6 +89,10 @@ crashlytics-build.properties
 /mind/*.log
 /mind/*.class
 
+mind/.jcm-deps.gradle
+mind/settings.gradle
+
+
 # Package Files #
 /mind/*.war
 /mind/*.ear

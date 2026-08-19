@@ -7,5 +7,8 @@ public enum ArtifactTypeEnum
     Bar,
     SkyScraper,
     Inventory,
-    EnvManager
+    EnvManager,
+    SnapPoint,
+    Cylinder,
+    RoomObject
 }

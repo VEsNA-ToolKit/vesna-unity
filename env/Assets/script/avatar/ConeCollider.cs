@@ -31,8 +31,10 @@ public class ConeCollider : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
+        
         GameObject obj = other.gameObject;
-        if (obj.layer == LayerMask.NameToLayer("artifact"))
+       // Debug.Log($"OnTriggerEnter: {obj.name}, tag: {obj.tag}");
+        if (obj.CompareTag("Artifact"))
         {
             Debug.Log("Agent " + root.name + " has seen the artifact " + other.name);
             mainAvatarScript.SetBaloonText("Artifact seen: " + other.name.FirstCharacterToLower());
@@ -40,33 +42,30 @@ public class ConeCollider : MonoBehaviour
             ArtifactInfo artifactInfo = new ArtifactInfo
             {
                 ArtifactName = other.name,
-                ArtifactType = retrieveArtifactType(obj),                
+                ArtifactType = RetrieveArtifactType(obj),                
             };
 
-            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
+            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("eyes", null,
                 "artifactSeen", null, artifactInfo));
         }
-        else if (obj.layer == LayerMask.NameToLayer("agent"))
+        else if (obj.CompareTag("JacamoAgent"))
         {
             Debug.Log("Agent " + root.name + " has met another avatar: " + obj.transform.parent.name);
             mainAvatarScript.SetBaloonText("Agent seen: " + obj.transform.parent.name);
-            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("eyes", null,
+            root.GetComponent<ShopperAvatarScript>().SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString("eyes", null,
                 "agentSeen", null, obj.transform.parent.name));
         }
-        else if (obj.layer == LayerMask.NameToLayer("sphere"))
-        {
-            obj.gameObject.GetComponent<Renderer>().material.color = Color.blue;
-        }
+        // else if (obj.CompareTag("sphere")) //??? There's no "sphere" in the tags or layers, what is this?
+        // {
+        //     obj.gameObject.GetComponent<Renderer>().material.color = Color.blue;
+        // }
     }
 
-    private static string retrieveArtifactType(GameObject other)
+    private static string RetrieveArtifactType(GameObject other)
     {
         // Get artifact type 
-        GenericArtifactType artType = other.GetComponent<GenericArtifactType>();
-        if (artType == null)
-        {
-            throw new Exception("Artifact type script is null");
-        }
-        return artType.GetShopType().ToString().ToLower();
+        var artifactType = other.GetComponent<Artifact>().ArtifactType;
+        
+        return artifactType.ToString().ToLower();
     }
 }

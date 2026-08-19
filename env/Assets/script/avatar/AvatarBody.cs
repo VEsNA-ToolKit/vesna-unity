@@ -32,17 +32,39 @@ public class AvatarBody : MonoBehaviour
         agent.SetDestination(GameObject.Find(dest).transform.position);
     }
 
-    private void OnTriggerEnter(Collider other)
+    // TODO: I do not understand why this is called, it's always called when the FOV is spawned.
+    // It's probably obsolete, check and remove if not needed.
+private void OnTriggerEnter(Collider other)
+{
+    Debug.Log("Agent " + root.name + " reached " + other.name);
+
+    // ---> PORTE/VARCHI: rilevati dal COMPONENTE, non dal nome <---
+    DoorVarcoScript door = other.GetComponent<DoorVarcoScript>()
+                        ?? other.GetComponentInParent<DoorVarcoScript>();
+    if (door != null)
     {
-        Debug.Log("Agent " + root.name + " reached " + other.name);
-        print("Agent " + root.name + " reached destination " + other.name.FirstCharacterToLower());
-        // reached_destination(destName)
+        if (!door.isOpen)
+        {
+            Debug.Log("[AvatarBody] Sfiorato " + other.name + " (DoorVarcoScript), apro.");
+            door.TryOpen();
+        }
+        return; // non interferisce con la logica della prof qui sotto
+    }
+        // ---> FINE PEZZO AGGIUNTO <---
+
+
+        // ---> LA TUA LOGICA PRECEDENTE RIMANE ESATTAMENTE UGUALE <---
         if (!other.gameObject.name.Contains("counter") && (other.gameObject.tag == "Artifact"))
         {
             print("Agent " + root.name + " reached destination " + other.name.FirstCharacterToLower());
             mainAvatarScript.SetBaloonText("Reached destination: " + other.name.FirstCharacterToLower());
-            mainAvatarScript.SendMessageToJaCaMoBrain(UnityJacamoIntegrationUtil.createAndConvertJacamoMessageIntoJsonString("destinationReached", null,
-                "reached_destination", null, other.name.FirstCharacterToLower()));
+            
+            mainAvatarScript.SendMessageToJaCaMoBrain(
+                UnityJacamoIntegrationUtil.CreateAndConvertJacamoMessageIntoJsonString(
+                    "destinationReached", null, "reached_destination", null, other.name.FirstCharacterToLower()
+                )
+            );
+            
             artifactReached = other.name.FirstCharacterToLower();
             mainAvatarScript.EnableDisableVisionCone(false);
         }

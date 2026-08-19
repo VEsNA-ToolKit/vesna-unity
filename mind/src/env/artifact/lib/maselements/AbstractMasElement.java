@@ -39,9 +39,19 @@ public abstract class AbstractMasElement extends Artifact{
         try {
             client = new WsClient( new URI( "ws://" + host + ":" + port ) );
             client.setMsgHandler( this::onMessageReceived );
+
+            client.connect();
+
+            while (!client.isOpen()) {
+                Thread.sleep(100);
+            }
+
+            onConnectionEstablished();
         } catch ( Exception e ) {
+            writeLog("Failed to establish WebSocket connection: " + e.getMessage());
             e.printStackTrace();
         }
+
         // InetSocketAddress address = new InetSocketAddress(host, port);
         // server = new WebSocketChannel(address);
         // server.setJacamoElement(this);

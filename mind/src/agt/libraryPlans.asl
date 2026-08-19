@@ -102,8 +102,8 @@ seen_agent([]).
 
 // Save the seen artifact e.g. seen_artifact(barParadise, bar)
 @artifact_seen_append
-+seen( artifact, ArtModel, ArtName )
-    <-  !writeLog(["The avatar has seen the artifact ", ArtName ]);
++seen(artifact, ArtModel, ArtName)
+    <-  .print("The avatar has seen the artifact ", ArtName, " of type ", ArtModel);
         +seen_artifact(ArtName, ArtModel).
 
 @agent_seen_append
@@ -141,3 +141,6 @@ seen_agent([]).
     // // !define_payload("conversation", Content, ReturnMsg);
     // // !sendMessageToUnity(ReturnMsg).
     vesna.says( Content ).
+
++artifact_names(ArtifactList) : true <-
+    +artifact_names(ArtifactList).

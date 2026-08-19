@@ -1,0 +1,17 @@
+mas testGrabbableArtifact {
+	agent npc:grabber.asl {
+		ag-class: vesna.VesnaAgent
+		beliefs: address( localhost )
+			port( 3450 )
+			budget(0), friends([])
+		goals:	grab_artifact
+		join: ws
+
+	}
+
+	workspace ws {
+		artifact snapPoint: artifact.SnapPointArtifact("SnapPoint", 684)
+		artifact envManager: artifact.EnvManagerArtifact("envManager", 5126)
+		artifact cylinder: artifact.CylinderArtifact("Cylinder", 666)
+	}
+}

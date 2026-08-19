@@ -19,7 +19,7 @@ public class CounterScript : Artifact
             Debug.Log("Trigger detected with " + other.gameObject.name);
             // Send message to JaCaMo
             wsChannel.sendMessage(UnityJacamoIntegrationUtil
-                .createAndConvertJacamoMessageIntoJsonString("counter", null, "assign_number", other.name, null));
+                .CreateAndConvertJacamoMessageIntoJsonString("counter", null, "assign_number", other.name, null));
         }
     }
 }
